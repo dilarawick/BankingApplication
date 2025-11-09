@@ -1,2 +1,0 @@
-# BankingApplication
-A Java Application
