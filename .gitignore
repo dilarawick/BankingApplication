@@ -1,8 +1,10 @@
 # Maven
 target/
+out/
 
 # IDE
 .idea/
+.mvn/
 *.iml
 
 # OS
