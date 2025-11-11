@@ -1,12 +1,66 @@
-# Maven
-target/
-out/
+# ===========================
+# Java + Maven + IntelliJ
+# ===========================
 
-# IDE
+# ---> IntelliJ IDEA
 .idea/
-.mvn/
 *.iml
+*.iws
+*.ipr
 
-# OS
-.DS_Store
+# IntelliJ build output
+/out/
+
+# ---> Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Maven log files
+maven.log
+
+# Maven Wrapper files (keep these)
+/.mvn/wrapper/maven-wrapper.properties
+/mvnw
+/mvnw.cmd
+
+# ---> Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# ---> OS-specific files
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# ---> Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# ---> Environment and local config
+.env
+.env.*
+*.local
+*.idea_modules/
+
+# ---> Misc
+# Ignore compiled JSPs or generated web files (optional)
+build/
+dist/
