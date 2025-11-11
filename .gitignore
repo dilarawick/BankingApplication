@@ -11,18 +11,6 @@
 # IntelliJ build output
 /out/
 
-# ---> Maven
-target/
-!.mvn/wrapper/maven-wrapper.jar
-
-# Maven log files
-maven.log
-
-# Maven Wrapper files (keep these)
-/.mvn/wrapper/maven-wrapper.properties
-/mvnw
-/mvnw.cmd
-
 # ---> Java
 *.class
 *.jar
