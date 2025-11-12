@@ -266,6 +266,17 @@ body {
   overflow: hidden;
 }
 
+/*.signup-left::before {*/
+/*  content: "";*/
+/*  position: absolute;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  right: 0;*/
+/*  bottom: 0;*/
+/*  background: rgba(0, 0, 0, 0.4); !* dark transparent overlay *!*/
+/*  z-index: 0;*/
+/*}*/
+
 .signup-right {
   flex: 1;
   padding: 60px 50px;
@@ -871,4 +882,14 @@ body {
   .search-box {
     width: 100%;
   }
+}
+
+.error, .success {
+    all: unset; /* remove ALL inherited styles */
+    display: block;
+    width: 100%;          /* ensure it spans input width */
+    text-align: center;   /* center the text */
+    font-size: 14px;
+    margin-top: 5px;
+    color: red; /* or green for success */
 }
