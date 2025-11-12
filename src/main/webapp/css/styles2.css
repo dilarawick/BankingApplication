@@ -182,17 +182,17 @@ body {
   font-size: 14px;
 }
 
-.error {
-  background: #fee;
-  color: #c33;
-  border: 1px solid #fcc;
-}
+/*.error {*/
+/*  background: #fee;*/
+/*  color: #c33;*/
+/*  border: 1px solid #fcc;*/
+/*}*/
 
-.success {
-  background: #efe;
-  color: #3c3;
-  border: 1px solid #cfc;
-}
+/*.success {*/
+/*  background: #efe;*/
+/*  color: #3c3;*/
+/*  border: 1px solid #cfc;*/
+/*}*/
 
 .btn-signin {
   width: 100%;
@@ -884,7 +884,7 @@ body {
   }
 }
 
-.error, .success {
+.error {
     all: unset; /* remove ALL inherited styles */
     display: block;
     width: 100%;          /* ensure it spans input width */
@@ -892,4 +892,14 @@ body {
     font-size: 14px;
     margin-top: 5px;
     color: red; /* or green for success */
+}
+
+.success {
+    all: unset; /* remove ALL inherited styles */
+    display: block;
+    width: 100%;          /* ensure it spans input width */
+    text-align: center;   /* center the text */
+    font-size: 14px;
+    margin-top: 5px;
+    color: limegreen; /* or green for success */
 }

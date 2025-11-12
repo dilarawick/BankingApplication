@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>Sign In</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles2.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body style="background-image: url('images/brg.png');">
@@ -42,6 +42,9 @@
                 </c:if>
                 <c:if test="${not empty signupSuccess}">
                     <span class="success">${signupSuccess}</span>
+                </c:if>
+                <c:if test="${not empty pwdSuccess}">
+                    <span class="success">${pwdSuccess}</span>
                 </c:if>
                 <button type="submit" class="btn-signin">Sign In</button>
 

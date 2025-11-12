@@ -28,7 +28,7 @@ public class SignupVerifyServlet extends jakarta.servlet.http.HttpServlet {
                 return;
             }
             if (c.getUsername() != null) {
-                request.setAttribute("signupError", "User already registered. Please login or use password reset.");
+                request.setAttribute("signupError", "User already registered.");
                 request.getRequestDispatcher("/signup.jsp").forward(request, response);
                 return;
             }
