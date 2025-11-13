@@ -64,7 +64,7 @@ Generated from [https://start.spring.io](https://start.spring.io) with the follo
 
 ```
 BankingApplication/
-├── bank-backend/                        ← Spring Boot backend
+├── bankapp-backend/                        ← Spring Boot backend
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/bankapp/...     ← Java packages (controller, service, etc.)
