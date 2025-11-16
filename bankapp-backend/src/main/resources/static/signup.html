@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="css/styles2.css" />
+    <link rel="icon" type="image/png" href="img/favicon.png">
+</head>
+<body style="background-image: url('img/brg.png');">
+<div class="signup-wrapper">
+    <div class="signup-left" style="background-image: url('img/logo_brg.png');">
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo">
+        </div>
+    </div>
+    <div class="signup-right">
+        <div class="signup-form">
+            <h2>SIGN UP</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="accountNo">Account Number :</label>
+                    <input type="text" id="accountNo" required />
+                </div>
+                <div class="form-group">
+                    <label for="branch">Branch :</label>
+                    <input type="text" id="branch" required />
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="name">Full Name :</label>
+                    <input type="text" id="name" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nic">NIC :</label>
+                    <input type="text" id="nic"required />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number :</label>
+                    <input type="tel" id="phone" required />
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" id="otp" placeholder="Enter code" maxlength="6" pattern="\d{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '');"/>
+                </div>
+                <div class="form-group">
+                    <button id="sendOtpBtn" class="btn-sendotp">Send OTP</button>
+                </div>
+            </div>
+            <div id="otp-countdown" class="error" style="display:none;"></div>
+            <div id="signup-error" class="error" style="display:none;"></div>
+
+            <button id="confirmBtn" class="btn-confirm">Confirm</button>
+
+            <div class="back-to-signin">
+                <a href="login.html">Back to Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/signup.js"></script>
+</body>
+</html>
