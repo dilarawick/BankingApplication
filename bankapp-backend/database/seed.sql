@@ -1,4 +1,4 @@
--- Insert Customers
+    -- Insert Customers
 INSERT INTO Customer (Name, Email, NIC, PhoneNumber, Username, PasswordHash)
 VALUES
     ('Alice Johnson', 'alice.johnson@example.com', '123456789V', '0711234567', NULL, NULL),

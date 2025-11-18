@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Bank - Bills</title>
     <link rel="stylesheet" href="css/styles3.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
+
 <body>
     <div class="container">
         <aside class="sidebar">
@@ -63,9 +66,104 @@
                     </div>
                 </div>
             </header>
+
+            <div class="pb-Container">
+                <section class="utilitybtn-section">
+
+                    <h3 class="pbhead-text">Utility Billers</h3>
+
+                    <div class="utility-row">
+
+                        <!--CEB Button-->
+                        <div class="btn-wrapper">
+                            <button class="utility-btn" data-form="cebForm">
+                                <a href="#">
+                                    <img class="cebimg"
+                                        src="https://images.seeklogo.com/logo-png/22/2/ceylon-electricity-board-logo-png_seeklogo-226257.png"
+                                        alt="CEB">
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">CEB</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--CEB Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="nwsdbimg" src="https://trims.waterboard.lk/images/logo.png" alt="NWSDB">
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">NWSDB</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--CEB Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="sltimg"
+                                        src="https://play-lh.googleusercontent.com/qCEwpUDhKk1UtqGGgKFXQR9hhve9xw9fKg39pHbMAsVkgwSmfUGlidInEtrZEzSwdGo"
+                                        alt="SLT">
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">SLT</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--Dialog Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="dialogimg"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
+                                        alt="Dialog">
+
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">Dialog</span>
+                        </div>
+
+                    </div>
+
+
+                </section>
+                <div class="payinfo">
+                    <section id="cebForm" class="bill-form">
+                        <h2 class="pbform-title">Ceylon Electricity Board</h2>
+
+                        <div class="pbform-group">
+                            <label for="pbbankAcc">Pay From</label>
+                            <select type="text" id="cebAcc" placeholder="Enter CEB account number">
+                                <option value="">-- Choose Account --</option>
+                                </select>
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="cebName">Customer Name</label>
+                            <input type="text" id="cebName" placeholder="Enter customer name">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="cebMonth">Billing Month</label>
+                            <input type="month" id="cebMonth">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="cebAmount">Amount (LKR)</label>
+                            <input type="number" id="cebAmount" placeholder="Enter payment amount">
+                        </div>
+
+                        <button class="pbsubmit-btn">Pay Now</button>
+                    </section>
+
+
+                </div>
+            </div>
+
+
+
         </main>
     </div>
-
+    <script src="js/paybills.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
+
 </html>

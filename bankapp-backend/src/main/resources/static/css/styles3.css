@@ -65,12 +65,14 @@ body {
 .logo-container {
     width: 48px;
     height: 48px;
-    background: #003366; /* Circle background */
+    background: #003366;
+    /* Circle background */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Crop image to the circle */
+    overflow: hidden;
+    /* Crop image to the circle */
     position: relative;
     z-index: 1;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -79,7 +81,8 @@ body {
 .logo-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Makes the image fill the circle nicely */
+    object-fit: cover;
+    /* Makes the image fill the circle nicely */
 }
 
 .bank-name {
@@ -97,7 +100,8 @@ body {
 .nav-icon-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Makes the image fill the circle nicely */
+    object-fit: cover;
+    /* Makes the image fill the circle nicely */
 }
 
 .nav-menu {
@@ -127,7 +131,7 @@ body {
 }
 
 .nav-item.active {
-    background:  #5B7AB3;
+    background: #5B7AB3;
     color: white;
 }
 
@@ -314,7 +318,8 @@ body {
 .welcome-illustration img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Makes the image fill the circle nicely */
+    object-fit: cover;
+    /* Makes the image fill the circle nicely */
 }
 
 .welcome-illustration svg {
@@ -526,3 +531,257 @@ body {
         padding: 16px;
     }
 }
+
+@media (max-width: 600px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        z-index: 10;
+        transform: translateX(-100%);
+        transition: 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+
+
+/* Pay Bills Styles*/
+
+.pb-Container {
+    display: flex;
+    gap: 15px;
+    padding: 24px 32px;
+    flex-wrap: wrap;     
+}
+
+
+@media (max-width: 768px) {
+    .buttoncontainer {
+        flex-direction: column;
+       
+    }
+}
+
+.utilitybtn-section {
+    background: #FFFFFF;
+    height: 500px;
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin: 0 32px 32px 32px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+.pbhead-text {
+    font-size: 17px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 1000;
+
+}
+
+.utility-row {
+    display: flex;
+    flex-wrap: wrap;     /* allows wrapping on smaller screens */
+    gap: 15px;
+    flex: 1;
+    justify-content: flex-start; /* keeps same alignment */
+}
+
+
+.utility-btn {
+    width: min(100px, 25vw);
+    height: min(100px, 25vw);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 45px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    transition: 0.5s;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.utility-btn:hover {
+    transform: translateY(-10px);
+}
+
+.utility-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: skewX(45deg) translateX(150px);
+    transition: 0.5s ease;
+}
+
+.utility-btn :hover::before {
+    transform: skewX(45deg) translateX(-150px);
+}
+
+
+@media (max-width: 600px) {
+    .utility-btn {
+        width: 80px;
+        height: 80px;
+    }
+
+    .pbbtn-label {
+        font-size: 14px;
+    }
+}
+
+.btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pbbtn-label {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/*Button Imgs*/
+
+.cebimg {
+    width: 80px;
+    height: 80px;
+    float: center;
+}
+
+.nwsdbimg {
+    width: 75px;
+    height: 75px;
+    float: center;
+}
+
+.sltimg {
+    width: 75px;
+    height: 75px;
+    float: center;
+}
+
+.dialogimg {
+    width: 75px;
+    height: 75px;
+    float: center;
+}
+
+.bill-form {
+    display: none; 
+    border: 1px solid #ccc;
+    width: 100%;          
+    max-width: 600px;     
+    min-width: 280px;    
+    height: auto;         
+    border-radius: 16px;
+    background: #ffffff;
+    padding: 24px 32px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+
+.payinfo {
+    display: flex;
+    gap: 15px;
+    padding: 24px 32px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    flex: 2;
+
+}
+
+/*Payment information form*/
+
+.pbform-title {
+    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* form structure */
+
+.pbform-group {
+    margin-bottom: 15px;
+}
+
+.pbform-group label {
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.pbform-group input {
+    padding: 14px 16px;
+    border: none;
+    border-radius: 15px;
+    background: #F4F4F4;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* submit button */
+
+.pbsubmit-btn {
+    width: 100%;
+    background: #274582;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pbsubmit-btn:hover {
+    background: #005fcc;
+}
+
+@media (max-width: 700px) {
+    .payinfo {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+.pbform-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #fff;
+    cursor: pointer;
+    outline: none;
+    transition: 0.2s;
+}
+
+.pbform-group select:focus {
+    border-color: #274582;
+    box-shadow: 0 0 5px rgba(39, 69, 130, 0.3);
+}
+
+
