@@ -87,8 +87,8 @@
                         </div>
 
                         <div class="btn-wrapper">
-                            <!--CEB Button-->
-                            <button class="utility-btn">
+                            <!--NWSDB Button-->
+                            <button class="utility-btn" data-form="nwsdbForm">
                                 <a href="#">
                                     <img class="nwsdbimg" src="https://trims.waterboard.lk/images/logo.png" alt="NWSDB">
                                 </a>
@@ -121,29 +121,88 @@
                             <span class="pbbtn-label">Dialog</span>
                         </div>
 
+                        <div class="btn-wrapper">
+                            <!--Dialog Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="dialogimg"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
+                                        alt="Dialog">
+
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">Dialog</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--Dialog Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="dialogimg"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
+                                        alt="Dialog">
+
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">Dialog</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--Dialog Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="dialogimg"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
+                                        alt="Dialog">
+
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">Dialog</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--Dialog Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="dialogimg"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
+                                        alt="Dialog">
+
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">Dialog</span>
+                        </div>
+
+                        <div class="btn-wrapper">
+                            <!--Dialog Button-->
+                            <button class="utility-btn">
+                                <a href="#">
+                                    <img class="dialogimg"
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
+                                        alt="Dialog">
+
+                                </a>
+                            </button>
+                            <span class="pbbtn-label">Dialog</span>
+                        </div>
+
                     </div>
 
 
                 </section>
+
+
                 <div class="payinfo">
-                    <section id="cebForm" class="bill-form">
+
+                    <!--CEB Form-->
+                    <section id="cebForm" class="bill-form" class="bill-form hidden">
                         <h2 class="pbform-title">Ceylon Electricity Board</h2>
 
                         <div class="pbform-group">
                             <label for="pbbankAcc">Pay From</label>
-                            <select type="text" id="cebAcc" placeholder="Enter CEB account number">
+                            <select type="text" id="pbbankapp" placeholder="Enter CEB account number">
                                 <option value="">-- Choose Account --</option>
-                                </select>
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="cebName">Customer Name</label>
-                            <input type="text" id="cebName" placeholder="Enter customer name">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="cebMonth">Billing Month</label>
-                            <input type="month" id="cebMonth">
+                            </select>
                         </div>
 
                         <div class="pbform-group">
@@ -151,8 +210,60 @@
                             <input type="number" id="cebAmount" placeholder="Enter payment amount">
                         </div>
 
-                        <button class="pbsubmit-btn">Pay Now</button>
+                        <div class="pbform-group">
+                            <label for="cebbillno">Electricity Bill Account No</label>
+                            <input type="text" id="cebbillno" placeholder="Electricity Bill Account No">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="cebbillno">Re Enter Electricity Bill Account Number</label>
+                            <input type="text" id="recebbillno" placeholder="Electricity Bill Account No">
+                        </div>
+
+                        <button class="pbnext-btn" id="cebnextBtn">Next</button>
                     </section>
+
+
+                    <!--NWSDB Form-->
+
+                    <section id="nwsdbForm" class="bill-form">
+                        <h2 class="pbform-title">National Water Supply and Drainage Board</h2>
+
+                        <div class="pbform-group">
+                            <label for="pbbankAcc">Pay From</label>
+                            <select type="text" id="pbbankacc" placeholder="Enter CEB account number">
+                                <option value="">-- Choose Account --</option>
+                            </select>
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="cebAmount">Amount (LKR)</label>
+                            <input type="number" id="wbAmount" placeholder="Enter payment amount">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="wbbillno">Water Bill Account No</label>
+                            <input type="text" id="wbbillno" placeholder="Water Bill Account No">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="wbbillno">Re Enter Water Bill Account Number</label>
+                            <input type="text" id="rewbbillno" placeholder="Water Bill Account No">
+                        </div>
+
+                        <button class="pbnext-btn">Next</button>
+                    </section>
+
+
+                    <div id="form2" style="display:none; border:1px solid #ccc; padding:20px; width:300px;">
+                        <h3>Payment Details</h3>
+                        <p><strong>Name:</strong> <span id="confirmName"></span></p>
+                        <p><strong>Amount:</strong> $<span id="confirmAmount"></span></p>
+
+                        <button type="button" id="backBtn">Back</button>
+                        <button type="button" id="confirmBtn">Confirm</button>
+                    </div>
+
 
 
                 </div>
