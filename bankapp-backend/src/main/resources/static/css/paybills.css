@@ -940,7 +940,7 @@ body {
 }
 
 .pbpaymentsuccess{
-    display: block; 
+    display: none; 
     border: 1px solid #ccc;
     width: 40%;          
     max-width: 1000px;     
@@ -951,41 +951,95 @@ body {
     padding-top: 100px;
     box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);  
     position: absolute;
+    margin-top: 50px;
+    padding-bottom: 100px;
 }
 .pbpaymentsuccess.show {
     display: grid;
 }
 
 .paymentsuccessicon{
-   position: absolute; 
-    
+    position: absolute; 
     left: 50%;
     transform: translateX(-50%); 
-    top: -50px; 
-    width: 100px;
-    height: 100px; 
+    top: -25%; 
+    width: 200px;
+    height: 200px; 
     z-index: 10; 
-    border-radius: 50%;
-    background-color: #ffffff;
+    border-radius:50%;
     padding: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    background-color: #32fa85 ;
+    box-shadow: 
+    0 0 0 20px #32FA8654;
+
 }
 
-.success-icon-container{
-    
-}
-
-#paymentsuccess{
+#pbpaymentsuccess{
 position: relative;
 margin-left: auto;
 margin-right: auto;
 width:100%;
 max-width: 1000px;
 }
-.pbh3{
+
+.pbh2{
     font-size: 32px;
     font-weight: 800;
     color: #1f2937;
     display: grid;
     text-align: center;
+    padding-top: 10%;
 }
+
+.pbh3{
+    font-size: 14px;
+    font-weight: 400;
+    color: #1f2937;
+    display: grid;
+    text-align: center;
+    padding-top: 10%;
+}
+
+.pbpaymentfailed{
+    display: none; 
+    border: 1px solid #ccc;
+    width: 40%;          
+    max-width: 1000px;     
+    min-width: 280px;    
+    height: auto;         
+    border-radius: 16px;
+    background: #ffffff;
+    padding-top: 100px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);  
+    position: absolute;
+    margin-top: 50px;
+    padding-bottom: 100px;
+}
+
+.pbpaymentfailed.show{
+  display: grid;
+}
+#pbpaymentfailed{
+position: relative;
+margin-left: auto;
+margin-right: auto;
+width:100%;
+max-width: 1000px;
+}
+
+
+.paymentfailedimg{
+    position: absolute; 
+    left: 50%;
+    transform: translateX(-50%); 
+    top: -25%; 
+    width: 200px;
+    height: 200px; 
+    z-index: 10; 
+    border-radius:50%;
+    padding: 5px;
+    background-color: #ff6666 ;
+    box-shadow: 
+    0 0 0 20px #FFD0D0;
+}
+
