@@ -29,19 +29,19 @@ nextButtons.forEach(btn => {
     });
 });
 
-const nextBtn = document.getElementById('cebnextBtn');
+const cebnextBtn = document.getElementById('cebnextBtn');
 const backBtn = document.getElementById('backBtn');
 const confirmBtn = document.getElementById('confirmBtn');
 const cebForm = document.getElementById('cebForm');
-const form2 = document.getElementById('form2');
+const paydetails = document.getElementById('paydetails');
 
-nextBtn.addEventListener('click', () => {
-    const nameValue = document.getElementById('cebName').value;
+cebnextBtn.addEventListener('click', () => {
+    const nameValue = document.getElementById('cebbillno').value;
     const amountValue = document.getElementById('cebAmount').value;
 
     // Hide first form, show confirmation
     cebForm.style.display = 'none';
-    form2.style.display = 'block';
+    paydetails.style.display = 'block';
 
     // Fill confirmation details
     document.getElementById('confirmName').textContent = nameValue;
@@ -50,17 +50,35 @@ nextBtn.addEventListener('click', () => {
 
 // Back button: go back to edit
 backBtn.addEventListener('click', () => {
-    form2.style.display = 'none';
+    paydetails.style.display = 'none';
     cebForm.style.display = 'block';
 });
 
 // Confirm button: handle confirmation
-confirmBtn.addEventListener('click', () => {
-    alert("Payment Confirmed!\nName: " + document.getElementById('confirmName').textContent +
+pbconfirmBtn.addEventListener('click', () => {
+ alert("Payment Confirmed!\nName: " + document.getElementById('confirmName').textContent +
           "\nAmount: $" + document.getElementById('confirmAmount').textContent);
 
     // Optionally, reset forms
     cebForm.reset();
-    form2.style.display = 'none';
+    paydetails.style.display = 'none';
     cebForm.style.display = 'block';
+});
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    };
+    const formattedDateTime = now.toLocaleString('en-US', options); 
+    
+    const dateSpan = document.getElementById('bpdate');
+    if (dateSpan) {
+        dateSpan.textContent = formattedDateTime;
+    }
 });
