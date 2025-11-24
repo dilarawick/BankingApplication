@@ -41,3 +41,31 @@ CREATE TABLE CustomerAccount (
                                  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
                                  FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
 );
+-- Bills (the bill provider records you will check against)
+CREATE TABLE Bill (
+  BillNo VARCHAR(50) PRIMARY KEY,
+  CustomerID INT,              -- owner customer (nullable if generic)
+  Biller VARCHAR(50) NOT NULL, -- 'CEB','SLT','NWSDB','DIALOG'...
+  Amount DECIMAL(15,2) NOT NULL,
+  Status ENUM('Unpaid','Paid','Cancelled') DEFAULT 'Unpaid',
+  DueDate DATETIME NULL,
+  CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+-- Payment history (records what customer paid)
+CREATE TABLE Payment (
+  PaymentID INT AUTO_INCREMENT PRIMARY KEY,
+  CustomerID INT NOT NULL,
+  FromAccountNo CHAR(6) NOT NULL,
+  BillNo VARCHAR(50) NOT NULL,
+  Biller VARCHAR(50) NOT NULL,
+  Amount DECIMAL(15,2) NOT NULL,
+  ConfirmNo VARCHAR(50) NOT NULL,
+  Status ENUM('Success','Failed') NOT NULL,
+  FailureReason VARCHAR(255),
+  CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+  FOREIGN KEY (FromAccountNo) REFERENCES Account(AccountNo)
+);
+

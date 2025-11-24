@@ -30,3 +30,12 @@ VALUES
     ('AC0005', 3, 'Current', 4, 1500.75, 'Active'),
     ('AC0006', 4, 'Savings', 5, 2200.00, 'Active'),
     ('AC0007', 5, 'Fixed Deposit', 3, 50000.00, 'Active');
+
+INSERT INTO Bill (BillNo, CustomerID, Biller, Amount)
+VALUES 
+('BILL-CEB-0001', 1, 'CEB', 1200.00);
+
+use bankingsystemdb;
+select *from customer;
+
+select *from bill;      

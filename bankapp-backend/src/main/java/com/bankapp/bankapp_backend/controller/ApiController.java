@@ -1,14 +1,14 @@
 package com.bankapp.bankapp_backend.controller;
 
+import com.bankapp.bankapp_backend.dto.BillCheckRequest;
 import com.bankapp.bankapp_backend.dto.LoginRequest;
-import com.bankapp.bankapp_backend.model.Account;
-import com.bankapp.bankapp_backend.model.Customer;
-import com.bankapp.bankapp_backend.model.CustomerAccount;
-import com.bankapp.bankapp_backend.repository.AccountRepository;
-import com.bankapp.bankapp_backend.repository.CustomerAccountRepository;
-import com.bankapp.bankapp_backend.repository.CustomerRepository;
+import com.bankapp.bankapp_backend.model.*;
+import com.bankapp.bankapp_backend.repository.*;
 import com.bankapp.bankapp_backend.service.AuthService;
+import com.bankapp.bankapp_backend.service.OtpService;
+import com.bankapp.bankapp_backend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 
@@ -21,6 +21,8 @@ public class ApiController {
     @Autowired private CustomerRepository customerRepo;
     @Autowired private AccountRepository accountRepo;
     @Autowired private CustomerAccountRepository customerAccountRepo;
+    @Autowired
+    private BillRepository billRepository;
 
     // LOGIN
     @PostMapping("/auth/login")
@@ -207,4 +209,84 @@ public class ApiController {
         }
         return Map.of("ok", true, "name", c.getName(), "email", c.getEmail(), "accounts", accounts);
     }
+    @Autowired private PaymentService paymentService;
+    @Autowired private BillRepository billRepo;
+    @Autowired private PaymentRepository paymentRepo;
+    @Autowired private OtpService otpService; // already present
+
+    @PostMapping("/payments/validate-bill")
+    public Map<String,Object> validateBill(@RequestBody Map<String,String> body) {
+        String billNo = body.get("billNo");
+        String biller = body.get("biller");
+        Optional<Bill> b = paymentService.validateBill(billNo, biller);
+        if (b.isPresent()) {
+            return Map.of("ok", true, "bill", b.get());
+        } else {
+            return Map.of("ok", false, "message", "Bill not found or mismatched biller");
+        }
+    }
+
+    @PostMapping("/payments/send-otp-for-payment")
+    public Map<String,Object> sendOtpForPayment(@RequestBody Map<String,String> body, HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) return Map.of("ok", false, "message", "Not logged in");
+        // use customer's email (fetch)
+        Customer c = customerRepo.findById(customerId).orElse(null);
+        if (c == null || c.getEmail() == null) return Map.of("ok", false, "message", "Customer not found");
+        boolean sent = authService.sendOtpEmail(c.getEmail()); // reused
+        return Map.of("ok", sent);
+    }
+
+    @PostMapping("/payments/confirm")
+    public Map<String,Object> confirmPayment(@RequestBody Map<String,String> body, HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) return Map.of("ok", false, "message", "Not logged in");
+
+        String fromAccount = body.get("fromAccount");
+        String billNo = body.get("billNo");
+        String biller = body.get("biller");
+        Double amount = Double.parseDouble(body.get("amount"));
+        String otp = body.get("otp");
+
+        // verify OTP
+        Customer c = customerRepo.findById(customerId).orElse(null);
+        if (c == null) return Map.of("ok", false, "message", "Customer not found");
+
+        if (!otpService.verifyOtp(c.getEmail(), otp)) {
+            return Map.of("ok", false, "message", "OTP incorrect or expired");
+        }
+
+        Payment p = paymentService.processPayment(customerId, fromAccount, billNo, biller, amount);
+        if ("Success".equals(p.getStatus())) {
+            return Map.of("ok", true, "confirmNo", p.getConfirmNo(), "payment", p);
+        } else {
+            return Map.of("ok", false, "message", p.getFailureReason(), "payment", p);
+        }
+    }
+
+    @GetMapping("/payments/history")
+    public Map<String,Object> paymentHistory(HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null) return Map.of("ok", false, "message", "Not logged in");
+        List<Payment> list = paymentRepo.findByCustomerIDOrderByCreatedDateDesc(customerId);
+        return Map.of("ok", true, "payments", list);
+    }
+
+
+    @PostMapping("/api/bills/check")
+    public ResponseEntity<?> checkBill(@RequestBody BillCheckRequest request) {
+
+        Bill bill = billRepository.findByBillNoAndBiller(
+                request.getBillNo(),
+                request.getBiller()
+        );
+
+        if (bill != null) {
+            return ResponseEntity.ok(Map.of("exists", true));
+        } else {
+            return ResponseEntity.ok(Map.of("exists", false));
+        }
+    }
 }
+
+

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Bank - Bills</title>
     <link rel="stylesheet" href="css/paybills.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;
+ 700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
 
 <body>
     <div class="container">
-        <aside class="sidebar">
+            <aside class="sidebar">
             <div class="logo-section">
                 <div class="logo-circle">
                     <div class="logo-container">
@@ -78,9 +77,7 @@
                         <div class="btn-wrapper">
                             <button class="utility-btn" data-form="cebForm">
                                 <a href="#">
-                                    <img class="cebimg"
-                                        src="https://images.seeklogo.com/logo-png/22/2/ceylon-electricity-board-logo-png_seeklogo-226257.png"
-                                        alt="CEB">
+                                    <img class="cebimg" src="img/cebimg.png" alt="CEB">
                                 </a>
                             </button>
                             <span class="pbbtn-label">CEB</span>
@@ -90,19 +87,17 @@
                             <!--NWSDB Button-->
                             <button class="utility-btn" data-form="nwsdbForm">
                                 <a href="#">
-                                    <img class="nwsdbimg" src="https://trims.waterboard.lk/images/logo.png" alt="NWSDB">
+                                    <img class="nwsdbimg" src="img/nwsdbimg.png" alt="NWSDB">
                                 </a>
                             </button>
                             <span class="pbbtn-label">NWSDB</span>
                         </div>
 
                         <div class="btn-wrapper">
-                            <!--CEB Button-->
-                            <button class="utility-btn">
+                            <!--SLT Button-->
+                            <button class="utility-btn" data-form="sltform">
                                 <a href="#">
-                                    <img class="sltimg"
-                                        src="https://play-lh.googleusercontent.com/qCEwpUDhKk1UtqGGgKFXQR9hhve9xw9fKg39pHbMAsVkgwSmfUGlidInEtrZEzSwdGo"
-                                        alt="SLT">
+                                    <img class="sltimg" src="img/sltimg.png" alt="SLT">
                                 </a>
                             </button>
                             <span class="pbbtn-label">SLT</span>
@@ -110,11 +105,9 @@
 
                         <div class="btn-wrapper">
                             <!--Dialog Button-->
-                            <button class="utility-btn">
+                            <button class="utility-btn" data-form="dialogform">
                                 <a href="#">
-                                    <img class="dialogimg"
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
-                                        alt="Dialog">
+                                    <img class="dialogimg" src="img/dialogimg.jpeg" alt="Dialog">
 
                                 </a>
                             </button>
@@ -122,49 +115,30 @@
                         </div>
 
                         <div class="btn-wrapper">
-                            <!--Dialog Button-->
-                            <button class="utility-btn">
-                                <a href="#">
-                                    <img class="dialogimg"
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
-                                        alt="Dialog">
 
-                                </a>
-                            </button>
-                            <span class="pbbtn-label">Dialog</span>
                         </div>
-
-                        <div class="btn-wrapper">
-                            <!--Dialog Button-->
-                            <button class="utility-btn">
-                                <a href="#">
-                                    <img class="dialogimg"
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEh_I9oAzByf00MZwqOiybk4SsCt5Cf4dE0W28fX6Lx909VGQ1mFPxrkS-tAkSs9VGb8k&usqp=CAU"
-                                        alt="Dialog">
-
-                                </a>
-                            </button>
-                            <span class="pbbtn-label">Dialog</span>
-                        </div>
-
-
-
-                    </div>
-
 
                 </section>
-
 
                 <div class="payinfo">
 
                     <!--CEB Form-->
-                    <section id="cebForm" class="bill-form" class="bill-form hidden">
+                    <section id="cebForm" class="bill-form">
+
+                        <div class="balance-card">
+                            <div class="card-header">
+                                <p class="title">Current Balance</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="amount" id="balance">Loading...</p>
+                                <p class="account-name"><span id="accountType"></span></p>
+                            </div>
+                        </div>
                         <h2 class="pbform-title">Ceylon Electricity Board</h2>
 
                         <div class="pbform-group">
                             <label for="pbbankAcc">Pay From</label>
-                            <select type="text" id="pbbankapp" placeholder="Enter CEB account number">
-                                <option value="">-- Choose Account --</option>
+                            <select type="text" id="accountSelect" placeholder="Pay From">
                             </select>
                         </div>
 
@@ -174,12 +148,14 @@
                         </div>
 
                         <div class="pbform-group">
-                            <label for="cebbillno">Electricity Bill Account No</label>
+                            <label for="cebbillno">Electricity Bill Account
+                                No</label>
                             <input type="text" id="cebbillno" placeholder="Electricity Bill Account No">
                         </div>
 
                         <div class="pbform-group">
-                            <label for="cebbillno">Re Enter Electricity Bill Account Number</label>
+                            <label for="cebbillno">Re Enter Electricity Bill
+                                Account Number</label>
                             <input type="text" id="recebbillno" placeholder="Electricity Bill Account No">
                         </div>
                         <div class="pbcenter">
@@ -187,11 +163,20 @@
                         </div>
                     </section>
 
-
                     <!--NWSDB Form-->
 
                     <section id="nwsdbForm" class="bill-form">
-                        <h2 class="pbform-title">National Water Supply and Drainage Board</h2>
+                        <div class="balance-card">
+                            <div class="card-header">
+                                <p class="title">Current Balance</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="amount" id="balance">Loading...</p>
+                                <p class="account-name"><span id="accountType"></span></p>
+                            </div>
+                        </div>
+                        <h2 class="pbform-title">National Water Supply and
+                            Drainage Board</h2>
 
                         <div class="pbform-group">
                             <label for="pbbankAcc">Pay From</label>
@@ -201,21 +186,103 @@
                         </div>
 
                         <div class="pbform-group">
-                            <label for="cebAmount">Amount (LKR)</label>
-                            <input type="number" id="wbAmount" placeholder="Enter payment amount">
+                            <label for="wbbillAmount">Amount (LKR)</label>
+                            <input type="number" id="waterAmount" placeholder="Enter payment amount">
                         </div>
 
                         <div class="pbform-group">
                             <label for="wbbillno">Water Bill Account No</label>
-                            <input type="text" id="wbbillno" placeholder="Water Bill Account No">
+                            <input type="text" id="waterbillno" placeholder="Water Bill Account No">
                         </div>
 
                         <div class="pbform-group">
-                            <label for="wbbillno">Re Enter Water Bill Account Number</label>
-                            <input type="text" id="rewbbillno" placeholder="Water Bill Account No">
+                            <label for="wbbillno">Re Enter Water Bill Account
+                                Number</label>
+                            <input type="text" id="rewaterbbillno" placeholder="Water Bill Account No">
                         </div>
                         <div class="pbcenter">
-                            <button class="pbnext-btn">Next</button>
+                            <button class="pbnext-btn"  id="waternextBtn">Next</button>
+                        </div>
+                    </section>
+
+                    <!--SLT Form-->
+
+                    <section id="sltform" class="bill-form">
+                        <div class="balance-card">
+                            <div class="card-header">
+                                <p class="title">Current Balance</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="amount" id="balance">Loading...</p>
+                                <p class="account-name"><span id="accountType"></span></p>
+                            </div>
+                        </div>
+                        <h2 class="pbform-title">Sri Lanka Telecom</h2>
+
+                        <div class="pbform-group">
+                            <label for="pbbankAcc">Pay From</label>
+                            <select type="text" id="pbbankacc" placeholder="Enter CEB account number">
+                                <option value="">-- Choose Account --</option>
+                            </select>
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="sltAmount">Amount (LKR)</label>
+                            <input type="number" id="sltAmount" placeholder="Enter payment amount">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="sltbillno">SLT Account No</label>
+                            <input type="text" id="sltbillno" placeholder="SLT Account No">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="sltbillno">Re Enter SLT Account
+                                Number</label>
+                            <input type="text" id="resltbillno" placeholder="SLT Account No">
+                        </div>
+                        <div class="pbcenter">
+                            <button class="pbnext-btn" id="sltnextBtn">Next</button>
+                        </div>
+                    </section>
+
+                    <!--Dialog Form-->
+
+                    <section id="dialogform" class="bill-form">
+                        <div class="balance-card">
+                            <div class="card-header">
+                                <p class="title">Current Balance</p>
+                            </div>
+                            <div class="card-body">
+                                <p class="amount" id="balance">Loading...</p>
+                                <p class="account-name"><span id="accountType"></span></p>
+                            </div>
+                        </div>
+                        <h2 class="pbform-title">Dialog</h2>
+
+                        <div class="pbform-group">
+                            <label for="pbbankAcc">Pay From</label>
+                            <select type="text" id="pbbankacc" placeholder="Enter CEB account number">
+                                <option value="">-- Choose Account --</option>
+                            </select>
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="dialogAmount">Amount (LKR)</label>
+                            <input type="number" id="dialogAmount" placeholder="Enter payment amount">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="dbillno">Dialog Account No</label>
+                            <input type="text" id="dialogbillno" placeholder="Water Bill Account No">
+                        </div>
+
+                        <div class="pbform-group">
+                            <label for="dbillno">Dialog Account Number</label>
+                            <input type="text" id="redialogbillno" placeholder="Water Bill Account No">
+                        </div>
+                        <div class="pbcenter">
+                            <button class="pbnext-btn" id="dialognextbtn">Next</button>
                         </div>
                     </section>
 
@@ -225,37 +292,59 @@
                         <div class="paydetailscard">
                             <h4 class="pbhead-text">Details</h4>
                             <hr>
-                            <p class="pbdetailsrow"><strong>Date & time :</strong><span id="bpdate"></span></p>
-                            
-                            <p class="pbdetailsrow"><strong>Bill No :</strong> <span id="confirmName"></span></p>
-                            <p class="pbdetailsrow"><strong>Amount :</strong><span id="confirmAmount"></span></p><hr>
+                            <p class="pbdetailsrow"><strong>Date & time
+                                    :</strong><span id="bpdate"></span></p>
+
+                            <p class="pbdetailsrow"><strong>Bill No :</strong>
+                                <span id="confirmName"></span>
+                            </p>
+                            <p class="pbdetailsrow"><strong>Amount
+                                    :</strong><span id="confirmAmount"></span></p>
+                            <hr>
+                            <div id="otpArea" style="margin-top: 20px;">
+
+                                <label style="font-weight:600;">Enter OTP</label>
+                                <input type="text" id="otpInput" placeholder="6-digit OTP"
+                                    style="width: 200px; padding: 10px; border-radius: 8px;">
+
+                                <button id="sendOtpBtn" class="pbconfirmbtn" style="width: 200px; margin-top:10px;">
+                                    Send OTP
+                                </button>
+
+                            </div>
+
+                            <button id="confirmPayBtn" class="pbconfirmbtn" style="margin-top:20px; width:60%;"
+                                disabled>
+                                Confirm Payment
+                            </button>
+
                         </div>
                         <div class="paydetailsbtns">
                             <button type="button" id="backBtn" class="pbbackbtn">Back</button>
                             <button type="button" id="pbconfirmBtn" class="pbconfirmbtn">Confirm</button>
                         </div>
 
-                        
                     </div>
 
-                    <div id="paymentsuccess " class="pbpaymentsuccess" >
+                    <div id="paymentsuccess " class="pbpaymentsuccess">
                         <img src="img/successimg.png" alt="Succeess" class="paymentsuccessicon">
 
-                            <H2 class="pbh2">Paymemt Successfull!</H2>
-                            <h3 class="pbh3">Confirmation number :</h3>
+                        <H2 class="pbh2">Paymemt Successfull!</H2>
+                        <h3 class="pbh3">Confirmation number :</h3>
                     </div>
 
                     <div id="paymentfailed" class="pbpaymentfailed">
-                    <img src="img/failedimg.png" alt="Failed" class="paymentfailedimg">
+                        <img src="img/failedimg.png" alt="Failed" class="paymentfailedimg">
 
-                    <h2 class="pbh2">Payment Failed!</h2>
-                    <h3 class="pbh3"></h3>
+                        <h2 class="pbh2">Payment Failed!</h2>
+                        <h3 class="pbh3"></h3>
+                    </div>
+
                 </div>
 
-
-                </div>
-                
             </div>
+
+
 
 
         </main>
