@@ -33,9 +33,13 @@ VALUES
 
 INSERT INTO Bill (BillNo, CustomerID, Biller, Amount)
 VALUES 
-('BILL-CEB-0001', 1, 'CEB', 1200.00);
+('0010', 1, 'Dialog', 3000.00);
 
 use bankingsystemdb;
-select *from customer;
+select *from bill;
 
-select *from bill;      
+select *from `account`;
+
+update account
+set AccountBalance = 50000
+where AccountNo= 'AC0001'

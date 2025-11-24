@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Bank - Payment Receipt</title>
+
+    <style>
+        body {
+            font-family: 'Bai Jamjuree', sans-serif;
+            background:#f4f6f8;
+            padding: 24px;
+            margin:0;
+        }
+
+        .receipt-box {
+            max-width: 640px;
+            margin: auto;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #dfe6ee;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 10px;
+            width: 100px;
+        }
+
+        .bank-name {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0b2545;
+        }
+
+        .section {
+            margin-top: 18px;
+            border-top: 1px dashed #d3dbe6;
+            padding-top: 16px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+
+        .label {
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .value {
+            color: #0b2545;
+            font-weight: 700;
+        }
+
+        .amount {
+            color: #0b2545;
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+        .conf {
+            margin-top: 18px;
+            padding: 14px;
+            background: #eef4ff;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #0b2545;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="receipt-box">
+    <img src="img/j_logo.png" class="logo">
+
+    <div class="bank-name">Nova Bank</div>
+
+    <div class="section">
+        <div class="row"><span class="label">Date & Time</span><span class="value" id="rDate"></span></div>
+        <div class="row"><span class="label">Biller</span><span class="value" id="rBiller"></span></div>
+        <div class="row"><span class="label">Bill No</span><span class="value" id="rBillNo"></span></div>
+        <div class="row"><span class="label">Paid From</span><span class="value" id="rAccount"></span></div>
+        <div class="row"><span class="label">Amount</span><span class="value amount" id="rAmount"></span></div>
+    </div>
+
+    <div class="conf" id="rConfirm"></div>
+
+    <div class="footer">
+        Thank you for using Nova Bank. This is an electronic receipt.
+    </div>
+</div>
+
+<script>
+    // Get data from query string
+    const urlParams = new URLSearchParams(window.location.search);
+
+    document.getElementById("rDate").textContent = urlParams.get("date");
+    document.getElementById("rBiller").textContent = urlParams.get("biller");
+    document.getElementById("rBillNo").textContent = urlParams.get("billNo");
+    document.getElementById("rAccount").textContent = urlParams.get("account");
+    document.getElementById("rAmount").textContent = "Rs. " + urlParams.get("amount");
+    document.getElementById("rConfirm").textContent = "Confirmation #: " + urlParams.get("confirm");
+
+    // auto print
+    setTimeout(() => window.print(), 300);
+</script>
+
+</body>
+</html>

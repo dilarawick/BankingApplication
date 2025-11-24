@@ -1,432 +1,453 @@
-/* === paybills.js (clean, single-file) ===
-   Replace your current js/paybills.js with this file.
-   Notes:
-   - This file assumes the exact IDs present in your HTML.
-   - It is defensive (tries to find the select inside the active form).
-   - It stores the currently-selected biller when a utility button is clicked.
+/* paybills.js — single dynamic form version (final)
+   - Uses Nova Bank logo (local path) and bank name in printed receipt
+   - OTP "sent" message goes to #otpMsg (falls back to #pbError for general messages)
+   - Print receipt opens receipt.html with query params (receipt page should read them)
+   - Separated message boxes:
+       - #billFormMsg for validation / bill-form errors
+       - #otpMsg for OTP & paydetails messages
+       - #pbError remains for general/global messages (kept for backwards compatibility)
 */
 
 (function () {
-  // --- helpers ---
   const $ = id => document.getElementById(id);
-  const qs = sel => document.querySelector(sel);
 
-  function safeText(el) { return el ? (el.textContent || el.value || "") : ""; }
+  // Local logo path (from uploaded files)
+  const BANK_NAME = "Nova Bank";
+  const BANK_LOGO_URL = "/img/j_logo.png";
 
-  function show(el) { if (!el) return; el.style.display = "block"; }
-  function hide(el) { if (!el) return; el.style.display = "none"; }
-
-  // Map of biller forms and field ids (keeps logic explicit)
-  const BILLERS = {
-    ceb: {
-      billerKey: "CEB",
-      amountId: "cebAmount",
-      bill1Id: "cebbillno",
-      bill2Id: "recebbillno",
-      formId: "cebForm",
-      nextBtn: "cebnextBtn"
-    },
-    water: {
-      billerKey: "NWSDB",
-      amountId: "waterAmount",
-      bill1Id: "waterbillno",
-      bill2Id: "rewaterbbillno", // note name as in HTML
-      formId: "nwsdbForm",
-      nextBtn: "waternextBtn"
-    },
-    slt: {
-      billerKey: "SLT",
-      amountId: "sltAmount",
-      bill1Id: "sltbillno",
-      bill2Id: "resltbillno",
-      formId: "sltform",
-      nextBtn: "sltnextBtn"
-    },
-    dialog: {
-      billerKey: "Dialog",
-      amountId: "dialogAmount",
-      bill1Id: "dialogbillno",
-      bill2Id: "redialogbillno",
-      formId: "dialogform",
-      nextBtn: "dialognextbtn"
-    }
+  // mapping of biller keys to display name and "biller" used by backend
+  const BILLER_MAP = {
+    ceb: { title: "Ceylon Electricity Board", billerKey: "CEB", billPlaceholder: "Electricity Bill Account No" },
+    water: { title: "National Water Supply and Drainage Board", billerKey: "NWSDB", billPlaceholder: "Water Bill Account No" },
+    slt: { title: "Sri Lanka Telecom", billerKey: "SLT", billPlaceholder: "SLT Account No" },
+    dialog: { title: "Dialog", billerKey: "Dialog", billPlaceholder: "Dialog Account No" }
   };
 
-  // Convenience: get select (account) for a given form element
-  function getAccountFromForm(formEl) {
-    if (!formEl) return "";
-    // prefer a select inside that form
-    const sel = formEl.querySelector("select");
-    if (sel && sel.value) return sel.value;
-    // fallback to global accountSelect (CEB uses this)
-    const globalSel = $("accountSelect");
-    return globalSel ? globalSel.value : "";
+  let currentBiller = "ceb"; // default
+  window.selectedPayment = null;
+  window.allAccounts = [];
+
+  /* -------------------------
+     MESSAGE / ERROR HELPERS
+     ------------------------- */
+
+  // per-area message helpers (these are what you asked for)
+  function showBillFormError(msg, autoHideMs = 7000) {
+    const el = $("billFormMsg");
+    if (!el) return console.error("BillFormError:", msg);
+    el.className = "pb-error pb-error--error";
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(el._hideTimer);
+    if (autoHideMs) el._hideTimer = setTimeout(() => { el.style.display = "none"; }, autoHideMs);
   }
 
-  // Clears form fields for a given config
-  function clearFormFields(cfg) {
-    const a = $(cfg.amountId);
-    const b1 = $(cfg.bill1Id);
-    const b2 = $(cfg.bill2Id);
-    if (a) a.value = "";
-    if (b1) b1.value = "";
-    if (b2) b2.value = "";
+  function showOtpInfo(msg, autoHideMs = 6000) {
+    const el = $("otpMsg");
+    if (!el) return console.info("OTP info:", msg);
+    el.className = "pb-error pb-error--info";
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(el._hideTimer);
+    if (autoHideMs) el._hideTimer = setTimeout(() => { el.style.display = "none"; }, autoHideMs);
   }
 
-  // Show paydetails with values and save selectedPayment
-  function showPayDetails(cfg, account, billNo, amount) {
-    hide($(cfg.formId));
-    show($("paydetails"));
-
-    $("confirmName").textContent = billNo;
-    $("confirmAmount").textContent = amount;
-    $("bpdate").textContent = new Date().toLocaleString();
-
-    // Save for later confirm step
-    window.selectedPayment = {
-      account: account,
-      billNo: billNo,
-      amount: amount,
-      biller: cfg.billerKey,
-      formId: cfg.formId
-    };
+  function showOtpError(msg, autoHideMs = 7000) {
+    const el = $("otpMsg");
+    if (!el) return console.error("OTP error:", msg);
+    el.className = "pb-error pb-error--error";
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(el._hideTimer);
+    if (autoHideMs) el._hideTimer = setTimeout(() => { el.style.display = "none"; }, autoHideMs);
   }
 
-  // Generic validate-and-check function used by all Next buttons
-  function validateAndCheck(cfg) {
-    const formEl = $(cfg.formId);
-    const account = getAccountFromForm(formEl);
-    const amountEl = $(cfg.amountId);
-    const bill1El = $(cfg.bill1Id);
-    const bill2El = $(cfg.bill2Id);
+  // existing global message helpers (keep for general messages/backwards compatibility)
+  function _msgEl() { return $("pbError"); }
+  function _otpInfoEl() { return $("otpInfo"); }
 
-    const amount = amountEl ? amountEl.value.trim() : "";
+  function showError(msg, autoHideMs = 8000) {
+    const el = _msgEl();
+    if (!el) { console.error("Error:", msg); return; }
+    el.className = "pb-error pb-error--error";
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(el._hideTimer);
+    if (autoHideMs) el._hideTimer = setTimeout(() => { el.style.display = "none"; }, autoHideMs);
+  }
+
+  function showInfo(msg, autoHideMs = 6000) {
+    // first try otpInfo area (if message is OTP related and element exists)
+    const otpEl = _otpInfoEl();
+    if (otpEl) {
+      otpEl.textContent = msg;
+      otpEl.style.display = "block";
+      clearTimeout(otpEl._hideTimer);
+      if (autoHideMs) otpEl._hideTimer = setTimeout(() => { otpEl.style.display = "none"; }, autoHideMs);
+      return;
+    }
+    // fallback to main message box
+    const el = _msgEl();
+    if (!el) { console.info(msg); return; }
+    el.className = "pb-error pb-error--info";
+    el.textContent = msg;
+    el.style.display = "block";
+    clearTimeout(el._hideTimer);
+    if (autoHideMs) el._hideTimer = setTimeout(() => { el.style.display = "none"; }, autoHideMs);
+  }
+
+  function clearMessage() {
+    const el = _msgEl();
+    if (el) { el.style.display = "none"; el.textContent = ""; clearTimeout(el._hideTimer); }
+    const otpEl = _otpInfoEl();
+    if (otpEl) { otpEl.style.display = "none"; otpEl.textContent = ""; clearTimeout(otpEl._hideTimer); }
+    const billEl = $("billFormMsg");
+    if (billEl) { billEl.style.display = "none"; billEl.textContent = ""; clearTimeout(billEl._hideTimer); }
+    const otpMsgEl = $("otpMsg");
+    if (otpMsgEl) { otpMsgEl.style.display = "none"; otpMsgEl.textContent = ""; clearTimeout(otpMsgEl._hideTimer); }
+  }
+
+  /* -------------------------
+     DOM SHOW / HIDE HELPERS
+     ------------------------- */
+  function show(el) { if (el) el.style.display = "block"; }
+  function hide(el) { if (el) el.style.display = "none"; }
+
+  /* -------------------------
+     BALANCE CARD
+     ------------------------- */
+  function updateBalanceCard(accountNo) {
+    if (!accountNo || !window.allAccounts) return;
+    const acc = window.allAccounts.find(a => a.accountNo === accountNo);
+    if (!acc) return;
+    const balanceEl = $("balance");
+    const typeEl = $("accountType");
+    if (balanceEl) balanceEl.textContent = "Rs. " + acc.balance;
+    if (typeEl) typeEl.textContent = acc.accountType || "";
+  }
+
+  /* -------------------------
+     LOAD ACCOUNTS
+     ------------------------- */
+  function loadAccounts() {
+    fetch("/api/dashboard/me")
+      .then(r => r.json())
+      .then(data => {
+        if (!data || !data.ok) {
+          console.warn("dashboard/me returned no accounts or not ok", data);
+          showError("Unable to load accounts. Please login.");
+          return;
+        }
+        window.allAccounts = data.accounts || [];
+        const select = $("univAccountSelect");
+        if (!select) return;
+        select.innerHTML = '<option value="">-- Choose Account --</option>';
+        window.allAccounts.forEach(acc => {
+          const opt = document.createElement("option");
+          opt.value = acc.accountNo;
+          opt.textContent = `${acc.accountNo} - Rs. ${acc.balance}`;
+          opt.dataset.balance = acc.balance;
+          opt.dataset.type = acc.accountType;
+          select.appendChild(opt);
+        });
+        const primary = window.allAccounts.find(a => a.isPrimary) || window.allAccounts[0];
+        if (primary) {
+          select.value = primary.accountNo;
+          updateBalanceCard(primary.accountNo);
+        }
+      })
+      .catch(err => {
+        console.error("loadAccounts error:", err);
+        showError("Network error while loading accounts.");
+      });
+  }
+
+  /* -------------------------
+     SWITCH BILLER (update UI / placeholders)
+     ------------------------- */
+  function switchToBiller(billerKey) {
+    clearMessage();
+    const cfg = BILLER_MAP[billerKey] || BILLER_MAP["ceb"];
+    currentBiller = billerKey in BILLER_MAP ? billerKey : "ceb";
+    const titleEl = $("formTitle");
+    const billNoEl = $("univBillNo");
+    const billNoReEl = $("univBillNoRe");
+    if (titleEl) titleEl.textContent = cfg.title;
+    if (billNoEl) billNoEl.placeholder = cfg.billPlaceholder;
+    if (billNoReEl) billNoReEl.placeholder = "Re-enter " + cfg.billPlaceholder;
+    const amt = $("univAmount"); if (amt) amt.value = "";
+    if (billNoEl) billNoEl.value = "";
+    if (billNoReEl) billNoReEl.value = "";
+    hide($("paydetails"));
+    hide($("paymentsuccess"));
+    hide($("paymentfailed"));
+    show($("universalForm"));
+  }
+
+  /* -------------------------
+     VALIDATE + CHECK BILL THEN SHOW PAYDETAILS
+     ------------------------- */
+  function onNextClicked(ev) {
+    if (ev && ev.preventDefault) ev.preventDefault();
+    clearMessage();
+    const accountEl = $("univAccountSelect");
+    const account = accountEl ? accountEl.value : "";
+    const amountEl = $("univAmount");
+    const amountStr = amountEl ? ("" + amountEl.value).trim() : "";
+    const bill1El = $("univBillNo");
+    const bill2El = $("univBillNoRe");
     const bill1 = bill1El ? bill1El.value.trim() : "";
     const bill2 = bill2El ? bill2El.value.trim() : "";
-    const biller = cfg.billerKey;
+    const biller = (BILLER_MAP[currentBiller] && BILLER_MAP[currentBiller].billerKey) || "CEB";
 
-    // Basic front-end validations
-    if (!account) {
-      alert("Please select an account.");
-      clearFormFields(cfg);
-      return;
-    }
-    if (!bill1 || !bill2 || bill1 !== bill2) {
-      alert("Bill numbers do not match.");
-      clearFormFields(cfg);
-      return;
-    }
-    // ensure amount is a positive number
-    const amountNum = Number(amount);
-    if (!amount || isNaN(amountNum) || amountNum <= 0) {
-      alert("Please enter a valid amount.");
-      clearFormFields(cfg);
-      return;
+    if (!account) { showBillFormError("Please select an account.");
+         return; 
+        }
+    if (!bill1) {
+        showBillFormError("Please enter the bill number.");
+        return;
     }
 
+    if (!bill2) {
+        showBillFormError("Please re-enter the bill number.");
+        return;
+    }
+     if (!amountStr) {
+        showBillFormError("Please enter an amount.");
+        return;
+    }
+    if (!bill1 || !bill2 || bill1 !== bill2) { showBillFormError("Bill numbers do not match."); return; }
+    const amount = Number(amountStr);
+    if (!amountStr || isNaN(amount) || amount <= 0) { showBillFormError("Please enter a valid amount."); return; }
 
+    console.log("🔎 /api/bills/check ->", { billNo: bill1, biller });
 
-
-    console.log("🔎 Checking Bill:", {
-    billNo: bill1,
-    biller: biller
-});
-
-
-    // Ask backend if bill exists (pre-confirm check)
     fetch("/api/bills/check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ billNo: bill1, biller: biller })
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("Network response not ok: " + res.status);
+        return res.json();
+      })
       .then(data => {
-        if (!data || !data.exists) {
-          alert("This bill number does not exist.");
-          clearFormFields(cfg);
-          return;
-        }
-        // Success → show pay details and store state
-        showPayDetails(cfg, account, bill1, amountNum);
+        console.log("🔎 /api/bills/check response:", data);
+        if (!data || !data.exists) { showBillFormError("This bill number does not exist."); return; }
+        const confirmName = $("confirmName"), confirmAmount = $("confirmAmount"), bpdate = $("bpdate");
+        if (confirmName) confirmName.textContent = bill1;
+        if (confirmAmount) confirmAmount.textContent = amount;
+        if (bpdate) bpdate.textContent = new Date().toLocaleString();
+        hide($("universalForm"));
+        hide($("paymentsuccess"));
+        hide($("paymentfailed"));
+        show($("paydetails"));
+        window.selectedPayment = { account: account, billNo: bill1, amount: amount, biller: biller };
       })
       .catch(err => {
-        console.error("Error checking bill:", err);
-        alert("An error occurred while checking the bill. Try again.");
-        clearFormFields(cfg);
+        console.error("Error /api/bills/check:", err);
+        showBillFormError("Unable to check bill right now. Please try later.");
       });
   }
 
-  // --- Setup UI: utility buttons (biller selection + show forms) ---
-  function initUtilityButtons() {
+  /* -------------------------
+     Initialize biller buttons
+     ------------------------- */
+  function initBillerButtons() {
     const buttons = document.querySelectorAll(".utility-btn");
-    buttons.forEach(button => {
-      button.addEventListener("click", () => {
-        // hide all forms
-        const forms = document.querySelectorAll(".bill-form");
-        forms.forEach(f => f.style.display = "none");
-
-        // show correct form via data-form
-        const id = button.getAttribute("data-form");
-        const targetForm = $(id);
-        if (targetForm) {
-          targetForm.style.display = "block";
-        }
-
-        // set window.selectedBiller based on the visible label in the same wrapper
-        // button is inside .btn-wrapper; find its sibling .pbbtn-label
-        const wrapper = button.closest(".btn-wrapper");
-        let label = null;
-        if (wrapper) {
-          const l = wrapper.querySelector(".pbbtn-label");
-          if (l) label = l.textContent.trim();
-        }
-        if (!label) {
-          // fallback: read alt text of image
-          const img = button.querySelector("img");
-          if (img) label = (img.alt || "").trim();
-        }
-        if (label) {
-          // normalize to DB expected values
-          if (label.toUpperCase() === "CEB") window.selectedBiller = "CEB";
-          else if (label.toUpperCase() === "SLT") window.selectedBiller = "SLT";
-          else if (label.toUpperCase() === "NWSDB") window.selectedBiller = "NWSDB";
-          else if (label.toUpperCase() === "DIALOG") window.selectedBiller = "Dialog";
-          else window.selectedBiller = label; // fallback
-        }
+    if (!buttons) return;
+    buttons.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault && e.preventDefault();
+        const key = btn.dataset.biller || btn.getAttribute("data-biller");
+        switchToBiller(key);
       });
     });
   }
 
-  // --- Hook Next buttons to validation function ---
-  function initNextButtons() {
-    // explicit wiring for each biller (safer than trying to auto-infer)
-    if ($(BILLERS.ceb.nextBtn)) {
-      $(BILLERS.ceb.nextBtn).addEventListener("click", () => validateAndCheck(BILLERS.ceb));
-    }
-    if ($(BILLERS.water.nextBtn)) {
-      $(BILLERS.water.nextBtn).addEventListener("click", () => validateAndCheck(BILLERS.water));
-    }
-    if ($(BILLERS.slt.nextBtn)) {
-      $(BILLERS.slt.nextBtn).addEventListener("click", () => validateAndCheck(BILLERS.slt));
-    }
-    if ($(BILLERS.dialog.nextBtn)) {
-      $(BILLERS.dialog.nextBtn).addEventListener("click", () => validateAndCheck(BILLERS.dialog));
-    }
-  }
-
-  // --- Back button on paydetails: return to original form ---
-  function initBackButton() {
-    const back = $("backBtn");
-    if (!back) return;
-    back.addEventListener("click", () => {
-      hide($("paydetails"));
-      // return to original form if known
-      const prev = window.selectedPayment && window.selectedPayment.formId;
-      if (prev && $(prev)) {
-        show($(prev));
-      } else {
-        // fallback: show the CEB form
-        show($("cebForm"));
-      }
-    });
-  }
-
-  // --- OTP & Confirm flow ---
+  /* -------------------------
+     OTP + Confirm Payment
+     ------------------------- */
   function initOtpAndConfirm() {
-    const sendOtpBtn = $("sendOtpBtn");
-    const confirmPayBtn = $("confirmPayBtn");
+    const sendBtn = $("sendOtpBtn");
+    const confirmBtn = $("confirmPayBtn");
     const otpInput = $("otpInput");
 
-    // When send OTP clicked: call backend to send OTP to customer's email
-    if (sendOtpBtn) {
-      sendOtpBtn.addEventListener("click", () => {
+    if (sendBtn) {
+      sendBtn.addEventListener("click", (e) => {
+        e && e.preventDefault && e.preventDefault();
+        clearMessage();
+        console.log("📨 Sending OTP request...");
         fetch("/api/payments/send-otp-for-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({})
         })
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) throw new Error("OTP endpoint returned " + res.status);
+            return res.json();
+          })
           .then(data => {
+            console.log("📨 send-otp response:", data);
             if (data && data.ok) {
-              alert("OTP sent to your email.");
-              // Allow user to enter OTP and enable confirm when 6 digits typed
-              if (otpInput) otpInput.focus();
+              // prefer showing OTP info near the OTP input (#otpMsg)
+              showOtpInfo("OTP sent to your registered email.");
+              otpInput && otpInput.focus();
             } else {
-              alert("Failed to send OTP. Try again.");
+              // show OTP-specific error
+              showOtpError("Failed to send OTP. " + (data && data.message ? data.message : ""));
             }
           })
           .catch(err => {
             console.error("send-otp error:", err);
-            alert("Failed to send OTP. Try again.");
+            showOtpError("Failed to send OTP. Try again later.");
           });
       });
     }
 
-    // enable confirm button only when OTP length looks correct
-    if (otpInput && confirmPayBtn) {
+    if (otpInput && confirmBtn) {
       otpInput.addEventListener("input", () => {
-        const v = otpInput.value.trim();
-        confirmPayBtn.disabled = v.length !== 6;
+        confirmBtn.disabled = otpInput.value.trim().length !== 6;
       });
     }
 
-    // Final confirm: send payment request with otp
-    if (confirmPayBtn) {
-      confirmPayBtn.addEventListener("click", () => {
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", (e) => {
+        e && e.preventDefault && e.preventDefault();
+        clearMessage();
         const p = window.selectedPayment;
-        if (!p) {
-          alert("No payment selected.");
-          return;
-        }
+        if (!p) { showOtpError("No payment selected."); return; }
         const otp = otpInput ? otpInput.value.trim() : "";
-        if (!otp) {
-          alert("Enter the OTP.");
-          return;
-        }
+        if (!otp) { showOtpError("Please enter the OTP."); return; }
+
+        console.log("💳 /api/payments/confirm ->", { fromAccount: p.account, billNo: p.billNo, biller: p.biller, amount: p.amount, otp });
 
         fetch("/api/payments/confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            fromAccount: p.account,
-            billNo: p.billNo,
-            biller: p.biller,
-            amount: p.amount,
-            otp: otp
-          })
+          body: JSON.stringify({ fromAccount: p.account, billNo: p.billNo, biller: p.biller, amount: p.amount, otp })
         })
-          .then(res => res.json())
+          .then(res => {
+            if (!res.ok) throw new Error("Confirm endpoint returned " + res.status);
+            return res.json();
+          })
           .then(data => {
+            console.log("💳 /api/payments/confirm response:", data);
+            hide($("paydetails"));
             if (data && data.ok) {
-              alert("Payment Successful! Confirmation #: " + data.confirmNo);
-              // show success card if you want:
-              // show($("paymentsuccess"));
-              // hide($("paydetails"));
-              // reset form(s)
-              if (p.formId && $(p.formId)) {
-                // clear the original form fields
-                const cfgKey = Object.keys(BILLERS).find(k => BILLERS[k].formId === p.formId);
-                if (cfgKey) clearFormFields(BILLERS[cfgKey]);
-              }
-              hide($("paydetails"));
-              show($("cebForm")); // or go somewhere else
+              const successConfirmEl = $("successConfirmNo");
+              if (successConfirmEl) successConfirmEl.textContent = "Confirmation #: " + (data.confirmNo || "—");
+              show($("paymentsuccess"));
             } else {
-              const msg = (data && data.message) ? data.message : "Payment failed";
-              alert("Payment Failed: " + msg);
-              // optionally show failure UI
-              // show($("paymentfailed"));
+              const failedMsgEl = $("failedMessage");
+              if (failedMsgEl) failedMsgEl.textContent = (data && data.message) ? data.message : "Payment failed.";
+              show($("paymentfailed"));
             }
           })
           .catch(err => {
-            console.error("confirm payment error:", err);
-            alert("An error occurred while confirming the payment.");
+            console.error("confirm error:", err);
+            showOtpError("Error confirming payment. Try again.");
           });
       });
     }
   }
 
-  // --- Utility: load dashboard and account select (existing code adapted) ---
-  function loadDashboard() {
-    fetch("/api/dashboard/me")
-      .then(res => res.json())
-      .then(data => {
-        if (!data || !data.ok) {
-          const balanceEl = $("balance");
-          if (balanceEl) balanceEl.innerText = "Not logged in";
-          return;
-        }
-        // Fill account info (primary shown in balance areas)
-        const primary = data.accounts && data.accounts.find(acc => acc.isPrimary === true);
-        if (primary) {
-          const balanceEls = document.querySelectorAll("#balance");
-          balanceEls.forEach(e => e.innerText = "Rs. " + primary.balance);
-          const accountTypeEls = document.querySelectorAll("#accountType");
-          accountTypeEls.forEach(e => e.innerText = primary.accountType);
-          // set some accountName if present
-          const nameEl = $("accountName");
-          if (nameEl) nameEl.innerText = data.name || "";
-        } else {
-          const balanceEl = $("balance");
-          if (balanceEl) balanceEl.innerText = "No accounts found";
-        }
-      })
-      .catch(err => {
-        console.error("loadDashboard error:", err);
-      });
-  }
-
-  function loadAccountSelect() {
-    fetch("/api/dashboard/me")
-      .then(res => res.json())
-      .then(data => {
-        if (!data || !data.ok) return;
-        const select = $("accountSelect");
-        if (!select) return;
-        // clear previous options
-        select.innerHTML = '<option value="">-- Choose Account --</option>';
-        (data.accounts || []).forEach(acc => {
-          const opt = document.createElement("option");
-          opt.value = acc.accountNo;
-          opt.textContent = `${acc.accountNo} - Rs. ${acc.balance}`;
-          select.appendChild(opt);
-        });
-        // also update selects inside other forms if they have duplicate ids
-        // Note: many forms have selects with id "pbbankacc" or duplicate - we won't overwrite those
-      })
-      .catch(err => console.error("loadAccountSelect error:", err));
-  }
-
-  const accountSelect = document.getElementById("accountSelect");
-
-if (accountSelect) {
-    accountSelect.addEventListener("change", () => {
-        const selectedAccNo = accountSelect.value;
-
-        if (!selectedAccNo || !window.allAccounts) return;
-
-        // find selected account
-        const acc = window.allAccounts.find(a => a.accountNo === selectedAccNo);
-
-        if (acc) {
-            document.getElementById("balance").textContent = "Rs. " + acc.balance;
-            document.getElementById("accountType").textContent = acc.accountType;
-        }
+  /* -------------------------
+     Back button: return to form
+     ------------------------- */
+  function initBack() {
+    const back = $("backBtn");
+    if (!back) return;
+    back.addEventListener("click", (e) => {
+      e && e.preventDefault && e.preventDefault();
+      clearMessage();
+      hide($("paydetails"));
+      hide($("paymentsuccess"));
+      hide($("paymentfailed"));
+      show($("universalForm"));
     });
-}
+  }
 
+  /* -------------------------
+     Account select update
+     ------------------------- */
+  function initAccountSelectListener() {
+    const sel = $("univAccountSelect");
+    if (!sel) return;
+    sel.addEventListener("change", (e) => {
+      updateBalanceCard(e.target.value);
+    });
+  }
 
-  // --- Initialization ---
-  function initAll() {
-    initUtilityButtons();
-    initNextButtons();
-    initBackButton();
-    initOtpAndConfirm();
-    loadDashboard();
-    loadAccountSelect();
+  /* -------------------------
+     Close Buttons + Print Receipt
+     ------------------------- */
+  function initCloseAndPrint() {
+    const successClose = $("successCloseBtn");
+    const failedClose = $("failedCloseBtn");
+    const printBtn = $("printReceiptBtn");
 
-    // initial UI: hide all bill forms and show nothing, or show cebForm by default
-    const forms = document.querySelectorAll(".bill-form");
-    forms.forEach(f => f.style.display = "none");
-    // show ceb by default
-    const defaultForm = $("cebForm");
-    if (defaultForm) defaultForm.style.display = "block";
+    if (successClose) {
+      successClose.addEventListener("click", (e) => {
+        e && e.preventDefault && e.preventDefault();
+        location.reload();
+      });
+    }
 
-    // default selectedBiller
-    window.selectedBiller = "CEB";
+    if (failedClose) {
+      failedClose.addEventListener("click", (e) => {
+        e && e.preventDefault && e.preventDefault();
+        location.reload();
+      });
+    }
 
-    // reset OTP UI
-    const otpArea = $("otpArea");
-    if (otpArea) {
-      // keep visible but confirm disabled until OTP typed
-      const cp = $("confirmPayBtn");
-      if (cp) cp.disabled = true;
+    if (printBtn) {
+      printBtn.addEventListener("click", (e) => {
+        e && e.preventDefault && e.preventDefault();
+        const p = window.selectedPayment;
+        if (!p) return showError("Nothing to print.");
+
+        const confirmText = $("successConfirmNo") ? $("successConfirmNo").textContent : "";
+        const dateTime = new Date().toLocaleString();
+
+        // Build URL for receipt.html
+        const receiptUrl = `receipt.html?date=${encodeURIComponent(dateTime)}&biller=${encodeURIComponent(p.biller)}&billNo=${encodeURIComponent(p.billNo)}&account=${encodeURIComponent(p.account)}&amount=${encodeURIComponent(p.amount)}&confirm=${encodeURIComponent(confirmText)}`;
+
+        window.open(receiptUrl, "_blank");
+      });
     }
   }
 
-  // run on DOM ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAll);
-  } else {
-    initAll();
+  /* -------------------------
+     Next button wiring helper
+     ------------------------- */
+  function initNext() {
+    const next = $("univNextBtn");
+    if (!next) return;
+    next.addEventListener("click", onNextClicked);
   }
+
+  /* -------------------------
+     Init all
+     ------------------------- */
+  function init() {
+    initBillerButtons();
+    loadAccounts();
+    initAccountSelectListener();
+    initNext();
+    initOtpAndConfirm();
+    initBack();
+    initCloseAndPrint();
+
+    // default UI state
+    switchToBiller("ceb");
+    show($("universalForm"));
+    hide($("paydetails"));
+    hide($("paymentsuccess"));
+    hide($("paymentfailed"));
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+
 })();

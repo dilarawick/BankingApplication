@@ -1,356 +1,174 @@
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Bank - Bills</title>
-    <link rel="stylesheet" href="css/paybills.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;
- 700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="img/favicon.png">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nova Bank - Bills</title>
+  <link rel="stylesheet" href="css/paybills.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
-
 <body>
-    <div class="container">
-            <aside class="sidebar">
-            <div class="logo-section">
-                <div class="logo-circle">
-                    <div class="logo-container">
-                        <img src="img/j_logo.png" alt="Logo">
-                    </div>
-                </div>
-                <h1 class="bank-name">NOVA BANK</h1>
-            </div>
-
-            <nav class="nav-menu">
-                <a href="dashboard.html" class="nav-item">
-                    <span>DASHBOARD</span>
-                </a>
-                <a href="accounts.html" class="nav-item">
-                    <span>ACCOUNTS</span>
-                </a>
-                <a href="bank_transfer.html" class="nav-item">
-                    <span>BANK TRANSFER</span>
-                </a>
-                <a href="pay_bills.html" class="nav-item active">
-                    <span>PAY BILLS</span>
-                </a>
-                <a href="e_statement.html" class="nav-item">
-                    <span>E-STATEMENT</span>
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <button class="icon-btn">
-                    <img src="img/settings_icon.png" alt="Profile">
-                </button>
-                <button class="icon-btn" id="logoutBtn">
-                    <img src="img/logout_icon.png" alt="Profile">
-                </button>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            <header class="top-bar">
-                <h2 class="page-title">Pay Bills</h2>
-                <div class="header-actions">
-                    <button class="icon-btn">
-                        <img src="img/search_icon.png" alt="Profile">
-                    </button>
-                    <button class="icon-btn">
-                        <img src="img/bell_icon.png" alt="Profile">
-                    </button>
-                    <div class="profile-avatar">
-                        <img src="img/pfp_img.png" alt="Profile">
-                    </div>
-                </div>
-            </header>
-
-            <div class="pb-Container">
-                <section class="utilitybtn-section">
-
-                    <h3 class="pbhead-text">Utility Billers</h3>
-
-                    <div class="utility-row">
-
-                        <!--CEB Button-->
-                        <div class="btn-wrapper">
-                            <button class="utility-btn" data-form="cebForm">
-                                <a href="#">
-                                    <img class="cebimg" src="img/cebimg.png" alt="CEB">
-                                </a>
-                            </button>
-                            <span class="pbbtn-label">CEB</span>
-                        </div>
-
-                        <div class="btn-wrapper">
-                            <!--NWSDB Button-->
-                            <button class="utility-btn" data-form="nwsdbForm">
-                                <a href="#">
-                                    <img class="nwsdbimg" src="img/nwsdbimg.png" alt="NWSDB">
-                                </a>
-                            </button>
-                            <span class="pbbtn-label">NWSDB</span>
-                        </div>
-
-                        <div class="btn-wrapper">
-                            <!--SLT Button-->
-                            <button class="utility-btn" data-form="sltform">
-                                <a href="#">
-                                    <img class="sltimg" src="img/sltimg.png" alt="SLT">
-                                </a>
-                            </button>
-                            <span class="pbbtn-label">SLT</span>
-                        </div>
-
-                        <div class="btn-wrapper">
-                            <!--Dialog Button-->
-                            <button class="utility-btn" data-form="dialogform">
-                                <a href="#">
-                                    <img class="dialogimg" src="img/dialogimg.jpeg" alt="Dialog">
-
-                                </a>
-                            </button>
-                            <span class="pbbtn-label">Dialog</span>
-                        </div>
-
-                        <div class="btn-wrapper">
-
-                        </div>
-
-                </section>
-
-                <div class="payinfo">
-
-                    <!--CEB Form-->
-                    <section id="cebForm" class="bill-form">
-
-                        <div class="balance-card">
-                            <div class="card-header">
-                                <p class="title">Current Balance</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="amount" id="balance">Loading...</p>
-                                <p class="account-name"><span id="accountType"></span></p>
-                            </div>
-                        </div>
-                        <h2 class="pbform-title">Ceylon Electricity Board</h2>
-
-                        <div class="pbform-group">
-                            <label for="pbbankAcc">Pay From</label>
-                            <select type="text" id="accountSelect" placeholder="Pay From">
-                            </select>
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="cebAmount">Amount (LKR)</label>
-                            <input type="number" id="cebAmount" placeholder="Enter payment amount">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="cebbillno">Electricity Bill Account
-                                No</label>
-                            <input type="text" id="cebbillno" placeholder="Electricity Bill Account No">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="cebbillno">Re Enter Electricity Bill
-                                Account Number</label>
-                            <input type="text" id="recebbillno" placeholder="Electricity Bill Account No">
-                        </div>
-                        <div class="pbcenter">
-                            <button class="pbnext-btn" id="cebnextBtn">Next</button>
-                        </div>
-                    </section>
-
-                    <!--NWSDB Form-->
-
-                    <section id="nwsdbForm" class="bill-form">
-                        <div class="balance-card">
-                            <div class="card-header">
-                                <p class="title">Current Balance</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="amount" id="balance">Loading...</p>
-                                <p class="account-name"><span id="accountType"></span></p>
-                            </div>
-                        </div>
-                        <h2 class="pbform-title">National Water Supply and
-                            Drainage Board</h2>
-
-                        <div class="pbform-group">
-                            <label for="pbbankAcc">Pay From</label>
-                            <select type="text" id="pbbankacc" placeholder="Enter CEB account number">
-                                <option value="">-- Choose Account --</option>
-                            </select>
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="wbbillAmount">Amount (LKR)</label>
-                            <input type="number" id="waterAmount" placeholder="Enter payment amount">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="wbbillno">Water Bill Account No</label>
-                            <input type="text" id="waterbillno" placeholder="Water Bill Account No">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="wbbillno">Re Enter Water Bill Account
-                                Number</label>
-                            <input type="text" id="rewaterbbillno" placeholder="Water Bill Account No">
-                        </div>
-                        <div class="pbcenter">
-                            <button class="pbnext-btn"  id="waternextBtn">Next</button>
-                        </div>
-                    </section>
-
-                    <!--SLT Form-->
-
-                    <section id="sltform" class="bill-form">
-                        <div class="balance-card">
-                            <div class="card-header">
-                                <p class="title">Current Balance</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="amount" id="balance">Loading...</p>
-                                <p class="account-name"><span id="accountType"></span></p>
-                            </div>
-                        </div>
-                        <h2 class="pbform-title">Sri Lanka Telecom</h2>
-
-                        <div class="pbform-group">
-                            <label for="pbbankAcc">Pay From</label>
-                            <select type="text" id="pbbankacc" placeholder="Enter CEB account number">
-                                <option value="">-- Choose Account --</option>
-                            </select>
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="sltAmount">Amount (LKR)</label>
-                            <input type="number" id="sltAmount" placeholder="Enter payment amount">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="sltbillno">SLT Account No</label>
-                            <input type="text" id="sltbillno" placeholder="SLT Account No">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="sltbillno">Re Enter SLT Account
-                                Number</label>
-                            <input type="text" id="resltbillno" placeholder="SLT Account No">
-                        </div>
-                        <div class="pbcenter">
-                            <button class="pbnext-btn" id="sltnextBtn">Next</button>
-                        </div>
-                    </section>
-
-                    <!--Dialog Form-->
-
-                    <section id="dialogform" class="bill-form">
-                        <div class="balance-card">
-                            <div class="card-header">
-                                <p class="title">Current Balance</p>
-                            </div>
-                            <div class="card-body">
-                                <p class="amount" id="balance">Loading...</p>
-                                <p class="account-name"><span id="accountType"></span></p>
-                            </div>
-                        </div>
-                        <h2 class="pbform-title">Dialog</h2>
-
-                        <div class="pbform-group">
-                            <label for="pbbankAcc">Pay From</label>
-                            <select type="text" id="pbbankacc" placeholder="Enter CEB account number">
-                                <option value="">-- Choose Account --</option>
-                            </select>
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="dialogAmount">Amount (LKR)</label>
-                            <input type="number" id="dialogAmount" placeholder="Enter payment amount">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="dbillno">Dialog Account No</label>
-                            <input type="text" id="dialogbillno" placeholder="Water Bill Account No">
-                        </div>
-
-                        <div class="pbform-group">
-                            <label for="dbillno">Dialog Account Number</label>
-                            <input type="text" id="redialogbillno" placeholder="Water Bill Account No">
-                        </div>
-                        <div class="pbcenter">
-                            <button class="pbnext-btn" id="dialognextbtn">Next</button>
-                        </div>
-                    </section>
-
-
-                    <div id="paydetails" class="paydetails">
-                        <h3 class="pdtext">Confirm Bill Payment</h3>
-                        <div class="paydetailscard">
-                            <h4 class="pbhead-text">Details</h4>
-                            <hr>
-                            <p class="pbdetailsrow"><strong>Date & time
-                                    :</strong><span id="bpdate"></span></p>
-
-                            <p class="pbdetailsrow"><strong>Bill No :</strong>
-                                <span id="confirmName"></span>
-                            </p>
-                            <p class="pbdetailsrow"><strong>Amount
-                                    :</strong><span id="confirmAmount"></span></p>
-                            <hr>
-                            <div id="otpArea" style="margin-top: 20px;">
-
-                                <label style="font-weight:600;">Enter OTP</label>
-                                <input type="text" id="otpInput" placeholder="6-digit OTP"
-                                    style="width: 200px; padding: 10px; border-radius: 8px;">
-
-                                <button id="sendOtpBtn" class="pbconfirmbtn" style="width: 200px; margin-top:10px;">
-                                    Send OTP
-                                </button>
-
-                            </div>
-
-                            <button id="confirmPayBtn" class="pbconfirmbtn" style="margin-top:20px; width:60%;"
-                                disabled>
-                                Confirm Payment
-                            </button>
-
-                        </div>
-                        <div class="paydetailsbtns">
-                            <button type="button" id="backBtn" class="pbbackbtn">Back</button>
-                            <button type="button" id="pbconfirmBtn" class="pbconfirmbtn">Confirm</button>
-                        </div>
-
-                    </div>
-
-                    <div id="paymentsuccess " class="pbpaymentsuccess">
-                        <img src="img/successimg.png" alt="Succeess" class="paymentsuccessicon">
-
-                        <H2 class="pbh2">Paymemt Successfull!</H2>
-                        <h3 class="pbh3">Confirmation number :</h3>
-                    </div>
-
-                    <div id="paymentfailed" class="pbpaymentfailed">
-                        <img src="img/failedimg.png" alt="Failed" class="paymentfailedimg">
-
-                        <h2 class="pbh2">Payment Failed!</h2>
-                        <h3 class="pbh3"></h3>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-
-        </main>
+<div class="container">
+  <aside class="sidebar">
+    <!-- sidebar left as-is -->
+    <div class="logo-section">
+      <div class="logo-circle"><div class="logo-container"><img src="img/j_logo.png" alt="Logo"></div></div>
+      <h1 class="bank-name">NOVA BANK</h1>
     </div>
-    <script src="js/paybills.js"></script>
-    <script src="js/dashboard.js"></script>
-</body>
+    <nav class="nav-menu">
+      <a href="dashboard.html" class="nav-item"><span>DASHBOARD</span></a>
+      <a href="accounts.html" class="nav-item"><span>ACCOUNTS</span></a>
+      <a href="bank_transfer.html" class="nav-item"><span>BANK TRANSFER</span></a>
+      <a href="pay_bills.html" class="nav-item active"><span>PAY BILLS</span></a>
+      <a href="e_statement.html" class="nav-item"><span>E-STATEMENT</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="icon-btn"><img src="img/settings_icon.png" alt="Settings"></button>
+      <button class="icon-btn" id="logoutBtn"><img src="img/logout_icon.png" alt="Logout"></button>
+    </div>
+  </aside>
 
+  <main class="main-content">
+    <header class="top-bar">
+      <h2 class="page-title">Pay Bills</h2>
+      <div class="header-actions">
+        <button class="icon-btn"><img src="img/search_icon.png" alt=""></button>
+        <button class="icon-btn"><img src="img/bell_icon.png" alt=""></button>
+        <div class="profile-avatar"><img src="img/pfp_img.png" alt="Profile"></div>
+      </div>
+    </header>
+
+    <div class="pb-Container">
+      <section class="utilitybtn-section">
+        <h3 class="pbhead-text">Utility Billers</h3>
+        <div class="utility-row">
+          <div class="btn-wrapper">
+            <button class="utility-btn" data-biller="ceb" title="CEB"><img class="cebimg" src="img/cebimg.png" alt="CEB"></button>
+            <span class="pbbtn-label">CEB</span>
+          </div>
+          <div class="btn-wrapper">
+            <button class="utility-btn" data-biller="water" title="NWSDB"><img class="nwsdbimg" src="img/nwsdbimg.png" alt="NWSDB"></button>
+            <span class="pbbtn-label">NWSDB</span>
+          </div>
+          <div class="btn-wrapper">
+            <button class="utility-btn" data-biller="slt" title="SLT"><img class="sltimg" src="img/sltimg.png" alt="SLT"></button>
+            <span class="pbbtn-label">SLT</span>
+          </div>
+          <div class="btn-wrapper">
+            <button class="utility-btn" data-biller="dialog" title="Dialog"><img class="dialogimg" src="img/dialogimg.jpeg" alt="Dialog"></button>
+            <span class="pbbtn-label">Dialog</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="payinfo">
+      
+
+        <!-- UNIVERSAL dynamic bill form -->
+        <section id="universalForm" class="bill-form">
+          <!-- single global balance card (inside form as requested) -->
+          <div id="globalBalanceCard" class="balance-card">
+            <div class="card-header"><p class="title">Current Balance</p></div>
+            <div class="card-body balance-info">
+              <p class="amount" id="balance">Loading...</p>
+              <p class="account-name"><span id="accountType">—</span></p>
+            </div>
+          </div>
+
+          <h2 class="pbform-title" id="formTitle">Ceylon Electricity Board</h2>
+
+          <div class="pbform-group">
+            <label for="univAccountSelect">Pay From</label>
+            <select id="univAccountSelect"><option value="">-- Choose Account --</option></select>
+          </div>
+
+          <div class="pbform-group">
+            <label for="univBillNo">Bill / Account No</label>
+            <input type="text" id="univBillNo" placeholder="Enter bill number">
+          </div>
+
+          <div class="pbform-group">
+            <label for="univBillNoRe">Re-enter Bill / Account No</label>
+            <input type="text" id="univBillNoRe" placeholder="Re-enter bill number">
+          </div>
+
+          <div class="pbform-group">
+            <label for="univAmount">Amount (LKR)</label>
+            <input type="number" id="univAmount" placeholder="Enter payment amount">
+          </div>
+
+          <div class="pbcenter">
+            <div id="billFormMsg" class="pb-error"></div>
+            <button class="pbnext-btn" id="univNextBtn">Next</button>
+          </div>
+        </section>
+
+<!-- PAY DETAILS (confirmation + OTP) placed OUTSIDE .payinfo so it will occupy the same flow -->
+      <div id="paydetails" class="paydetails" style="display:none;">
+        <h3 class="pdtext">Confirm Bill Payment</h3>
+        <div class="paydetailscard">
+          <h4 class="pbhead-text">Details</h4>
+          <hr>
+          <p class="pbdetailsrow"><strong>Date & time :</strong><span id="bpdate"></span></p>
+          <p class="pbdetailsrow"><strong>Bill No :</strong> <span id="confirmName"></span></p>
+          <p class="pbdetailsrow"><strong>Amount :</strong> <span id="confirmAmount"></span></p>
+          <hr>
+          <div id="otpArea" class="pbotp">
+            <label class="pbotpbtn">Enter OTP</label>
+            <input type="text" id="otpInput" placeholder="6-digit OTP" class="pbotpinput">
+            <button id="sendOtpBtn" class="pbsendotpbtn">Send OTP</button>
+          </div>
+          <div id="otpMsg" class="pb-error"></div>
+        </div>
+
+        <div class="paydetailsbtns">
+          <button type="button" id="backBtn" class="pbbackbtn">Back</button>
+          <button id="confirmPayBtn" class="pbconfirmbtn" disabled>Confirm Payment</button>
+        </div>
+      </div>    
+
+      <!-- Success / Failure placeholders -->
+    <div id="paymentsuccess" class="pbpaymentsuccess" style="display:none;">
+    <img src="img/successimg.png" alt="Success" class="paymentsuccessicon">
+
+    <h2 class="pbh2">Payment Successful!</h2>
+    <h3 class="pbh3" id="successConfirmNo"></h3>
+
+    <!-- Buttons -->
+    <div class="pbpaymentsuccessbtn">    
+        <button id="printReceiptBtn" class="printReceiptBtn">Print Receipt</button>
+        <button id="successCloseBtn" class="successCloseBtn">Close</button>
+    </div>
+</div>
+
+
+      <div id="paymentfailed" class="pbpaymentfailed" style="display:none;">
+    <img src="img/failedimg.png" alt="Failed" class="paymentfailedimg">
+
+    <h2 class="pbh2">Payment Failed!</h2>
+
+    <div class="pbpaymentfailederr">
+    <div class="pb-error--error" id="failedMessage"></div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="pbpaymentfailbtn">
+        <button id="failedCloseBtn" class="pbbackbtn">Close</button>
+    </div>
+</div>
+
+
+
+      </div>
+
+      
+    </div> <!-- end pb-Container -->
+
+  </main>
+</div>
+
+<script src="js/paybills.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
 </html>
