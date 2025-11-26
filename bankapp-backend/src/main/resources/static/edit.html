@@ -78,39 +78,25 @@
                     </div>
                 </div>
             </header>
-            <div class="content">  
-                    <div class="row">
-                        <div class="card">
-                            <a href="edit.html"><img src="img\edit.png" width="22" /></a>
-                            <span class="btn-icon" onclick="deleteAccount()"><img src="img\delete.png"
-                                    width="22" /></span>
-                            <h2>Anura</h2>
-                            <img src="img\name.png" width="150" />
-                            <p>Nova Bank<br>Colombo 05</p>
-                        </div>
 
-                        <div class="card add-card">
-                            <a href="add.html">+</a>
-                            <p style="font-size:18px;">Add a Bank Account</p>
-                        </div>
+
+            <div class="aaeditacc">
+                
+                <div class="editaccform">
+                    <p class="form-title">Edit the nickname</p>
+                    <div class="aaform">
+                        <label>Bank Account Number:</label>
+                        <input type="text" placeholder="Enter account number" />
                     </div>
-            
-
-                <script>
-                    function deleteAccount() {
-                        if (confirm("Are you sure you want to delete the account 'Anura'?")) {
-                            alert("Account deleted!");
-                        }
-                    }
-                </script>
+                    <div class="aaform">
+                        <label>Nickname:</label>
+                        <input type="text" placeholder="Enter new nickname" />
+                    </div>
+                    <div class="addbtn">
+                    <button class="addaccbtn">UPDATE</button>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
-
-    <script src="js/dashboard.js"></script>
-
-
-
 </body>
 
 </html>
