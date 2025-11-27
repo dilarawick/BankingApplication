@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS transactions (
+CREATE TABLE transactions (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     transaction_id VARCHAR(255) NOT NULL UNIQUE,
     sender_id BIGINT NOT NULL,
