@@ -1,24 +1,26 @@
 CREATE TABLE transactions (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    transaction_id VARCHAR(255) NOT NULL UNIQUE,
-    sender_id BIGINT NOT NULL,
-    sender_account_number VARCHAR(255) NOT NULL,
-    sender_account_name VARCHAR(255) NOT NULL,
-    amount DECIMAL(15, 2) NOT NULL,
-    recipient_account_number VARCHAR(255) NOT NULL,
-    recipient_account_name VARCHAR(255) NOT NULL,
-    recipient_bank VARCHAR(50) NOT NULL,
-    description TEXT,
-    status VARCHAR(50) NOT NULL,
-    balance_after_transaction DECIMAL(15, 2),
-    transaction_date DATETIME NOT NULL,
-    created_at DATETIME,
-    CONSTRAINT fk_transactions_sender FOREIGN KEY (sender_id) REFERENCES users(id)ON DELETE CASCADE ON UPDATE CASCADE,
+    TransactionID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    TransactionCode VARCHAR(255) NOT NULL UNIQUE,
+    SenderAccountNo CHAR(6) NOT NULL,
+    SenderName VARCHAR(100) NOT NULL,
+    Amount DECIMAL(15,2) NOT NULL,
+    RecipientAccountNo CHAR(6) NOT NULL,
+    RecipientName VARCHAR(100) NOT NULL,
+    RecipientBank VARCHAR(100) NOT NULL,
+    Description TEXT,
+    Status ENUM('Pending','Completed','Failed') NOT NULL DEFAULT 'Pending',
+    BalanceAfterTransaction DECIMAL(15,2),
+    TransactionDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     
-    -- Indexes for performance optimization
-    INDEX idx_transaction_id (transaction_id),
-    INDEX idx_sender_id (sender_id),
-    INDEX idx_status (status),
-    INDEX idx_transaction_date (transaction_date),
-    INDEX idx_sender_status (sender_id, status, transaction_date)
+    CONSTRAINT fk_transaction_sender_account FOREIGN KEY (SenderAccountNo) REFERENCES Account(AccountNo) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_transaction_recipient_account FOREIGN KEY (RecipientAccountNo) REFERENCES Account(AccountNo) ON DELETE CASCADE ON UPDATE CASCADE,
+    
+    -- Indexes for performance
+    INDEX idx_transaction_code (TransactionCode),
+    INDEX idx_sender_account (SenderAccountNo),
+    INDEX idx_recipient_account (RecipientAccountNo),
+    INDEX idx_status (Status),
+    INDEX idx_transaction_date (TransactionDate),
+    INDEX idx_sender_status_date (SenderAccountNo, Status, TransactionDate)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
