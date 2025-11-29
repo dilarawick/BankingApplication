@@ -19,14 +19,17 @@ VALUES
 -- Insert Accounts
 INSERT INTO Account (AccountNo, CustomerID, AccountType, BranchID, AccountBalance, AccountStatus)
 VALUES
-    ('AC0001', 1, 'Savings', 1, 5000.00, 'Active'),
-    ('AC0002', 1, 'Current', 2, 12000.50, 'Active'),
-    ('AC0003', 1, 'Fixed Deposit', 3, 30000.00, 'Active');
+    ('AC0001', 21, 'Savings', 16, 5000.00, 'Active'),
+    ('AC0002', 21, 'Current', 17, 12000.50, 'Active'),
+    ('AC0003', 21, 'Fixed Deposit', 18, 30000.00, 'Active');
 
--- Other customers
-INSERT INTO Account (AccountNo, CustomerID, AccountType, BranchID, AccountBalance, AccountStatus)
-VALUES
-    ('AC0004', 2, 'Savings', 1, 8000.00, 'Active'),
-    ('AC0005', 3, 'Current', 4, 1500.75, 'Active'),
-    ('AC0006', 4, 'Savings', 5, 2200.00, 'Active'),
-    ('AC0007', 5, 'Fixed Deposit', 3, 50000.00, 'Active');
+-- Link customers to their accounts
+INSERT INTO CustomerAccount (CustomerID, AccountNo, IsPrimary) VALUES
+(21, 'AC0001', TRUE),
+(21, 'AC0002', FALSE),
+(21, 'AC0003', FALSE);
+-- Insert sample transactions
+INSERT INTO transactions (TransactionCode, SenderAccountNo, SenderName, Amount, RecipientAccountNo, RecipientName, RecipientBank, Description, Status, BalanceAfterTransaction) VALUES
+('TXN001', 'AC0001', 'Alice Johnson', 500.00, 'AC0002', 'Alice Johnson', 'Main Branch', 'Transfer between accounts', 'Completed', 4500.00),
+('TXN002', 'AC0002', 'Alice Johnson', 1000.00, 'AC0003', 'Alice Johnson', 'Main Branch', 'Savings transfer', 'Completed', 11000.50),
+('TXN003', 'AC0001', 'Alice Johnson', 200.00, 'AC0002', 'Alice Johnson', 'Main Branch', 'Monthly transfer', 'Completed', 4300.00);

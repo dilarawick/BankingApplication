@@ -58,4 +58,10 @@ CREATE TABLE transactions (
     
     CONSTRAINT fk_transaction_sender_account FOREIGN KEY (SenderAccountNo) REFERENCES Account(AccountNo) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_transaction_recipient_account FOREIGN KEY (RecipientAccountNo) REFERENCES Account(AccountNo) ON DELETE CASCADE ON UPDATE CASCADE,
-
+    
+    INDEX idx_transaction_code (TransactionCode),
+    INDEX idx_sender_account (SenderAccountNo),
+    INDEX idx_recipient_account (RecipientAccountNo),
+    INDEX idx_status (Status),
+    INDEX idx_transaction_date (TransactionDate)
+);
