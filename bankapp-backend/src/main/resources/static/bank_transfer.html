@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Bank - Transfer</title>
-    <link rel="stylesheet" href="css/styles3.css">
+    <link rel="stylesheet" href="css/bank_transfer.css">
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
@@ -59,19 +59,119 @@
                 <h2 class="page-title">Bank Transfer</h2>
                 <div class="header-actions">
                     <button class="icon-btn">
-                        <img src="img/search_icon.png" alt="Profile">
+                        <img src="img/search_icon.png" alt="Search">
                     </button>
                     <button class="icon-btn">
-                        <img src="img/bell_icon.png" alt="Profile">
+                        <img src="img/bell_icon.png" alt="Notifications">
                     </button>
                     <div class="profile-avatar">
                         <img src="img/pfp_img.png" alt="Profile">
                     </div>
                 </div>
             </header>
+
+            <div class="content-area">
+                <!-- Step 1: Transfer Form -->
+                <div id="transferForm" class="transfer-step active">
+                    <div class="form-card">
+                        <form id="bankTransferForm">
+                            <div class="form-group">
+                                <label>Amount :</label>
+                                <input type="number" id="amount" name="amount" step="0.01" min="0.01" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Account Number :</label>
+                                <input type="text" id="accountNumber" name="accountNumber" pattern="[0-9]{10,16}" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Account Name :</label>
+                                <input type="text" id="accountName" name="accountName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Select Bank :</label>
+                                <select id="bankSelect" name="bank" required>
+                                    <option value="">Loading banks...</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description :</label>
+                                <textarea id="description" name="description" rows="4" maxlength="500" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-next">NEXT</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Step 2: Confirmation -->
+                <div id="confirmationStep" class="transfer-step">
+                    <div class="confirmation-card">
+                        <h2 class="confirmation-title">Confirm Transfer</h2>
+                        
+                        <div class="confirmation-content">
+                            <p class="confirm-text">Confirm your transfer</p>
+                            <p class="confirm-amount">of Rs. <span id="confirmAmount"></span></p>
+                            <p class="confirm-recipient">to <span id="confirmRecipient"></span></p>
+                            
+                            <div class="transfer-illustration">
+                                <img src="img/transfer_illustration.png" alt="Transfer" onerror="this.style.display='none'">
+                            </div>
+                            
+                            <p class="fee-notice">Additional fee of Rs.50 will be charged.</p>
+                        </div>
+
+                        <button id="transferBtn" class="btn-transfer">TRANSFER</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Success -->
+                <div id="successStep" class="transfer-step">
+                    <div class="result-card">
+                        <div class="success-icon">
+                            <svg viewBox="0 0 52 52">
+                                <circle cx="26" cy="26" r="25" fill="#28a745"/>
+                                <path fill="none" stroke="#fff" stroke-width="4" d="M14 27l8 8 16-16"/>
+                            </svg>
+                        </div>
+                        <h2 class="result-title">Transfer Successful!</h2>
+                        <p class="confirmation-number">Confirmation number : <span id="transactionId"></span></p>
+                        <button onclick="window.location.href='dashboard.html'" class="btn-home">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M8 14L4 10L8 6" stroke="white" stroke-width="2"/>
+                            </svg>
+                            BACK TO HOME
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Error -->
+                <div id="errorStep" class="transfer-step">
+                    <div class="result-card">
+                        <div class="error-icon">
+                            <svg viewBox="0 0 52 52">
+                                <circle cx="26" cy="26" r="25" fill="#dc3545"/>
+                                <path fill="none" stroke="#fff" stroke-width="4" d="M26 14v16M26 34v2"/>
+                            </svg>
+                        </div>
+                        <h2 class="result-title">Transaction Failed!</h2>
+                        <p class="error-message" id="errorMessage">Insufficient Balance</p>
+                        <p class="error-details" id="errorDetails">Current Balance is: Rs.500</p>
+                        <button onclick="window.location.href='dashboard.html'" class="btn-home">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M8 14L4 10L8 6" stroke="white" stroke-width="2"/>
+                            </svg>
+                            BACK TO HOME
+                        </button>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
-    <script src="js/dashboard.js"></script>
+    <script src="js/bank_transfer.js"></script>
 </body>
 </html>

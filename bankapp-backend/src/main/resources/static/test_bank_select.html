@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bank Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #1a237e;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #283593;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Bank Selection</h1>
+        <p>This page tests the bank selection dropdown functionality.</p>
+        
+        <div class="form-group">
+            <label for="bankSelect">Select Bank:</label>
+            <select id="bankSelect" name="bank" required>
+                <option value="">Loading banks...</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <button onclick="testSelection()">Test Selection</button>
+        </div>
+        
+        <div id="result">
+            <h3>Selected Bank:</h3>
+            <p id="selectedBank"></p>
+        </div>
+    </div>
+
+    <script>
+        // Test bank list
+        const testBanks = [
+            "NOVA_BANK",
+            "STATE_BANK", 
+            "CITY_BANK",
+            "NATIONAL_BANK",
+            "FEDERAL_BANK",
+            "METRO_BANK"
+        ];
+        
+        // Load banks into dropdown
+        function loadBankList() {
+            const select = document.getElementById('bankSelect');
+            // Clear existing options
+            select.innerHTML = '<option value="">Select a bank...</option>';
+            
+            // Add test banks
+            testBanks.forEach(bank => {
+                const option = document.createElement('option');
+                option.value = bank;
+                option.textContent = bank.replace(/_/g, ' ');
+                select.appendChild(option);
+            });
+            
+            console.log('Bank dropdown populated with', testBanks.length, 'banks');
+        }
+        
+        // Test selection
+        function testSelection() {
+            const select = document.getElementById('bankSelect');
+            const selectedValue = select.value;
+            const selectedText = select.options[select.selectedIndex].text;
+            
+            if (selectedValue) {
+                document.getElementById('selectedBank').textContent = `${selectedText} (${selectedValue})`;
+                document.getElementById('result').style.display = 'block';
+            } else {
+                alert('Please select a bank first');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBankList();
+        });
+    </script>
+</body>
+</html>
