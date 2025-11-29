@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Bank - Dashboard</title>
+    <link rel="stylesheet" href="css/styles3.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <div class="logo-container">
+                        <img src="img/j_logo.png" alt="Logo">
+                    </div>
+                </div>
+                <h1 class="bank-name">NOVA BANK</h1>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item active">
+                    <div class="nav-icon-container">
+                        <img class="nav-icon" src="img/dashboard_icon.png" alt="Logo">
+                    </div>
+                    <span>DASHBOARD</span>
+                </a>
+                <a href="accounts.html" class="nav-item">
+                    <span>ACCOUNTS</span>
+                </a>
+                <a href="bank_transfer.html" class="nav-item">
+                    <span>BANK TRANSFER</span>
+                </a>
+                <a href="pay_bills.html" class="nav-item">
+                    <span>PAY BILLS</span>
+                </a>
+                <a href="smart_spend.html" class="nav-item">
+                    <span>SMART SPEND</span>
+                </a>
+                <a href="e_statement.html" class="nav-item">
+                    <span>E-STATEMENT</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="icon-btn">
+                    <img src="img/settings_icon.png" alt="Profile">
+                </button>
+                <button class="icon-btn" id="logoutBtn">
+                    <img src="img/logout_icon.png" alt="Profile">
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 class="page-title">Dashboard</h2>
+                <div class="header-actions">
+                    <button class="icon-btn">
+                        <img src="img/search_icon.png" alt="Profile">
+                    </button>
+                    <button class="icon-btn">
+                        <img src="img/bell_icon.png" alt="Profile">
+                    </button>
+                    <div class="profile-avatar">
+                        <img src="img/pfp_img.png" alt="Profile">
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-grid">
+                <section class="welcome-card">
+                    <div class="welcome-content">
+                        <h3 class="welcome-title">Welcome back, Dilara!</h3>
+                        <div class="balance-card">
+                            <div class="balance-info">
+                                <div class="balance-label">Current Balance</div>
+                                <div class="balance-amount">Rs. 100,000</div>
+                            </div>
+                            <button class="arrow-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="m9 18 6-6-6-6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="carousel-dots">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <div class="welcome-illustration">
+                         <img src="img/d_img1.png" alt="Logo">
+                    </div>
+                </section>
+
+                <aside class="saved-payees">
+                    <h4 class="section-title">Saved Payees</h4>
+                    <div class="payee-list">
+                        <div class="payee-item">
+                            <div class="payee-avatar">
+                                <img src="img/pfp_img.png" alt="Payee">
+                            </div>
+                            <div class="payee-info">
+                                <div class="payee-name">HKDS</div>
+                                <div class="payee-details">Wickramanayake</div>
+                            </div>
+                        </div>
+                        <div class="payee-item">
+                            <div class="payee-avatar">
+                                <img src="img/pfp_img.png" alt="Payee">
+                            </div>
+                            <div class="payee-info">
+                                <div class="payee-name">DS Senanayake</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-all-link">View all &gt;</a>
+                </aside>
+            </div>
+
+            <section class="transactions-section">
+                <h4 class="section-title">Recent Transactions</h4>
+                <div class="transactions-list">
+                    <div class="transaction-item">
+                        <div class="transaction-avatar">
+                            <img src="img/pfp_img.png" alt="Transaction">
+                        </div>
+                        <div class="transaction-date">Oct, 16 2025</div>
+                        <div class="transaction-id">........3423</div>
+                        <div class="transaction-amount">-Rs. 4500.00</div>
+                        <div class="transaction-status success">Success</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-avatar">
+                            <img src="img/pfp_img.png" alt="Transaction">
+                        </div>
+                        <div class="transaction-date">Oct, 16 2025</div>
+                        <div class="transaction-id">........4876</div>
+                        <div class="transaction-amount">-Rs. 10, 000.00</div>
+                        <div class="transaction-status success">Success</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-avatar">
+                            <img src="img/pfp_img.png" alt="Transaction">
+                        </div>
+                        <div class="transaction-date">Oct, 16 2025</div>
+                        <div class="transaction-id">........6754</div>
+                        <div class="transaction-amount">-Rs. 9870.00</div>
+                        <div class="transaction-status success">Success</div>
+                    </div>
+                </div>
+                <a href="#" class="view-all-link">View all &gt;</a>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
