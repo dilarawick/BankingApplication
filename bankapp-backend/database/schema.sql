@@ -15,12 +15,4 @@ CREATE TABLE transactions (
     
     CONSTRAINT fk_transaction_sender_account FOREIGN KEY (SenderAccountNo) REFERENCES Account(AccountNo) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_transaction_recipient_account FOREIGN KEY (RecipientAccountNo) REFERENCES Account(AccountNo) ON DELETE CASCADE ON UPDATE CASCADE,
-    
-    -- Indexes for performance
-    INDEX idx_transaction_code (TransactionCode),
-    INDEX idx_sender_account (SenderAccountNo),
-    INDEX idx_recipient_account (RecipientAccountNo),
-    INDEX idx_status (Status),
-    INDEX idx_transaction_date (TransactionDate),
-    INDEX idx_sender_status_date (SenderAccountNo, Status, TransactionDate)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
