@@ -5,20 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Bank - Accounts</title>
+
     <link rel="stylesheet" href="css/styles4.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <style>
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+        
     </style>
 </head>
 
 <body>
     <div class="container">
+
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo-section">
                 <div class="logo-circle">
@@ -63,54 +62,85 @@
             </div>
         </aside>
 
+        <!-- MAIN CONTENT -->
         <main class="main-content">
+
             <header class="top-bar">
                 <h2 class="page-title">Accounts</h2>
+
                 <div class="header-actions">
-                    <button class="icon-btn">
-                        <img src="img/search_icon.png" alt="Profile">
-                    </button>
-                    <button class="icon-btn">
-                        <img src="img/bell_icon.png" alt="Profile">
-                    </button>
-                    <div class="profile-avatar">
-                        <img src="img/pfp_img.png" alt="Profile">
-                    </div>
+                    <button class="icon-btn"><img src="img/search_icon.png" alt="Profile"></button>
+                    <button class="icon-btn"><img src="img/bell_icon.png" alt="Profile"></button>
+                    <div class="profile-avatar"><img src="img/pfp_img.png" alt="Profile"></div>
                 </div>
             </header>
-            <div class="content">  
-                    <div class="row">
-                        <div class="card">
-                            <a href="edit.html"><img src="img\edit.png" width="22" /></a>
-                            <span class="btn-icon" onclick="deleteAccount()"><img src="img\delete.png"
-                                    width="22" /></span>
-                            <h2>Anura</h2>
-                            <img src="img\name.png" width="150" />
-                            <p>Nova Bank<br>Colombo 05</p>
-                        </div>
 
-                        <div class="card add-card">
-                            <a href="add.html">+</a>
-                            <p style="font-size:18px;">Add a Bank Account</p>
-                        </div>
-                    </div>
-            
-
-                <script>
-                    function deleteAccount() {
-                        if (confirm("Are you sure you want to delete the account 'Anura'?")) {
-                            alert("Account deleted!");
-                        }
-                    }
-                </script>
+            <div class="content">
+                <div class="row"><!-- JS inserts cards here --></div>
             </div>
+
+            <!-- Add Account Form (Initially Hidden) -->
+            <div id="addAccountForm">
+                <div class="form">
+                    <p class="form-title">Add Another Bank Account</p>
+
+                    <div class="aaform">
+                        <label>Bank Account Number:</label>
+                        <input id="acc1" type="text" placeholder="Enter account number">
+                    </div>
+
+                    <div class="aaform">
+                        <label>Re-enter Account Number:</label>
+                        <input id="acc2" type="text" placeholder="Re-enter account number">
+                    </div>
+
+                    <div class="aaform">
+                        <label>Email:</label>
+                        <input id="email" type="email" placeholder="Enter email">
+                    </div>
+
+                    <div class="aaform">
+                        <label>Nickname:</label>
+                        <input id="nickname" type="text" placeholder="Enter nickname (optional)">
+                    </div>
+
+                    <p id="formMessage" class="form-message"></p>
+
+                    <div class="addbtn">
+                        <div class="form-message" id="addAccountMessage"></div> 
+                        <button class="addaccbtn" id="addAccountSubmitBtn">ADD</button>
+                        <button class="cancel-btn" id="cancelBtn">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Account Form (Initially Hidden) -->
+            <div id="editAccountForm">
+                <div class="form">
+                    <p class="form-title">Edit Nickname</p>
+
+                    <div class="aaform">
+                        <label>Bank Account Number:</label>
+                        <input id="editAccNo" type="text" placeholder="Enter account number" disabled>
+                    </div>
+
+                    <div class="aaform">
+                        <label>Nickname:</label>
+                        <input id="editNickname" type="text" placeholder="Enter new nickname">
+                    </div>
+
+                    <div class="addbtn">
+                        <div class="form-message" id="editAccountMessage"></div>
+                        <button class="addaccbtn" id="editAccountBtn">UPDATE</button>
+                        <button class="cancel-btn" id="cancelEditBtn">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
+    <script src="js/account.js"></script>
     <script src="js/dashboard.js"></script>
-
-
-
 </body>
-
 </html>

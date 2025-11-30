@@ -38,6 +38,20 @@ CREATE TABLE CustomerAccount (
                                  AccountNo CHAR(6) NOT NULL,
                                  IsPrimary BOOLEAN DEFAULT FALSE,
                                  AddedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                 nickname VARCHAR(100) DEFAULT 'My Account'
                                  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
                                  FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
 );
+ 
+
+ use  bankingSystemDB;
+ SELECT * FROM customeraccount
+
+ ALTER TABLE CustomerAccount
+ADD COLUMN nickname VARCHAR(100) DEFAULT 'My Account';
+
+
+select *from customeraccount;
+
+DELETE FROM CustomerAccount
+WHERE CustomerAccountID = 13;
