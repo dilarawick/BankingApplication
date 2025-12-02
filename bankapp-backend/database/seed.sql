@@ -30,3 +30,13 @@ VALUES
     ('AC0005', 3, 'Current', 4, 1500.75, 'Active'),
     ('AC0006', 4, 'Savings', 5, 2200.00, 'Active'),
     ('AC0007', 5, 'Fixed Deposit', 3, 50000.00, 'Active');
+
+
+    
+INSERT INTO transactions (TransactionCode, SenderAccountNo, SenderName, Amount, RecipientAccountNo, RecipientName, RecipientBank, Description, Status, BalanceAfterTransaction) VALUES
+('TXN001', 'AC0001', 'Alice Johnson', 500.00, 'AC0002', 'Alice Johnson', 'Main Branch', 'Transfer between accounts', 'Completed', 4500.00),
+('TXN002', 'AC0002', 'Alice Johnson', 1000.00, 'AC0003', 'Alice Johnson', 'Main Branch', 'Savings transfer', 'Completed', 11000.50),
+('TXN003', 'AC0001', 'Alice Johnson', 200.00, 'AC0002', 'Alice Johnson', 'Main Branch', 'Monthly transfer', 'Completed', 4300.00);
+
+
+

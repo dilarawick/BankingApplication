@@ -1,3 +1,4 @@
+/* --- General Reset and Base Styles --- */
 * {
     margin: 0;
     padding: 0;
@@ -15,6 +16,7 @@ body {
     min-height: 100vh;
 }
 
+/* --- Sidebar Styles --- */
 .sidebar {
     width: 220px;
     background: #000F2E;
@@ -26,17 +28,6 @@ body {
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
 }
-
-/* .sidebar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 100%);
-    pointer-events: none;
-} */
 
 .logo-section {
     display: flex;
@@ -56,21 +47,15 @@ body {
     flex-shrink: 0;
 }
 
-.logo-text {
-    font-size: 28px;
-    font-weight: 700;
-    color: #001f3f;
-}
-
 .logo-container {
     width: 48px;
     height: 48px;
-    background: #003366; /* Circle background */
+    background: #003366;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Crop image to the circle */
+    overflow: hidden;
     position: relative;
     z-index: 1;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -79,7 +64,7 @@ body {
 .logo-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Makes the image fill the circle nicely */
+    object-fit: cover;
 }
 
 .bank-name {
@@ -87,17 +72,6 @@ body {
     font-weight: 700;
     letter-spacing: 1px;
     white-space: nowrap;
-}
-
-.nav-icon-container {
-    width: 15px;
-    height: 15px;
-}
-
-.nav-icon-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Makes the image fill the circle nicely */
 }
 
 .nav-menu {
@@ -127,7 +101,7 @@ body {
 }
 
 .nav-item.active {
-    background:  #5B7AB3;
+    background: #5B7AB3;
     color: white;
 }
 
@@ -137,6 +111,7 @@ body {
     flex-shrink: 0;
 }
 
+/* Sidebar Footer */
 .sidebar-footer {
     display: flex;
     gap: 12px;
@@ -166,6 +141,7 @@ body {
     height: 20px;
 }
 
+/* --- Main Content Area --- */
 .main-content {
     flex: 1;
     background: #f5f5f5;
@@ -213,6 +189,7 @@ body {
     object-fit: cover;
 }
 
+/* Grid Layout for Content */
 .content-grid {
     display: grid;
     grid-template-columns: 1fr 280px;
@@ -220,6 +197,7 @@ body {
     padding: 24px 32px;
 }
 
+/* --- Welcome Card Styles --- */
 .welcome-card {
     background: #E0E4EA;
     border-radius: 16px;
@@ -241,6 +219,7 @@ body {
     margin-bottom: 24px;
 }
 
+/* Balance Card - Inside Welcome Card */
 .balance-card {
     background: #000000;
     border-radius: 12px;
@@ -269,59 +248,55 @@ body {
     color: #61fb24;
 }
 
-.arrow-btn {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* --- Account Card Styles --- */
+.account-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    min-width: 260px;
 }
 
-.arrow-btn svg {
-    width: 24px;
-    height: 24px;
+.account-info {
+    margin-top: 20px;
 }
 
+.account-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.account-type {
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.account-no {
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* Carousel and Dot Styles */
 .carousel-dots {
     display: flex;
-    gap: 8px;
-    margin-top: 8px;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #d1d5db;
-    transition: all 0.3s ease;
+    background-color: #ddd;
+    margin: 0 4px;
+    cursor: pointer;
 }
 
 .dot.active {
-    width: 24px;
-    border-radius: 4px;
-    background: #40b4e5;
+    background-color: #40b4e5;
 }
 
-.welcome-illustration {
-    width: 250px;
-    height: 250px;
-    flex-shrink: 0;
-}
-
-.welcome-illustration img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Makes the image fill the circle nicely */
-}
-
-.welcome-illustration svg {
-    width: 100%;
-    height: 100%;
-}
-
+/* --- Saved Payees Styles --- */
 .saved-payees {
     background: white;
     border-radius: 16px;
@@ -340,7 +315,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 16px;
 }
 
 .payee-item {
@@ -379,6 +353,7 @@ body {
     color: #6b7280;
 }
 
+/* View All Link */
 .view-all-link {
     display: block;
     text-align: right;
@@ -393,6 +368,7 @@ body {
     color: #40b4e5;
 }
 
+/* --- Transactions Section --- */
 .transactions-section {
     background: white;
     border-radius: 16px;
@@ -405,7 +381,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 16px;
 }
 
 .transaction-item {
@@ -467,17 +442,14 @@ body {
     color: #065f46;
 }
 
-@media (max-width: 1200px) {
+/* --- Responsive Styles --- */
+@media (max-width:1200px) {
     .content-grid {
         grid-template-columns: 1fr;
     }
-
-    .saved-payees {
-        max-width: 600px;
-    }
 }
 
-@media (max-width: 768px) {
+@media (max-width:768px) {
     .sidebar {
         width: 80px;
         padding: 24px 12px;

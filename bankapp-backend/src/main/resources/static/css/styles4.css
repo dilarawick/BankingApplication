@@ -1,3 +1,4 @@
+/* Reset default margin, padding, and box-sizing */
 * {
     margin: 0;
     padding: 0;
@@ -16,6 +17,7 @@ body {
     justify-content: center;
 }
 
+/* Sidebar styles */
 .sidebar {
     width: 220px;
     background: #000F2E;
@@ -27,17 +29,6 @@ body {
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
 }
-
-/* .sidebar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 100%);
-    pointer-events: none;
-} */
 
 .logo-section {
     display: flex;
@@ -54,26 +45,17 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-}
-
-.logo-text {
-    font-size: 28px;
-    font-weight: 700;
-    color: #001f3f;
 }
 
 .logo-container {
     width: 48px;
     height: 48px;
     background: #003366;
-    /* Circle background */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* Crop image to the circle */
     position: relative;
     z-index: 1;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -83,7 +65,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Makes the image fill the circle nicely */
 }
 
 .bank-name {
@@ -91,18 +72,6 @@ body {
     font-weight: 700;
     letter-spacing: 1px;
     white-space: nowrap;
-}
-
-.nav-icon-container {
-    width: 15px;
-    height: 15px;
-}
-
-.nav-icon-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Makes the image fill the circle nicely */
 }
 
 .nav-menu {
@@ -136,12 +105,6 @@ body {
     color: white;
 }
 
-.nav-icon {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-}
-
 .sidebar-footer {
     display: flex;
     gap: 12px;
@@ -171,6 +134,7 @@ body {
     height: 20px;
 }
 
+/* Main content area */
 .main-content {
     flex: 1;
     background: #f5f5f5;
@@ -218,319 +182,13 @@ body {
     object-fit: cover;
 }
 
-.content-grid {
+/* Account cards */
+.row {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 24px;
-    padding: 24px 32px;
-}
-
-.welcome-card {
-    background: #E0E4EA;
-    border-radius: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
-}
-
-.welcome-content {
-    flex: 1;
-    padding: 32px;
-}
-
-.welcome-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 24px;
-}
-
-.balance-card {
-    background: #000000;
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 400px;
-    margin-bottom: 16px;
-}
-
-.balance-info {
-    color: white;
-}
-
-.balance-label {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 8px;
-    align-items: center;
-}
-
-.balance-amount {
-    font-size: 28px;
-    font-weight: 700;
-    color: #61fb24;
-}
-
-.arrow-btn {
-    background: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 8px;
-    display: flex;
-    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding-top: 20px;
     justify-content: center;
-}
-
-.arrow-btn svg {
-    width: 24px;
-    height: 24px;
-}
-
-.carousel-dots {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #d1d5db;
-    transition: all 0.3s ease;
-}
-
-.dot.active {
-    width: 24px;
-    border-radius: 4px;
-    background: #40b4e5;
-}
-
-.welcome-illustration {
-    width: 250px;
-    height: 250px;
-    flex-shrink: 0;
-}
-
-.welcome-illustration img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Makes the image fill the circle nicely */
-}
-
-.welcome-illustration svg {
-    width: 100%;
-    height: 100%;
-}
-
-.saved-payees {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
-}
-
-.section-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 20px;
-}
-
-.payee-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.payee-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.payee-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.payee-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.payee-info {
-    flex: 1;
-}
-
-.payee-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 2px;
-}
-
-.payee-details {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.view-all-link {
-    display: block;
-    text-align: right;
-    color: #1f2937;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.view-all-link:hover {
-    color: #40b4e5;
-}
-
-.transactions-section {
-    background: white;
-    border-radius: 16px;
-    padding: 24px 32px;
-    margin: 0 32px 32px 32px;
-    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
-}
-
-.transactions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.transaction-item {
-    display: grid;
-    grid-template-columns: 50px 140px 120px 1fr auto;
-    align-items: center;
-    gap: 24px;
-    padding: 16px;
-    border-radius: 12px;
-    transition: background 0.3s ease;
-}
-
-.transaction-item:hover {
-    background: #f9fafb;
-}
-
-.transaction-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.transaction-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.transaction-date {
-    font-size: 14px;
-    color: #1f2937;
-    font-weight: 500;
-}
-
-.transaction-id {
-    font-size: 14px;
-    color: #6b7280;
-}
-
-.transaction-amount {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1f2937;
-    text-align: right;
-}
-
-.transaction-status {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    text-align: center;
-    min-width: 80px;
-}
-
-.transaction-status.success {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-@media (max-width: 1200px) {
-    .content-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .saved-payees {
-        max-width: 600px;
-    }
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        width: 80px;
-        padding: 24px 12px;
-    }
-
-    .bank-name {
-        display: none;
-    }
-
-    .nav-item span {
-        display: none;
-    }
-
-    .nav-item {
-        padding: 12px;
-        justify-content: center;
-    }
-
-    .welcome-card {
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    .welcome-illustration {
-        width: 140px;
-        height: 140px;
-    }
-
-    .transaction-item {
-        grid-template-columns: 40px 1fr auto;
-        gap: 12px;
-    }
-
-    .transaction-date,
-    .transaction-id {
-        display: none;
-    }
-
-    .content-grid,
-    .transactions-section {
-        padding: 16px;
-        margin: 16px;
-    }
-
-    .top-bar {
-        padding: 16px;
-    }
 }
 
 .card {
@@ -544,19 +202,7 @@ body {
     align-items: center;
 }
 
-.row {
-    display: grid;
-    gap: 15px;
-    flex-wrap: wrap;
-    padding-top: 20px;
-    justify-content: center;
-}
-
-.btn-icon {
-    float: right;
-    cursor: pointer;
-}
-
+/* Add Account button */
 .add-card {
     width: 650px;
     height: 290px;
@@ -566,6 +212,7 @@ body {
     cursor: pointer;
 }
 
+/* Add Account form */
 .form {
     background-color: #fff;
     display: grid;
@@ -576,28 +223,6 @@ body {
     height: auto;
 }
 
-
-
-.addaccbtn {
-
-    width: 60%;
-    background: #274582;
-    color: white;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.addacccontent {
-    display: grid;
-    padding-top: 20px;
-    justify-content: center;
-}
-
 .form-title {
     padding: 20px;
     font-size: 1.25rem;
@@ -605,9 +230,14 @@ body {
     font-weight: 600;
     text-align: center;
     color: #000;
-    font-family: jai Jamjuree, sans-serif;
 }
 
+.aaform {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    padding-right: 15px;
+}
 
 .aaform input {
     padding: 14px 16px;
@@ -621,53 +251,261 @@ body {
     justify-items: center;
 }
 
-
 .aaform input:hover,
-    .aaform input:focus {
-        border: 2px solid #4A9DEC;
-        box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
-        background-color: white;
-    }
-
-    .aaform select:focus {
-        border-color: #274582;
-        box-shadow: 0 0 5px rgba(39, 69, 130, 0.3);
-    }
-    
-.aaform{
-    display: flex;
-    justify-content: space-between;
-    padding: 15px;
-    padding-right: 15px;
+.aaform input:focus {
+    border: 2px solid #4A9DEC;
+    box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
+    background-color: white;
 }
 
-.addbtn{
+.addaccbtn {
+    width: 60%;
+    background: #274582;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.addaccbtn:hover {
+    background-color: #005fcc;
+}
+
+.addbtn {
     text-align: center;
     padding-top: 15px;
 }
 
-.editaccform {
-background-color: #fff;
+.addacccontent {
     display: grid;
-    padding: 1rem;
-    border-radius: 1rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    width: 650px;
-    height: auto;
-}
-
-.editaccform .form-title{
-    padding: 20px;
-    font-size: 1.25rem;
-    line-height: 1.75rem;
-    font-weight: 600;
-    text-align: center;
-    color: #000;
-    font-family: jai Jamjuree, sans-serif;
-}
-
-.aaeditacc{
-        display: grid;
     padding-top: 20px;
     justify-content: center;
+}
+
+/* Miscellaneous styles */
+.form-message {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+}
+
+.form-message.error {
+    color: red;
+}
+
+.form-message.success {
+    color: green;
+}
+
+a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Initially hide the add account form and edit form */
+        #addAccountForm,
+        #editAccountForm {
+            display: none;
+            justify-items: center;
+        }
+
+        .form-message {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .form-message.error {
+            color: red;
+        }
+
+        .form-message.success {
+            color: green;
+        }
+
+        .addaccbtn {
+            padding: 12px 25px;
+            background-color: #0077ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .addaccbtn:hover {
+            background-color: #005fcc;
+        }
+
+        .cancel-btn {
+            padding: 12px 25px;
+            background-color: #ccc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .cancel-btn:hover {
+            background-color: #888;
+        }
+
+        /* Form Styling */
+        .form {
+            background-color: #fff;
+            display: grid;
+            padding: 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            width: 650px;
+            height: auto;
+        }
+
+        .form-title {
+            padding: 20px;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+            font-weight: 600;
+            text-align: center;
+            color: #000;
+        }
+
+        .aaform input {
+            padding: 14px 16px;
+            width: 65%;
+            border: none;
+            border-radius: 15px;
+            background: #F4F4F4;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .aaform input:hover,
+        .aaform input:focus {
+            border: 2px solid #4A9DEC;
+            box-shadow: 0px 0px 0px 7px rgb(74, 157, 236, 20%);
+            background-color: white;
+        }
+
+        .aaform {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            padding-right: 15px;
+        }
+
+        .form-message {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+}
+
+.form-message.error {
+    color: red;
+}
+
+.form-message.success {
+    color: green;
+}
+
+/* Confirmation Card Styling */
+.confirmation-card {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);  /* Dark background with transparency */
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    z-index: 9999; /* Ensure it stays above other content */
+}
+
+.confirmation-card-content {
+    text-align: center;
+}
+
+.confirmation-card button {
+    background-color: #0077ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 16px;
+}
+
+.confirmation-card button:hover {
+    background-color: #005fcc;
+}
+
+.confirmation-card button:nth-child(2) {
+    background-color: #ccc;
+}
+
+.confirmation-card button:nth-child(2):hover {
+    background-color: #888;
+}
+
+/* Blur the background content when the confirmation card is visible */
+body {
+    transition: filter 0.3s ease-in-out;
+}
+
+/* Prevent blur on the confirmation card */
+.confirmation-card {
+    filter: none !important;
+}
+
+/* Success alert box */
+.success-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    visibility: visible;
+}
+
+/* Fade-out effect after 3 seconds */
+.success-alert.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+    
+/* Error Message */
+.error {
+    color: red;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Success Message */
+.success {
+    color: green;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
 }
