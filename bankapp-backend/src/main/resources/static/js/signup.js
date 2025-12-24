@@ -20,7 +20,7 @@ document.getElementById('sendOtpBtn').addEventListener('click', async () => {
 function startCooldown(seconds) {
     cooldown = true;
     const btn = document.getElementById('sendOtpBtn');
-    const cd = document.getElementById('countdown');
+    const cd = document.getElementById('otp-countdown');
     btn.disabled = true;
     let left = seconds;
     cd.textContent = `Resend available in ${left}s`;
@@ -38,14 +38,47 @@ function startCooldown(seconds) {
 }
 
 document.getElementById('confirmBtn').addEventListener('click', async ()=>{
+    const accountNo = document.getElementById('accountNo').value.trim();
+    const city = document.getElementById('branch').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const nic = document.getElementById('nic').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const otp = document.getElementById('otp').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    
+    // Client-side validation
+    if (!accountNo || !city || !name || !nic || !phone || !email || !otp || !password) {
+        const err = document.getElementById('signup-error');
+        err.style.display = 'block';
+        err.textContent = 'Please fill in all required fields';
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        const err = document.getElementById('signup-error');
+        err.style.display = 'block';
+        err.textContent = 'Passwords do not match';
+        return;
+    }
+    
+    if (password.length < 6) {
+        const err = document.getElementById('signup-error');
+        err.style.display = 'block';
+        err.textContent = 'Password must be at least 6 characters long';
+        return;
+    }
+    
     const payload = {
-        accountNo: document.getElementById('accountNo').value.trim(),
-        branch: document.getElementById('branch').value.trim(),
-        name: document.getElementById('name').value.trim(),
-        nic: document.getElementById('nic').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        otp: document.getElementById('otp').value.trim()
+        accountNo: accountNo,
+        city: city,
+        name: name,
+        nic: nic,
+        phone: phone,
+        email: email,
+        otp: otp,
+        password: password
     };
     const err = document.getElementById('signup-error');
     const res = await fetch('/api/auth/verify-signup', {
@@ -53,8 +86,8 @@ document.getElementById('confirmBtn').addEventListener('click', async ()=>{
     });
     const data = await res.json();
     if (data.ok) {
-        // move to create credentials page
-        window.location.href = '/create_credentials.html';
+        // redirect to dashboard after successful signup
+        window.location.href = '/dashboard.html';
     } else {
         err.style.display = 'block';
         err.textContent = data.message || 'Verification failed';

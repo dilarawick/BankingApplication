@@ -2,12 +2,13 @@ package com.bankapp.bankapp_backend.controller;
 
 import com.bankapp.bankapp_backend.dto.LoginRequest;
 import com.bankapp.bankapp_backend.model.Account;
+import com.bankapp.bankapp_backend.model.Branch;
 import com.bankapp.bankapp_backend.model.Customer;
 import com.bankapp.bankapp_backend.model.CustomerAccount;
 import com.bankapp.bankapp_backend.repository.AccountRepository;
+import com.bankapp.bankapp_backend.repository.BranchRepository;
 import com.bankapp.bankapp_backend.repository.CustomerAccountRepository;
 import com.bankapp.bankapp_backend.repository.CustomerRepository;
-import com.bankapp.bankapp_backend.repository.BranchRepository;
 import com.bankapp.bankapp_backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,16 @@ import java.util.*;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-    @Autowired private AuthService authService;
-    @Autowired private CustomerRepository customerRepo;
-    @Autowired private AccountRepository accountRepo;
-    @Autowired private CustomerAccountRepository customerAccountRepo;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private CustomerRepository customerRepo;
+    @Autowired
+    private AccountRepository accountRepo;
+    @Autowired
+    private CustomerAccountRepository customerAccountRepo;
+    @Autowired
+    private BranchRepository branchRepo;
 
     // LOGIN
     @PostMapping("/auth/login")
@@ -64,6 +71,7 @@ public class ApiController {
         String email = body.get("email");
         String accountNo = body.get("accountNo");
         String otp = body.get("otp");
+        String city = body.get("city"); // New city parameter
 
         Map<String, Object> resp = new HashMap<>();
 
@@ -103,9 +111,40 @@ public class ApiController {
             return resp;
         }
 
-        // temp store customerId in session for next step (create credentials)
-        session.setAttribute("signupCustomerId", c.getCustomerID());
-        session.setAttribute("signupAccountNo", accountNo);
+        // Verify that the account's branch matches the selected city
+        if (city != null && !city.isEmpty()) {
+            Optional<Branch> branch = branchRepo.findByCity(city);
+            if (branch.isPresent()) {
+                // Check if the account's branch ID matches the branch from the selected city
+                if (!Objects.equals(acc.get().getBranchID(), branch.get().getBranchID())) {
+                    resp.put("ok", false);
+                    resp.put("message", "Account does not belong to the selected branch city");
+                    return resp;
+                }
+            } else {
+                // If no branch is found for the selected city
+                resp.put("ok", false);
+                resp.put("message", "No branch found for the selected city");
+                return resp;
+            }
+        }
+
+        // Get the password from the request
+        String password = body.get("password");
+
+        // Create credentials for the customer using email as username
+        boolean created = authService.createCredentialsForCustomerWithPassword(c.getCustomerID(), password);
+        if (!created) {
+            resp.put("ok", false);
+            resp.put("message", "Failed to create credentials");
+            return resp;
+        }
+
+        // Add customer account and mark as primary
+        authService.addCustomerAccount(c.getCustomerID(), accountNo, true);
+
+        // Store customer ID in session for login
+        session.setAttribute("customerId", c.getCustomerID());
         resp.put("ok", true);
         return resp;
     }
@@ -200,8 +239,9 @@ public class ApiController {
         List<CustomerAccount> cas = customerAccountRepo.findByCustomerID(customerId);
         List<Map<String, Object>> accounts = new ArrayList<>();
         // primary first
-        cas.sort((a,b) -> Boolean.compare(b.getIsPrimary()!=null && b.getIsPrimary(), a.getIsPrimary()!=null && a.getIsPrimary()));
-        for (CustomerAccount ca: cas) {
+        cas.sort((a, b) -> Boolean.compare(b.getIsPrimary() != null && b.getIsPrimary(),
+                a.getIsPrimary() != null && a.getIsPrimary()));
+        for (CustomerAccount ca : cas) {
             Optional<Account> aopt = accountRepo.findById(ca.getAccountNo());
             if (aopt.isPresent()) {
                 Account a = aopt.get();

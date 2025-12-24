@@ -81,6 +81,22 @@ public class AuthService {
         return true;
     }
 
+    public boolean createCredentialsForCustomerWithPassword(Integer customerId, String rawPassword) {
+        if (customerId == null)
+            return false;
+        Optional<Customer> oc = customerRepo.findById(customerId);
+        if (!oc.isPresent())
+            return false;
+        Customer c = oc.get();
+        if (c.getUsername() != null)
+            return false; // already has username
+        // Use email as username
+        c.setUsername(c.getEmail());
+        c.setPasswordHash(passwordEncoder.encode(rawPassword));
+        customerRepo.save(c);
+        return true;
+    }
+
     public boolean addCustomerAccount(Integer customerId, String accountNo, boolean isPrimary) {
         if (customerId == null)
             return false;
@@ -124,4 +140,3 @@ public class AuthService {
         return customerRepo.findById(customerId).orElse(null);
     }
 }
-
