@@ -7,6 +7,7 @@ import com.bankapp.bankapp_backend.model.CustomerAccount;
 import com.bankapp.bankapp_backend.repository.AccountRepository;
 import com.bankapp.bankapp_backend.repository.CustomerAccountRepository;
 import com.bankapp.bankapp_backend.repository.CustomerRepository;
+import com.bankapp.bankapp_backend.repository.BranchRepository;
 import com.bankapp.bankapp_backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +18,10 @@ import java.util.*;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private CustomerRepository customerRepo;
-    @Autowired
-    private AccountRepository accountRepo;
-    @Autowired
-    private CustomerAccountRepository customerAccountRepo;
+    @Autowired private AuthService authService;
+    @Autowired private CustomerRepository customerRepo;
+    @Autowired private AccountRepository accountRepo;
+    @Autowired private CustomerAccountRepository customerAccountRepo;
 
     // LOGIN
     @PostMapping("/auth/login")
@@ -203,13 +200,9 @@ public class ApiController {
         List<CustomerAccount> cas = customerAccountRepo.findByCustomerID(customerId);
         List<Map<String, Object>> accounts = new ArrayList<>();
         // primary first
-        cas.sort((a, b) -> Boolean.compare(b.getIsPrimary() != null && b.getIsPrimary(),
-                a.getIsPrimary() != null && a.getIsPrimary()));
-        for (CustomerAccount ca : cas) {
-            String acctNo = ca.getAccountNo();
-            if (acctNo == null)
-                continue;
-            Optional<Account> aopt = accountRepo.findById(acctNo);
+        cas.sort((a,b) -> Boolean.compare(b.getIsPrimary()!=null && b.getIsPrimary(), a.getIsPrimary()!=null && a.getIsPrimary()));
+        for (CustomerAccount ca: cas) {
+            Optional<Account> aopt = accountRepo.findById(ca.getAccountNo());
             if (aopt.isPresent()) {
                 Account a = aopt.get();
                 Map<String, Object> m = new HashMap<>();
@@ -221,5 +214,42 @@ public class ApiController {
             }
         }
         return Map.of("ok", true, "name", c.getName(), "email", c.getEmail(), "accounts", accounts);
+    }
+
+    // BANK TRANSFER: get source account info (account number/name/bank) for
+    // logged-in user
+    @GetMapping("/transfer/source")
+    public Map<String, Object> transferSource(HttpSession session) {
+        Integer customerId = (Integer) session.getAttribute("customerId");
+        if (customerId == null)
+            return Map.of("ok", false, "message", "Not logged in");
+
+        List<CustomerAccount> cas = customerAccountRepo.findByCustomerID(customerId);
+        if (cas.isEmpty())
+            return Map.of("ok", false, "message", "No accounts found");
+
+        // find primary first
+        cas.sort((a, b) -> Boolean.compare(b.getIsPrimary() != null && b.getIsPrimary(),
+                a.getIsPrimary() != null && a.getIsPrimary()));
+        CustomerAccount ca = cas.get(0);
+        Optional<Account> aopt = accountRepo.findById(ca.getAccountNo());
+        if (aopt.isEmpty())
+            return Map.of("ok", false, "message", "Account record not found");
+        Account a = aopt.get();
+
+        Optional<Customer> cust = customerRepo.findById(customerId);
+        String accountName = cust.map(Customer::getName).orElse(null);
+        String bankName = null;
+        if (a.getBranchID() != null) {
+            bankName = branchRepo.findById(a.getBranchID()).map(b -> b.getBranchName()).orElse(null);
+        }
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("ok", true);
+        resp.put("accountNo", a.getAccountNo());
+        resp.put("accountName", accountName);
+        resp.put("bank", bankName);
+        resp.put("balance", a.getAccountBalance());
+        return resp;
     }
 }
