@@ -17,16 +17,20 @@ import java.util.*;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-    @Autowired private AuthService authService;
-    @Autowired private CustomerRepository customerRepo;
-    @Autowired private AccountRepository accountRepo;
-    @Autowired private CustomerAccountRepository customerAccountRepo;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private CustomerRepository customerRepo;
+    @Autowired
+    private AccountRepository accountRepo;
+    @Autowired
+    private CustomerAccountRepository customerAccountRepo;
 
     // LOGIN
     @PostMapping("/auth/login")
-    public Map<String,Object> login(@RequestBody LoginRequest req, HttpSession session) {
+    public Map<String, Object> login(@RequestBody LoginRequest req, HttpSession session) {
         Optional<Customer> c = authService.authenticate(req.getUsername(), req.getPassword());
-        Map<String,Object> resp = new HashMap<>();
+        Map<String, Object> resp = new HashMap<>();
         if (c.isPresent()) {
             session.setAttribute("customerId", c.get().getCustomerID());
             resp.put("ok", true);
@@ -42,14 +46,14 @@ public class ApiController {
 
     // LOGOUT
     @PostMapping("/auth/logout")
-    public Map<String,Object> logout(HttpSession session) {
+    public Map<String, Object> logout(HttpSession session) {
         session.invalidate();
         return Map.of("ok", true);
     }
 
     // SEND OTP (for signup or password change)
     @PostMapping("/auth/send-otp")
-    public Map<String,Object> sendOtp(@RequestBody Map<String,String> body) {
+    public Map<String, Object> sendOtp(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         boolean sent = authService.sendOtpEmail(email);
         return Map.of("ok", sent);
@@ -57,14 +61,14 @@ public class ApiController {
 
     // VERIFY signup details (name, nic, email, accountNo) with OTP check
     @PostMapping("/auth/verify-signup")
-    public Map<String,Object> verifySignup(@RequestBody Map<String,String> body, HttpSession session) {
+    public Map<String, Object> verifySignup(@RequestBody Map<String, String> body, HttpSession session) {
         String name = body.get("name");
         String nic = body.get("nic");
         String email = body.get("email");
         String accountNo = body.get("accountNo");
         String otp = body.get("otp");
 
-        Map<String,Object> resp = new HashMap<>();
+        Map<String, Object> resp = new HashMap<>();
 
         if (!authService.verifyOtp(email, otp)) {
             resp.put("ok", false);
@@ -111,7 +115,7 @@ public class ApiController {
 
     // CREATE CREDENTIALS after verify-signup
     @PostMapping("/auth/create-credentials")
-    public Map<String,Object> createCredentials(@RequestBody Map<String,String> body, HttpSession session) {
+    public Map<String, Object> createCredentials(@RequestBody Map<String, String> body, HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("signupCustomerId");
         String accountNo = (String) session.getAttribute("signupAccountNo");
         if (customerId == null || accountNo == null) {
@@ -122,10 +126,12 @@ public class ApiController {
 
         // basic checks omitted for brevity: unique username, password strength
         Optional<Customer> maybe = customerRepo.findByUsername(username);
-        if (maybe.isPresent()) return Map.of("ok", false, "message", "Username already taken");
+        if (maybe.isPresent())
+            return Map.of("ok", false, "message", "Username already taken");
 
         boolean created = authService.createCredentialsForCustomer(customerId, username, password);
-        if (!created) return Map.of("ok", false, "message", "Failed to create credentials");
+        if (!created)
+            return Map.of("ok", false, "message", "Failed to create credentials");
 
         // add customer account and mark primary
         authService.addCustomerAccount(customerId, accountNo, true);
@@ -139,7 +145,7 @@ public class ApiController {
 
     // SEND OTP for password reset identity verification
     @PostMapping("/auth/send-otp-for-reset")
-    public Map<String,Object> sendOtpForReset(@RequestBody Map<String,String> body) {
+    public Map<String, Object> sendOtpForReset(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         boolean sent = authService.sendOtpEmail(email);
         return Map.of("ok", sent);
@@ -147,16 +153,18 @@ public class ApiController {
 
     // VERIFY identity details for password reset
     @PostMapping("/auth/verify-reset")
-    public Map<String,Object> verifyReset(@RequestBody Map<String,String> body, HttpSession session) {
+    public Map<String, Object> verifyReset(@RequestBody Map<String, String> body, HttpSession session) {
         String name = body.get("name");
         String nic = body.get("nic");
         String email = body.get("email");
         String otp = body.get("otp");
 
-        if (!authService.verifyOtp(email, otp)) return Map.of("ok", false, "message", "OTP incorrect");
+        if (!authService.verifyOtp(email, otp))
+            return Map.of("ok", false, "message", "OTP incorrect");
 
         Optional<Customer> oc = customerRepo.findByNameAndNic(name, nic);
-        if (oc.isEmpty()) return Map.of("ok", false, "message", "Customer details not match");
+        if (oc.isEmpty())
+            return Map.of("ok", false, "message", "Customer details not match");
 
         // store in session
         session.setAttribute("resetCustomerId", oc.get().getCustomerID());
@@ -165,9 +173,10 @@ public class ApiController {
 
     // CHANGE PASSWORD after reset verification
     @PostMapping("/auth/change-password")
-    public Map<String,Object> changePassword(@RequestBody Map<String,String> body, HttpSession session) {
+    public Map<String, Object> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("resetCustomerId");
-        if (customerId == null) return Map.of("ok", false, "message", "No reset session");
+        if (customerId == null)
+            return Map.of("ok", false, "message", "No reset session");
 
         String newPassword = body.get("password");
         boolean changed = authService.changePasswordByCustomer(customerId, newPassword);
@@ -181,23 +190,29 @@ public class ApiController {
 
     // DASHBOARD: fetch customer and accounts
     @GetMapping("/dashboard/me")
-    public Map<String,Object> dashboard(HttpSession session) {
+    public Map<String, Object> dashboard(HttpSession session) {
         Integer customerId = (Integer) session.getAttribute("customerId");
-        if (customerId == null) return Map.of("ok", false, "message", "Not logged in");
+        if (customerId == null)
+            return Map.of("ok", false, "message", "Not logged in");
 
         Optional<Customer> oc = customerRepo.findById(customerId);
-        if (oc.isEmpty()) return Map.of("ok", false, "message", "Customer not found");
+        if (oc.isEmpty())
+            return Map.of("ok", false, "message", "Customer not found");
 
         Customer c = oc.get();
         List<CustomerAccount> cas = customerAccountRepo.findByCustomerID(customerId);
-        List<Map<String,Object>> accounts = new ArrayList<>();
+        List<Map<String, Object>> accounts = new ArrayList<>();
         // primary first
-        cas.sort((a,b) -> Boolean.compare(b.getIsPrimary()!=null && b.getIsPrimary(), a.getIsPrimary()!=null && a.getIsPrimary()));
-        for (CustomerAccount ca: cas) {
-            Optional<Account> aopt = accountRepo.findById(ca.getAccountNo());
+        cas.sort((a, b) -> Boolean.compare(b.getIsPrimary() != null && b.getIsPrimary(),
+                a.getIsPrimary() != null && a.getIsPrimary()));
+        for (CustomerAccount ca : cas) {
+            String acctNo = ca.getAccountNo();
+            if (acctNo == null)
+                continue;
+            Optional<Account> aopt = accountRepo.findById(acctNo);
             if (aopt.isPresent()) {
                 Account a = aopt.get();
-                Map<String,Object> m = new HashMap<>();
+                Map<String, Object> m = new HashMap<>();
                 m.put("accountNo", a.getAccountNo());
                 m.put("accountType", a.getAccountType());
                 m.put("balance", a.getAccountBalance());

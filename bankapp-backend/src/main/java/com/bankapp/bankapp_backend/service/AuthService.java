@@ -16,17 +16,24 @@ import java.util.List;
 
 @Service
 public class AuthService {
-    @Autowired private CustomerRepository customerRepo;
-    @Autowired private AccountRepository accountRepo;
-    @Autowired private CustomerAccountRepository customerAccountRepo;
-    @Autowired private BCryptPasswordEncoder passwordEncoder;
-    @Autowired private JavaMailSender mailSender;
-    @Autowired private OtpService otpService;
+    @Autowired
+    private CustomerRepository customerRepo;
+    @Autowired
+    private AccountRepository accountRepo;
+    @Autowired
+    private CustomerAccountRepository customerAccountRepo;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private JavaMailSender mailSender;
+    @Autowired
+    private OtpService otpService;
 
     public Optional<Customer> authenticate(String username, String rawPassword) {
         Optional<Customer> c = customerRepo.findByUsername(username);
         if (c.isPresent() && c.get().getPasswordHash() != null) {
-            if (passwordEncoder.matches(rawPassword, c.get().getPasswordHash())) return c;
+            if (passwordEncoder.matches(rawPassword, c.get().getPasswordHash()))
+                return c;
         }
         return Optional.empty();
     }
@@ -60,10 +67,14 @@ public class AuthService {
     }
 
     public boolean createCredentialsForCustomer(Integer customerId, String username, String rawPassword) {
+        if (customerId == null)
+            return false;
         Optional<Customer> oc = customerRepo.findById(customerId);
-        if (!oc.isPresent()) return false;
+        if (!oc.isPresent())
+            return false;
         Customer c = oc.get();
-        if (c.getUsername() != null) return false; // already has username
+        if (c.getUsername() != null)
+            return false; // already has username
         c.setUsername(username);
         c.setPasswordHash(passwordEncoder.encode(rawPassword));
         customerRepo.save(c);
@@ -71,8 +82,11 @@ public class AuthService {
     }
 
     public boolean addCustomerAccount(Integer customerId, String accountNo, boolean isPrimary) {
+        if (customerId == null)
+            return false;
         Optional<Account> acc = accountRepo.findByAccountNo(accountNo);
-        if (!acc.isPresent()) return false;
+        if (!acc.isPresent())
+            return false;
         CustomerAccount ca = new CustomerAccount();
         ca.setCustomerID(customerId);
         ca.setAccountNo(accountNo);
@@ -92,8 +106,11 @@ public class AuthService {
     }
 
     public boolean changePasswordByCustomer(Integer customerId, String newRawPassword) {
+        if (customerId == null)
+            return false;
         Optional<Customer> oc = customerRepo.findById(customerId);
-        if (!oc.isPresent()) return false;
+        if (!oc.isPresent())
+            return false;
         Customer c = oc.get();
         c.setPasswordHash(passwordEncoder.encode(newRawPassword));
         customerRepo.save(c);
@@ -102,6 +119,9 @@ public class AuthService {
 
     // fetch dashboard info
     public Customer getCustomer(Integer customerId) {
+        if (customerId == null)
+            return null;
         return customerRepo.findById(customerId).orElse(null);
     }
 }
+
