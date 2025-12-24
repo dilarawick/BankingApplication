@@ -63,13 +63,14 @@ public class ApiController {
         return Map.of("ok", sent);
     }
 
-    // VERIFY signup details (name, nic, email, accountNo) with OTP check
+    // VERIFY signup details and create new customer
     @PostMapping("/auth/verify-signup")
     public Map<String, Object> verifySignup(@RequestBody Map<String, String> body, HttpSession session) {
         String name = body.get("name");
         String nic = body.get("nic");
         String email = body.get("email");
         String accountNo = body.get("accountNo");
+        String phone = body.get("phone");
         String otp = body.get("otp");
         String city = body.get("city"); // New city parameter
 
@@ -81,33 +82,11 @@ public class ApiController {
             return resp;
         }
 
-        Optional<Customer> oc = authService.findCustomerByNameNic(name, nic);
-        if (oc.isEmpty()) {
-            resp.put("ok", false);
-            resp.put("message", "Customer details do not match");
-            return resp;
-        }
-        Customer c = oc.get();
-
-        // check if username exists already
-        if (c.getUsername() != null) {
-            resp.put("ok", false);
-            resp.put("message", "User already exists (credentials set).");
-            return resp;
-        }
-
-        // verify account exists
+        // Check if account exists
         Optional<Account> acc = authService.findAccountByAccountNo(accountNo);
         if (acc.isEmpty()) {
             resp.put("ok", false);
             resp.put("message", "Account number not found");
-            return resp;
-        }
-
-        // ensure the account belongs to the same customer in DB (Account.CustomerID)
-        if (!Objects.equals(acc.get().getCustomerID(), c.getCustomerID())) {
-            resp.put("ok", false);
-            resp.put("message", "Account does not belong to this customer");
             return resp;
         }
 
@@ -129,22 +108,54 @@ public class ApiController {
             }
         }
 
+        // Check if customer already exists with this email or NIC
+        Optional<Customer> existingCustomerByEmail = customerRepo.findByEmail(email);
+        Optional<Customer> existingCustomerByNic = customerRepo.findByNic(nic);
+
+        if (existingCustomerByEmail.isPresent() || existingCustomerByNic.isPresent()) {
+            resp.put("ok", false);
+            resp.put("message", "Customer with this email or NIC already exists");
+            return resp;
+        }
+
+        // Create new customer
+        Customer newCustomer = new Customer();
+        newCustomer.setName(name);
+        newCustomer.setNic(nic);
+        newCustomer.setEmail(email);
+        newCustomer.setPhoneNumber(phone);
+
+        // Save the new customer to get the ID
+        Customer savedCustomer = customerRepo.save(newCustomer);
+
         // Get the password from the request
         String password = body.get("password");
 
-        // Create credentials for the customer using email as username
-        boolean created = authService.createCredentialsForCustomerWithPassword(c.getCustomerID(), password);
+        // Create credentials for the customer
+        boolean created = authService.createCredentialsForCustomerWithPassword(savedCustomer.getCustomerID(), password);
         if (!created) {
             resp.put("ok", false);
             resp.put("message", "Failed to create credentials");
             return resp;
         }
 
+        // Check if the account already has a customer associated
+        if (acc.get().getCustomerID() != null) {
+            resp.put("ok", false);
+            resp.put("message", "Account is already associated with a customer");
+            return resp;
+        }
+
+        // Update the account to link it to the new customer
+        Account account = acc.get();
+        account.setCustomerID(savedCustomer.getCustomerID());
+        accountRepo.save(account);
+
         // Add customer account and mark as primary
-        authService.addCustomerAccount(c.getCustomerID(), accountNo, true);
+        authService.addCustomerAccount(savedCustomer.getCustomerID(), accountNo, true);
 
         // Store customer ID in session for login
-        session.setAttribute("customerId", c.getCustomerID());
+        session.setAttribute("customerId", savedCustomer.getCustomerID());
         resp.put("ok", true);
         return resp;
     }
