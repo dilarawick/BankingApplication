@@ -63,16 +63,16 @@ public class ApiController {
         return Map.of("ok", sent);
     }
 
-    // VERIFY signup details and create new customer
+    // VERIFY signup details and create new customer without account number
+    // requirement
     @PostMapping("/auth/verify-signup")
     public Map<String, Object> verifySignup(@RequestBody Map<String, String> body, HttpSession session) {
         String name = body.get("name");
         String nic = body.get("nic");
         String email = body.get("email");
-        String accountNo = body.get("accountNo");
         String phone = body.get("phone");
         String otp = body.get("otp");
-        String city = body.get("city"); // New city parameter
+        String username = body.get("username");
 
         Map<String, Object> resp = new HashMap<>();
 
@@ -80,32 +80,6 @@ public class ApiController {
             resp.put("ok", false);
             resp.put("message", "OTP incorrect");
             return resp;
-        }
-
-        // Check if account exists
-        Optional<Account> acc = authService.findAccountByAccountNo(accountNo);
-        if (acc.isEmpty()) {
-            resp.put("ok", false);
-            resp.put("message", "Account number not found");
-            return resp;
-        }
-
-        // Verify that the account's branch matches the selected city
-        if (city != null && !city.isEmpty()) {
-            Optional<Branch> branch = branchRepo.findByCity(city);
-            if (branch.isPresent()) {
-                // Check if the account's branch ID matches the branch from the selected city
-                if (!Objects.equals(acc.get().getBranchID(), branch.get().getBranchID())) {
-                    resp.put("ok", false);
-                    resp.put("message", "Account does not belong to the selected branch city");
-                    return resp;
-                }
-            } else {
-                // If no branch is found for the selected city
-                resp.put("ok", false);
-                resp.put("message", "No branch found for the selected city");
-                return resp;
-            }
         }
 
         // Check if customer already exists with this email or NIC
@@ -124,6 +98,7 @@ public class ApiController {
         newCustomer.setNic(nic);
         newCustomer.setEmail(email);
         newCustomer.setPhoneNumber(phone);
+        newCustomer.setUsername(username); // Use provided username
 
         // Save the new customer to get the ID
         Customer savedCustomer = customerRepo.save(newCustomer);
@@ -138,21 +113,6 @@ public class ApiController {
             resp.put("message", "Failed to create credentials");
             return resp;
         }
-
-        // Check if the account already has a customer associated
-        if (acc.get().getCustomerID() != null) {
-            resp.put("ok", false);
-            resp.put("message", "Account is already associated with a customer");
-            return resp;
-        }
-
-        // Update the account to link it to the new customer
-        Account account = acc.get();
-        account.setCustomerID(savedCustomer.getCustomerID());
-        accountRepo.save(account);
-
-        // Add customer account and mark as primary
-        authService.addCustomerAccount(savedCustomer.getCustomerID(), accountNo, true);
 
         // Store customer ID in session for login
         session.setAttribute("customerId", savedCustomer.getCustomerID());

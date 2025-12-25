@@ -38,21 +38,29 @@ function startCooldown(seconds) {
 }
 
 document.getElementById('confirmBtn').addEventListener('click', async ()=>{
-    const accountNo = document.getElementById('accountNo').value.trim();
-    const city = document.getElementById('branch').value.trim();
     const name = document.getElementById('name').value.trim();
     const nic = document.getElementById('nic').value.trim();
     const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
     const otp = document.getElementById('otp').value.trim();
+    const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    const terms = document.getElementById('terms').checked;
+    const consent = document.getElementById('consent').checked;
     
     // Client-side validation
-    if (!accountNo || !city || !name || !nic || !phone || !email || !otp || !password) {
+    if (!name || !nic || !phone || !email || !otp || !username || !password || !confirmPassword) {
         const err = document.getElementById('signup-error');
         err.style.display = 'block';
         err.textContent = 'Please fill in all required fields';
+        return;
+    }
+    
+    if (!terms || !consent) {
+        const err = document.getElementById('signup-error');
+        err.style.display = 'block';
+        err.textContent = 'Please agree to terms and consent to digital banking services';
         return;
     }
     
@@ -63,21 +71,34 @@ document.getElementById('confirmBtn').addEventListener('click', async ()=>{
         return;
     }
     
-    if (password.length < 6) {
+    if (password.length < 8) {
         const err = document.getElementById('signup-error');
         err.style.display = 'block';
-        err.textContent = 'Password must be at least 6 characters long';
+        err.textContent = 'Password must be at least 8 characters long';
+        return;
+    }
+    
+    if (!/(?=.*[0-9])/.test(password)) {
+        const err = document.getElementById('signup-error');
+        err.style.display = 'block';
+        err.textContent = 'Password must contain at least one number';
+        return;
+    }
+    
+    if (!/(?=.*[!@#$%^&*])/.test(password)) {
+        const err = document.getElementById('signup-error');
+        err.style.display = 'block';
+        err.textContent = 'Password must contain at least one special character';
         return;
     }
     
     const payload = {
-        accountNo: accountNo,
-        city: city,
         name: name,
         nic: nic,
         phone: phone,
         email: email,
         otp: otp,
+        username: username,
         password: password
     };
     const err = document.getElementById('signup-error');
@@ -86,8 +107,8 @@ document.getElementById('confirmBtn').addEventListener('click', async ()=>{
     });
     const data = await res.json();
     if (data.ok) {
-        // redirect to dashboard after successful signup
-        window.location.href = '/dashboard.html';
+        // redirect to success page after successful signup
+        window.location.href = '/signup-success.html';
     } else {
         err.style.display = 'block';
         err.textContent = data.message || 'Verification failed';
