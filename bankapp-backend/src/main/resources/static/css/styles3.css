@@ -129,6 +129,7 @@ body {
 .nav-item.active {
     background:  #5B7AB3;
     color: white;
+    font-weight: bold;
 }
 
 .nav-icon {
@@ -525,4 +526,158 @@ body {
     .top-bar {
         padding: 16px;
     }
+}
+
+/* Accounts page styles */
+.accounts-container {
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.account-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.edit-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.account-nickname {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.account-center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bank-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.bank-logo {
+    width: 60px;
+    height: 60px;
+    background: #003366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.bank-details {
+    text-align: center;
+}
+
+.bank-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.branch-name {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.account-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.delete-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.add-account-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.22);
+}
+
+.add-account-card:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
+
+.add-account-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.plus-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.add-account-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #4b5563;
+    margin: 0;
 }
