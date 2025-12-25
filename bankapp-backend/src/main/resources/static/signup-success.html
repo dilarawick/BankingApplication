@@ -30,10 +30,17 @@
                 
                 <div class="form-row full">
                     <div class="form-group">
-                        <button onclick="window.location.href='/dashboard.html'" class="btn-confirm">Go to Dashboard</button>
+                        <p>Redirecting to dashboard...</p>
                     </div>
                 </div>
             </div>
+            
+            <script>
+                // Automatically redirect to dashboard after 3 seconds
+                setTimeout(function() {
+                    window.location.href = '/dashboard.html';
+                }, 3000);
+            </script>
         </div>
     </div>
 </div>

@@ -82,13 +82,15 @@ public class ApiController {
             return resp;
         }
 
-        // Check if customer already exists with this email or NIC
+        // Check if customer already exists with this email, NIC, or username
         Optional<Customer> existingCustomerByEmail = customerRepo.findByEmail(email);
         Optional<Customer> existingCustomerByNic = customerRepo.findByNic(nic);
+        Optional<Customer> existingCustomerByUsername = customerRepo.findByUsername(username);
 
-        if (existingCustomerByEmail.isPresent() || existingCustomerByNic.isPresent()) {
+        if (existingCustomerByEmail.isPresent() || existingCustomerByNic.isPresent()
+                || existingCustomerByUsername.isPresent()) {
             resp.put("ok", false);
-            resp.put("message", "Customer with this email or NIC already exists");
+            resp.put("message", "Customer with this email, NIC, or username already exists");
             return resp;
         }
 
@@ -98,7 +100,7 @@ public class ApiController {
         newCustomer.setNic(nic);
         newCustomer.setEmail(email);
         newCustomer.setPhoneNumber(phone);
-        newCustomer.setUsername(username); // Use provided username
+        // Don't set username yet - let AuthService handle it
 
         // Save the new customer to get the ID
         Customer savedCustomer = customerRepo.save(newCustomer);
@@ -107,7 +109,7 @@ public class ApiController {
         String password = body.get("password");
 
         // Create credentials for the customer
-        boolean created = authService.createCredentialsForCustomerWithPassword(savedCustomer.getCustomerID(), password);
+        boolean created = authService.createCredentialsForCustomer(savedCustomer.getCustomerID(), username, password);
         if (!created) {
             resp.put("ok", false);
             resp.put("message", "Failed to create credentials");
