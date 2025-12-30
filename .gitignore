@@ -1,57 +1,33 @@
-# ===========================
-# Java + Maven + IntelliJ
-# ===========================
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# ---> IntelliJ IDEA
-.idea/
-*.iml
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
 *.iws
+*.iml
 *.ipr
 
-# IntelliJ build output
-/out/
-
-# ---> Maven
-/target/
-
-# ---> Java
-*.class
-*.jar
-*.war
-*.ear
-*.nar
-*.zip
-*.tar.gz
-*.rar
-
-# ---> OS-specific files
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Linux
-*~
-
-# ---> Logs and temp files
-*.log
-*.tmp
-*.bak
-*.swp
-*.swo
-
-# ---> Environment and local config
-.env
-.env.*
-*.local
-*.idea_modules/
-
-# ---> Misc
-# Ignore compiled JSPs or generated web files (optional)
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 build/
-dist/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/

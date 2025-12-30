@@ -1,4 +1,4 @@
-package com.bankapp.bankapp_backend.config;
+package com.bankapp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

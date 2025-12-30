@@ -1,4 +1,4 @@
-package com.bankapp.bankapp_backend.service;
+package com.bankapp.service;
 
 import org.springframework.stereotype.Service;
 import java.time.Instant;

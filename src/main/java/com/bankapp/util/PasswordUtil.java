@@ -1,4 +1,4 @@
-package com.bankapp.bankapp_backend.util;
+package com.bankapp.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

@@ -1,4 +1,4 @@
-package com.bankapp.bankapp_backend.dto;
+package com.bankapp.dto;
 
 public class LoginRequest {
     private String username;

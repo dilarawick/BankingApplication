@@ -1,4 +1,4 @@
-package com.bankapp.bankapp_backend.model;
+package com.bankapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

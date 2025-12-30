@@ -1,11 +1,11 @@
-package com.bankapp.bankapp_backend;
+package com.bankapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BankappBackendApplication {
+public class BankingApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BankappBackendApplication.class, args);
+        SpringApplication.run(BankingApplication.class, args);
     }
 }

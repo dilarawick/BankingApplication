@@ -1,6 +1,6 @@
-package com.bankapp.bankapp_backend.repository;
+package com.bankapp.repository;
 
-import com.bankapp.bankapp_backend.model.Branch;
+import com.bankapp.model.Branch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

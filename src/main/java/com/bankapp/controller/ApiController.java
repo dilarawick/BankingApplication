@@ -1,15 +1,14 @@
-package com.bankapp.bankapp_backend.controller;
+package com.bankapp.controller;
 
-import com.bankapp.bankapp_backend.dto.LoginRequest;
-import com.bankapp.bankapp_backend.model.Account;
-import com.bankapp.bankapp_backend.model.Branch;
-import com.bankapp.bankapp_backend.model.Customer;
-import com.bankapp.bankapp_backend.model.CustomerAccount;
-import com.bankapp.bankapp_backend.repository.AccountRepository;
-import com.bankapp.bankapp_backend.repository.BranchRepository;
-import com.bankapp.bankapp_backend.repository.CustomerAccountRepository;
-import com.bankapp.bankapp_backend.repository.CustomerRepository;
-import com.bankapp.bankapp_backend.service.AuthService;
+import com.bankapp.dto.LoginRequest;
+import com.bankapp.model.Account;
+import com.bankapp.model.Customer;
+import com.bankapp.model.CustomerAccount;
+import com.bankapp.repository.AccountRepository;
+import com.bankapp.repository.BranchRepository;
+import com.bankapp.repository.CustomerAccountRepository;
+import com.bankapp.repository.CustomerRepository;
+import com.bankapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;

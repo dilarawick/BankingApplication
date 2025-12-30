@@ -1,11 +1,11 @@
-package com.bankapp.bankapp_backend.service;
+package com.bankapp.service;
 
-import com.bankapp.bankapp_backend.model.Customer;
-import com.bankapp.bankapp_backend.model.CustomerAccount;
-import com.bankapp.bankapp_backend.model.Account;
-import com.bankapp.bankapp_backend.repository.CustomerRepository;
-import com.bankapp.bankapp_backend.repository.AccountRepository;
-import com.bankapp.bankapp_backend.repository.CustomerAccountRepository;
+import com.bankapp.model.Customer;
+import com.bankapp.model.CustomerAccount;
+import com.bankapp.model.Account;
+import com.bankapp.repository.CustomerRepository;
+import com.bankapp.repository.AccountRepository;
+import com.bankapp.repository.CustomerAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

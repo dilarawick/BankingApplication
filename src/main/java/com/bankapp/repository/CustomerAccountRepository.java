@@ -1,6 +1,6 @@
-package com.bankapp.bankapp_backend.repository;
+package com.bankapp.repository;
 
-import com.bankapp.bankapp_backend.model.CustomerAccount;
+import com.bankapp.model.CustomerAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.bankapp</groupId>
-	<artifactId>bankapp-backend</artifactId>
+	<artifactId>BankingApplication</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bankapp-backend</name>
+	<name>BankingApplication</name>
 	<description>Banking web app backend using Spring Boot</description>
 	<url/>
 	<licenses>
