@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Bank - Transfer</title>
-    <link rel="stylesheet" href="css/styles3.css">
+    <link rel="stylesheet" href="css/styles-post-login.css">
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
 <body>
+    <div class="toast" id="toast"></div>
     <div class="container">
         <aside class="sidebar">
             <div class="logo-section">
@@ -45,11 +46,11 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="icon-btn">
-                    <img src="img/settings_icon.png" alt="Profile">
+                <button class="icon-btn" onclick="handleSettings()">
+                    <img src="img/settings_icon.png" alt="Settings">
                 </button>
-                <button class="icon-btn" id="logoutBtn">
-                    <img src="img/logout_icon.png" alt="Profile">
+                <button class="icon-btn" id="logoutBtn" onclick="handleLogout()">
+                    <img src="img/logout_icon.png" alt="Logout">
                 </button>
             </div>
         </aside>
@@ -73,5 +74,7 @@
     </div>
 
     <script src="js/dashboard.js"></script>
+    <script src="js/util.js"  ></script>
+    <script src="js/security.js"  ></script>
 </body>
 </html>

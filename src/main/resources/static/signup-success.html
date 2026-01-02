@@ -4,45 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Successful</title>
-    <link rel="stylesheet" href="css/styles2.css" />
+    <link rel="stylesheet" href="css/styles-auth.css" />
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
-<body style="background-image: url('img/brg.jpg');">
-<div class="signup-wrapper">
-    <div class="signup-left" style="background-image: url('img/brg.jpg');">
-        <div class="logo-container">
-            <img src="img/logo.png" alt="Logo">
-        </div>
-    </div>
-    <div class="signup-right">
-        <div class="signup-form">
-            <h2>SIGN UP SUCCESSFUL!</h2>
-            
-            <div class="section">
-                <h3>🎉 Success!</h3>
-                <p>Your online banking account has been successfully created.</p>
-                
-                <div class="form-row full">
-                    <div class="form-group">
-                        <p>You can now access your account with your username and password.</p>
-                    </div>
-                </div>
-                
-                <div class="form-row full">
-                    <div class="form-group">
-                        <p>Redirecting to dashboard...</p>
-                    </div>
-                </div>
+<body class="bg-blur">
+    <div class="toast" id="toast"></div>
+    <div class="signup-wrapper">
+        <div class="login-left" style="background-image: url('img/brg.jpg');">
+            <div class="logo-container">
+                <img src="img/logo.png" alt="Logo">
             </div>
-            
-            <script>
-                // Automatically redirect to dashboard after 3 seconds
-                setTimeout(function() {
-                    window.location.href = '/dashboard.html';
-                }, 3000);
-            </script>
+        </div>
+        <div class="signup-right">
+            <div class="signup-form">
+                <h2 style="margin-bottom: 10px; margin-top: 10px;">SIGN UP SUCCESSFUL!</h2>
+                
+                <div class="section" style="align-items: center; border: 0px; margin-bottom: 0px;">
+                    <img src="img/save-icon.svg" style="width:90px; margin-left:140px;">
+                    
+                    <div class="form-row full" style="margin-top: 20px; margin-bottom: 50px;">
+                        <div class="form-group" style="margin-bottom: 0px;">
+                            <li style="margin-left: 15px"><p>Your online banking account has been successfully created.</p></li>
+                            <li style="margin-left: 15px"><p style="margin-bottom: 0px;">You can now access your account with your username and password.</p></li>
+                        </div>
+                    </div>
+    
+                    <p style="text-align: center;">Redirecting to login page...</p>
+                </div>
+                
+                <script>
+                    setTimeout(function() {
+                        window.location.href = '/login.html';
+                    }, 3000);
+                </script>
+                <script src="js/util.js"  ></script>
+            </div>
         </div>
     </div>
-</div>
 </body>
 </html>

@@ -23,7 +23,6 @@ public class CustomerAccount {
     @PrePersist
     public void prePersist() { addedDate = LocalDateTime.now(); }
 
-    // getters & setters
     public Integer getCustomerAccountID() { return customerAccountID; }
     public void setCustomerAccountID(Integer customerAccountID) { this.customerAccountID = customerAccountID; }
 

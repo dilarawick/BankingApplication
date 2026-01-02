@@ -17,7 +17,6 @@ public class Branch {
 
     private String postalCode;
 
-    // getters & setters
     public Integer getBranchID() { return branchID; }
     public void setBranchID(Integer branchID) { this.branchID = branchID; }
 

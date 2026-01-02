@@ -25,7 +25,6 @@ public class Customer {
 
     private String passwordHash;
 
-    // getters and setters
     public Integer getCustomerID() { return customerID; }
     public void setCustomerID(Integer customerID) { this.customerID = customerID; }
 

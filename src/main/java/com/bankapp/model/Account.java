@@ -11,10 +11,10 @@ public class Account {
     private String accountNo;
 
     @Column(nullable=false)
-    private Integer customerID; // original owner ID
+    private Integer customerID;
 
     @Column(nullable=false)
-    private String accountType; // Savings/Current/Fixed Deposit
+    private String accountType;
 
     @Column(nullable=false)
     private Integer branchID;
@@ -36,7 +36,6 @@ public class Account {
         lastUpdatedDate = LocalDateTime.now();
     }
 
-    // getters & setters
     public String getAccountNo() { return accountNo; }
     public void setAccountNo(String accountNo) { this.accountNo = accountNo; }
 

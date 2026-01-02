@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Bank - Accounts</title>
-    <link rel="stylesheet" href="css/styles3.css">
+    <link rel="stylesheet" href="css/styles-post-login.css">
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
 <body>
+    <div class="toast" id="toast"></div>
     <div class="container">
         <aside class="sidebar">
             <div class="logo-section">
@@ -45,11 +46,11 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button class="icon-btn">
-                    <img src="img/settings_icon.png" alt="Profile">
+                <button class="icon-btn"  onclick="handleSettings()">
+                    <img src="img/settings_icon.png" alt="Settings">
                 </button>
-                <button class="icon-btn" id="logoutBtn">
-                    <img src="img/logout_icon.png" alt="Profile">
+                <button class="icon-btn" id="logoutBtn" onclick="handleLogout()">
+                    <img src="img/logout_icon.png" alt="Logout">
                 </button>
             </div>
         </aside>
@@ -71,7 +72,6 @@
             </header>
             
             <div class="accounts-container">
-                <!-- First container: Account details -->
                 <div class="account-card">
                     <div class="account-header">
                         <button class="edit-icon">
@@ -97,7 +97,6 @@
                     </div>
                 </div>
                 
-                <!-- Second container: Add bank account -->
                 <div class="add-account-card">
                     <div class="add-account-content">
                         <img src="img/add_icon.png" alt="Plus" class="plus-icon">
@@ -105,7 +104,6 @@
                     </div>
                 </div>
                 
-                <!-- Third container: Add bank account -->
                 <div class="add-account-card">
                     <div class="add-account-content">
                         <img src="img/add_icon.png" alt="Plus" class="plus-icon">
@@ -116,6 +114,8 @@
         </main>
     </div>
 
-    <script src="accounts.js"  ></script>
+    <script src="js/accounts.js"  ></script>
+    <script src="js/util.js"  ></script>
+    <script src="js/security.js"  ></script>
 </body>
 </html>

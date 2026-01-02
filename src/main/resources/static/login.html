@@ -4,50 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    <link rel="stylesheet" href="css/styles2.css" />
+    <link rel="stylesheet" href="css/styles-auth.css" />
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
-<body style="background-image: url('img/brg.jpg');">
-<div class="login-wrapper">
-    <div class="login-left" style="background-image: url('img/brg.jpg');">
-        <div class="logo-container">
-            <img src="img/logo.png" alt="Logo">
-        </div>
-    </div>
-
-    <div class="login-right">
-        <div class="login-form">
-            <h2>LOGIN</h2>
-
-            <div id="errorMessage" class="message error" style="display:none;"></div>
-            <div id="successMessage" class="message success" style="display:none;"></div>
-
-            <div class="input-group">
-                <div class="input-wrapper">
-                    <span class="input-icon"><img src="img/user_icon.png" alt="User icon"></span>
-                    <input type="text" id="username" placeholder="Username" required />
-                </div>
-            </div>
-
-            <div class="input-group">
-                <div class="input-wrapper">
-                    <span class="input-icon"><img src="img/pass_icon.png" alt="User icon"></span>
-                    <input type="password" id="password" placeholder="Password" required />
-                </div>
-                <div class="forgot-password">
-                    <a href="change_password.html">Forgot password?</a>
-                </div>
-            </div>
-            <div id="login-error" class="error" style="display:none;"></div>
-            <button  id="signinBtn" class="btn-signin">Sign In</button>
-
-            <div class="signup-link">
-                Don't have an account?<br>
-                <a href="signup.html">SIGN UP</a>
+<body class="bg-blur">
+    <div class="toast" id="toast"></div>
+    <div class="login-wrapper">
+        <div class="login-left" style="background-image: url('img/brg.jpg');">
+            <div class="logo-container">
+                <img src="img/logo.png" alt="Logo">
             </div>
         </div>
+
+        <div class="login-right">
+            <div class="login-form">
+                <h2>LOGIN</h2>
+
+                <form id="loginForm">
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <span class="input-icon"><img src="img/user_icon.png" alt="User icon"></span>
+                            <input type="text" id="username" placeholder="Username"/>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <span class="input-icon"><img src="img/pass_icon.png" alt="User icon"></span>
+                            <input type="password" id="password" placeholder="Password"/>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="change_password.html">Forgot password?</a>
+                        </div>
+                    </div>
+                    <div id="login-error" class="errorMsg" style="display:none;"></div>
+                    <button  id="loginBtn" type="submit" class="btn-signin">Sign In</button>
+                </form>
+
+                <div class="signup-link">
+                    Don't have an account?<br>
+                    <a href="signup.html">SIGN UP</a>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<script src="js/login.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/util.js"  ></script>
 </body>
 </html>

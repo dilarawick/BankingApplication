@@ -31,8 +31,10 @@ public class OtpService {
             store.remove(email);
             return false;
         }
-        boolean ok = e.otp.equals(otp);
-        if (ok) store.remove(email);
-        return ok;
+        return e.otp.equals(otp);
+    }
+
+    public void consumeOtp(String email) {
+        store.remove(email);
     }
 }

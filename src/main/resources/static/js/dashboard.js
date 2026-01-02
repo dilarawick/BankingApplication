@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNavigation();
     initializeAnimations();
     initializeSearch();
+    initDashboard();
 });
 
 function initializeCarousel() {
@@ -121,30 +122,5 @@ if (profileAvatar) {
         console.log('Profile clicked');
     });
 }
-
-async function load() {
-    const res = await fetch('/api/dashboard/me');
-    const data = await res.json();
-    if (!data.ok) {
-        alert('Not authenticated');
-        window.location.href = '/login.html';
-        return;
-    }
-    document.getElementById('greeting').textContent = `Welcome, ${data.name}`;
-    document.getElementById('emailRow').textContent = data.email;
-    const aEl = document.getElementById('accounts');
-    aEl.innerHTML = '';
-    (data.accounts || []).forEach(acc => {
-        const div = document.createElement('div');
-        div.className = 'account-card' + (acc.isPrimary ? ' primary' : '');
-        div.innerHTML = `<strong>${acc.accountNo}</strong><div>${acc.accountType}</div><div>Balance: ${acc.balance}</div>`;
-        aEl.appendChild(div);
-    });
-}
-
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await fetch('/api/auth/logout', {method:'POST'});
-    window.location.href = '/login.html';
-});
 
 load();

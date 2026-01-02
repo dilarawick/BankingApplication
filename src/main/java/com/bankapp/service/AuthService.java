@@ -1,142 +1,90 @@
 package com.bankapp.service;
 
+import com.bankapp.dto.login.LoginRequestDTO;
+import com.bankapp.dto.login.LoginResponseDTO;
+import com.bankapp.dto.signup.PasswordSetupRequestDTO;
+import com.bankapp.exception.EmailSendException;
+import com.bankapp.exception.ResourceNotFoundException;
 import com.bankapp.model.Customer;
-import com.bankapp.model.CustomerAccount;
-import com.bankapp.model.Account;
+import com.bankapp.security.JwtUtil;
 import com.bankapp.repository.CustomerRepository;
-import com.bankapp.repository.AccountRepository;
-import com.bankapp.repository.CustomerAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.List;
 
 @Service
 public class AuthService {
-    @Autowired
-    private CustomerRepository customerRepo;
-    @Autowired
-    private AccountRepository accountRepo;
-    @Autowired
-    private CustomerAccountRepository customerAccountRepo;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-    @Autowired
-    private JavaMailSender mailSender;
-    @Autowired
-    private OtpService otpService;
+    private final CustomerRepository customerRepo;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+    private final OtpService otpService;
+    private final JwtUtil jwtUtil;
 
-    public Optional<Customer> authenticate(String username, String rawPassword) {
-        Optional<Customer> c = customerRepo.findByUsername(username);
-        if (c.isPresent() && c.get().getPasswordHash() != null) {
-            if (passwordEncoder.matches(rawPassword, c.get().getPasswordHash()))
-                return c;
-        }
-        return Optional.empty();
+    @Autowired
+    public AuthService(
+            CustomerRepository customerRepo,
+            BCryptPasswordEncoder passwordEncoder,
+            EmailService emailService,
+            OtpService otpService,
+            JwtUtil jwtUtil) {
+        this.customerRepo = customerRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+        this.otpService = otpService;
+        this.jwtUtil = jwtUtil;
     }
 
-    public boolean sendOtpEmail(String email) {
+    public LoginResponseDTO login(LoginRequestDTO request) {
+        if (request.getUsername() == null || request.getUsername().isBlank()) {
+            throw new IllegalArgumentException("Username is required");
+        }
+
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        Customer customer = customerRepo.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+
+        if (!passwordEncoder.matches(request.getPassword(), customer.getPasswordHash())) {
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        Integer customerId = customer.getCustomerID();
+        String name = customer.getName();
+        String email = customer.getEmail();
+
+        String token = jwtUtil.generateLoginToken(customerId, name, email);
+        LoginResponseDTO response = new LoginResponseDTO(customerId, name, email);
+        response.setToken(token);
+
+        return response;
+    }
+
+    //Remove after developing
+    public void setupPassword(PasswordSetupRequestDTO request) {
+        Customer customer = customerRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+
+        String hashed = passwordEncoder.encode(request.getNewPassword());
+        customer.setPasswordHash(hashed);
+
+        customerRepo.save(customer);
+    }
+
+    public void sendOtpEmail(String email) {
+        Customer customer = customerRepo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Email not found"));
+        String name = customer.getName();
         String otp = otpService.generateOtpFor(email);
         try {
-            SimpleMailMessage m = new SimpleMailMessage();
-            m.setTo(email);
-            m.setFrom("novabank.noreply@gmail.com");
-            m.setSubject("NovaBank OTP");
-            m.setText("Your NovaBank verification code: " + otp + " (expires in 5 minutes)");
-            mailSender.send(m);
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
+            emailService.sendOtp(
+                    email,
+                    name,
+                    otp
+            );
+        } catch (Exception e) {
+            throw new EmailSendException("OTP could not be sent to " + email);
         }
-    }
-
-    public boolean verifyOtp(String email, String otp) {
-        return otpService.verifyOtp(email, otp);
-    }
-
-    public Optional<Customer> findCustomerByNameNic(String name, String nic) {
-        return customerRepo.findByNameAndNic(name, nic);
-    }
-
-    public Optional<Account> findAccountByAccountNo(String accountNo) {
-        return accountRepo.findByAccountNo(accountNo);
-    }
-
-    public boolean createCredentialsForCustomer(Integer customerId, String username, String rawPassword) {
-        if (customerId == null)
-            return false;
-        Optional<Customer> oc = customerRepo.findById(customerId);
-        if (!oc.isPresent())
-            return false;
-        Customer c = oc.get();
-        if (c.getUsername() != null)
-            return false; // already has username
-        c.setUsername(username);
-        c.setPasswordHash(passwordEncoder.encode(rawPassword));
-        customerRepo.save(c);
-        return true;
-    }
-
-    public boolean createCredentialsForCustomerWithPassword(Integer customerId, String rawPassword) {
-        if (customerId == null)
-            return false;
-        Optional<Customer> oc = customerRepo.findById(customerId);
-        if (!oc.isPresent())
-            return false;
-        Customer c = oc.get();
-        if (c.getUsername() != null)
-            return false; // already has username
-        // Use email as username
-        c.setUsername(c.getEmail());
-        c.setPasswordHash(passwordEncoder.encode(rawPassword));
-        customerRepo.save(c);
-        return true;
-    }
-
-    public boolean addCustomerAccount(Integer customerId, String accountNo, boolean isPrimary) {
-        if (customerId == null)
-            return false;
-        Optional<Account> acc = accountRepo.findByAccountNo(accountNo);
-        if (!acc.isPresent())
-            return false;
-        CustomerAccount ca = new CustomerAccount();
-        ca.setCustomerID(customerId);
-        ca.setAccountNo(accountNo);
-        ca.setIsPrimary(isPrimary);
-        if (isPrimary) {
-            // unset other primaries for this customer
-            List<CustomerAccount> list = customerAccountRepo.findByCustomerID(customerId);
-            for (CustomerAccount other : list) {
-                if (other.getIsPrimary() != null && other.getIsPrimary()) {
-                    other.setIsPrimary(false);
-                    customerAccountRepo.save(other);
-                }
-            }
-        }
-        customerAccountRepo.save(ca);
-        return true;
-    }
-
-    public boolean changePasswordByCustomer(Integer customerId, String newRawPassword) {
-        if (customerId == null)
-            return false;
-        Optional<Customer> oc = customerRepo.findById(customerId);
-        if (!oc.isPresent())
-            return false;
-        Customer c = oc.get();
-        c.setPasswordHash(passwordEncoder.encode(newRawPassword));
-        customerRepo.save(c);
-        return true;
-    }
-
-    // fetch dashboard info
-    public Customer getCustomer(Integer customerId) {
-        if (customerId == null)
-            return null;
-        return customerRepo.findById(customerId).orElse(null);
     }
 }
