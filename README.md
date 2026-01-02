@@ -13,6 +13,7 @@ The project consists of two main parts:
 
 The backend handles:
 - User authentication (with password hashing)
+- JWT stateless tokens for security
 - Money transfers & account management
 - Database CRUD operations via REST APIs
 
@@ -48,7 +49,7 @@ Generated from [https://start.spring.io](https://start.spring.io) with the follo
 | Packaging | JAR |
 | Java Version | 21 |
 | Group | `com.bankapp` |
-| Artifact | `bankapp-backend` |
+| Artifact | `BankingApplication` |
 
 ### Dependencies Selected:
 - **Spring Web**
@@ -64,26 +65,25 @@ Generated from [https://start.spring.io](https://start.spring.io) with the follo
 
 ```
 BankingApplication/
-├── bankapp-backend/                     ← Spring Boot backend
-│   ├── src/main/
-│   │       ├── java/com/bankapp/...     ← Java packages (controller, service, etc.)
-│   │       └── resources/
-│   │           ├── application.properties
-│   │           ├── templates/
-│   │           └── static/              ← Frontend (static files)
-│   │               ├── index.html
-│   │               ├── js/
-│   │               │   └── main.js
-│   │               ├── css/
-│   │               │   └── style.css
-│   │               └── img/
-│   │                   └── (logos, icons, etc.)
-│   │
-│   ├── database/
-│   │   ├── schema.sql                   ← Database schema
-│   │   └── seed.sql                     ← Initial seed data (dummy records)
-│   ├── pom.xml
-│   └── target/                          ← Compiled JAR and build output
+├── src/main/
+│       ├── java/com/bankapp/...     ← Java packages (controller, service, dto, etc.)
+│       └── resources/
+│           ├── application.properties
+│           ├── templates/
+│           └── static/              ← Frontend (static files)
+│               ├── index.html
+│               ├── js/
+│               │   └── main.js
+│               ├── css/
+│               │   └── style.css
+│               └── img/
+│                   └── (logos, icons, etc.)
+│
+├── database/
+│   ├── schema.sql                   ← Database schema
+│   └── seed.sql                     ← Initial seed data (dummy records)
+├── pom.xml
+├── target/                          ← Compiled JAR and build output
 │
 └── README.md
 ```
@@ -111,6 +111,11 @@ spring.mail.password=mrdzqlqrmdqkrlof
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
+#JWT
+jwt.secret=SECRET_KEY(32)
+jwt.expiration=36000000
+# 10 hour in ms
+
 # Server port
 server.port=8080
 ```
@@ -122,10 +127,11 @@ server.port=8080
 | spring.datasource.url | Your database name |
 | spring.datasource.username | Your local MySQL username |
 | spring.datasource.password | Your MySQL password |
+| jwt.secret | A 32 bit random key |
 
 ---
 
 ## Running the Application
 
 The application will run at:  
-`http://localhost:8080/login.html`
+`http://localhost:8080`
