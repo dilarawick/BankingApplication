@@ -23,10 +23,10 @@ public class SignupJwtFilter implements Filter {
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public SignupJwtFilter(SignupService signupService) {
-        this.jwtUtil = new JwtUtil();
+    public SignupJwtFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
-
+    
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
