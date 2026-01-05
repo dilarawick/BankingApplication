@@ -43,3 +43,20 @@ CREATE TABLE CustomerAccount (
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
     FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
 );
+
+CREATE TABLE BankTransfer (
+    TransferId INT AUTO_INCREMENT PRIMARY KEY,
+    SenderCustomerId INT NOT NULL,
+    SenderAccountNo CHAR(6) NOT NULL,
+    RecipientAccountNo CHAR(6) NOT NULL,
+    RecipientBank VARCHAR(100) NOT NULL,
+    RecipientBranch VARCHAR(100) NOT NULL,
+    RecipientName VARCHAR(100) NOT NULL,
+    TransferAmount DECIMAL(15,2) NOT NULL,
+    Reference VARCHAR(255),
+    TransferStatus ENUM('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED') DEFAULT 'PENDING',
+    TransferDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CompletedDate DATETIME NULL,
+    FOREIGN KEY (SenderCustomerId) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (SenderAccountNo) REFERENCES Account(AccountNo)
+);

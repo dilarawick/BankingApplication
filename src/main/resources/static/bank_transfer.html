@@ -70,11 +70,230 @@
                     </div>
                 </div>
             </header>
+            
+            <div class="transfer-form-container">
+                <div class="form-section" id="transferForm">
+                    <div class="form-header">
+                        <h3>Transfer Details</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transferAmount">Amount to be transferred</label>
+                        <input type="number" id="transferAmount" name="transferAmount" placeholder="Enter amount" min="0" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipientName">Recipient's full name (as per bank records)</label>
+                        <input type="text" id="recipientName" name="recipientName" placeholder="Enter full name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="recipientBank">Recipient's Bank</label>
+                            <select id="recipientBank" name="recipientBank" required>
+                                <option value="" disabled selected>Select bank</option>
+                                <option value="Commercial Bank of Ceylon">Commercial Bank of Ceylon</option>
+                                <option value="Sampath Bank">Sampath Bank</option>
+                                <option value="Nations Trust Bank">Nations Trust Bank</option>
+                                <option value="Hatton National Bank">Hatton National Bank</option>
+                                <option value="Bank of Ceylon">Bank of Ceylon</option>
+                                <option value="People's Bank">People's Bank</option>
+                                <option value="NSB">NSB (National Savings Bank)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="recipientBranch">Recipient's Branch</label>
+                            <select id="recipientBranch" name="recipientBranch" required>
+                                <option value="" disabled selected>Select branch</option>
+                                <!-- Branches will be populated based on selected bank -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipientAccount">Recipient's Account Number</label>
+                        <input type="text" id="recipientAccount" name="recipientAccount" placeholder="Enter account number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reference">Reference/Description</label>
+                        <textarea id="reference" name="reference" placeholder="Enter reference or description (optional)"></textarea>
+                    </div>
+                    
+                    <button type="button" class="btn-primary" id="nextBtn">Next</button>
+                </div>
+                
+                <div class="summary-section" id="summarySection" style="display: none;">
+                    <div class="form-header">
+                        <h3>Confirm Transfer Details</h3>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Amount:</span>
+                        <span class="summary-value" id="summaryAmount"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Name:</span>
+                        <span class="summary-value" id="summaryName"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Bank:</span>
+                        <span class="summary-value" id="summaryBank"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Branch:</span>
+                        <span class="summary-value" id="summaryBranch"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Account:</span>
+                        <span class="summary-value" id="summaryAccount"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Reference:</span>
+                        <span class="summary-value" id="summaryReference"></span>
+                    </div>
+                    
+                    <div class="summary-actions">
+                        <button type="button" class="btn-secondary" id="backBtn">Back</button>
+                        <button type="button" class="btn-primary" id="confirmBtn">Confirm Transfer</button>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="js/dashboard.js"></script>
     <script src="js/util.js"  ></script>
     <script src="js/security.js"  ></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample branch data for each bank
+            const bankBranches = {
+                'Commercial Bank of Ceylon': ['Colombo Branch', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Matara Branch'],
+                'Sampath Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Negombo Branch', 'Batticaloa Branch'],
+                'Nations Trust Bank': ['Colombo Branch', 'Kandy Branch', 'Galle Branch', 'Trincomalee Branch', 'Ratmalana Branch'],
+                'Hatton National Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Nuwara Eliya Branch', 'Ella Branch'],
+                'Bank of Ceylon': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Anuradhapura Branch'],
+                'People\'s Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Trincomalee Branch', 'Batticaloa Branch'],
+                'NSB': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Matara Branch']
+            };
+            
+            const transferForm = document.getElementById('transferForm');
+            const summarySection = document.getElementById('summarySection');
+            const nextBtn = document.getElementById('nextBtn');
+            const backBtn = document.getElementById('backBtn');
+            const confirmBtn = document.getElementById('confirmBtn');
+            const recipientBank = document.getElementById('recipientBank');
+            const recipientBranch = document.getElementById('recipientBranch');
+            
+            // Populate branches based on selected bank
+            recipientBank.addEventListener('change', function() {
+                const selectedBank = this.value;
+                recipientBranch.innerHTML = '<option value="" disabled selected>Select branch</option>';
+                
+                if (selectedBank && bankBranches[selectedBank]) {
+                    bankBranches[selectedBank].forEach(function(branch) {
+                        const option = document.createElement('option');
+                        option.value = branch;
+                        option.textContent = branch;
+                        recipientBranch.appendChild(option);
+                    });
+                }
+            });
+            
+            // Show summary section and populate with form data
+            nextBtn.addEventListener('click', function() {
+                // Validate form
+                let isValid = true;
+                const transferAmount = document.getElementById('transferAmount');
+                const recipientName = document.getElementById('recipientName');
+                const recipientAccount = document.getElementById('recipientAccount');
+                
+                // Validate amount
+                if (!transferAmount.value || parseFloat(transferAmount.value) <= 0) {
+                    showToast('Please enter a valid amount', 'error');
+                    isValid = false;
+                }
+                
+                // Validate recipient name
+                if (!recipientName.value.trim()) {
+                    showToast('Please enter recipient name', 'error');
+                    isValid = false;
+                }
+                
+                // Validate account number
+                if (!recipientAccount.value.trim()) {
+                    showToast('Please enter recipient account number', 'error');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    return;
+                }
+                
+                // Get form values
+                const amount = parseFloat(transferAmount.value).toFixed(2);
+                const name = recipientName.value;
+                const bank = recipientBank.value;
+                const branch = recipientBranch.value;
+                const account = recipientAccount.value;
+                const reference = document.getElementById('reference').value;
+                
+                // Mask account number (show only last 4 digits)
+                let maskedAccount = account;
+                if (account.length > 4) {
+                    maskedAccount = '*'.repeat(account.length - 4) + account.slice(-4);
+                }
+                
+                // Populate summary
+                document.getElementById('summaryAmount').textContent = 'Rs. ' + amount;
+                document.getElementById('summaryName').textContent = name;
+                document.getElementById('summaryBank').textContent = bank;
+                document.getElementById('summaryBranch').textContent = branch;
+                document.getElementById('summaryAccount').textContent = maskedAccount;
+                document.getElementById('summaryReference').textContent = reference || 'N/A';
+                
+                // Show summary section and hide form
+                transferForm.style.display = 'none';
+                summarySection.style.display = 'block';
+            });
+            
+            // Go back to form
+            backBtn.addEventListener('click', function() {
+                summarySection.style.display = 'none';
+                transferForm.style.display = 'block';
+            });
+            
+            // Confirm transfer
+            confirmBtn.addEventListener('click', function() {
+                showToast('Transfer initiated successfully!', 'success');
+                
+                // Reset form and return to form view
+                document.getElementById('transferForm').reset();
+                summarySection.style.display = 'none';
+                transferForm.style.display = 'block';
+                
+                // Reset branch dropdown
+                recipientBranch.innerHTML = '<option value="" disabled selected>Select branch</option>';
+            });
+            
+            // Function to show toast notifications
+            function showToast(message, type) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.className = 'toast show ' + type;
+                
+                setTimeout(function() {
+                    toast.className = 'toast';
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 </html>

@@ -66,6 +66,10 @@ public class SecurityConfig {
                                                                 "/api/accounts/**")
                                                 .authenticated()
 
+                                                .requestMatchers(
+                                                                "/api/transfers/**")
+                                                .authenticated()
+
                                                 .anyRequest().authenticated())
 
                                 .addFilterBefore(signupJwtFilter, UsernamePasswordAuthenticationFilter.class)
