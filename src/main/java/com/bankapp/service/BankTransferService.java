@@ -75,7 +75,7 @@ public class BankTransferService {
             bankTransfer.setRecipientBank(request.getRecipientBank());
             bankTransfer.setRecipientBranch(request.getRecipientBranch());
             bankTransfer.setRecipientName(request.getRecipientName());
-            bankTransfer.setTransferAmount(request.getTransferAmount().doubleValue());
+            bankTransfer.setTransferAmount(request.getTransferAmount());
             bankTransfer.setReference(request.getReference());
             bankTransfer.setTransferStatus("PENDING");
 
@@ -89,7 +89,7 @@ public class BankTransferService {
             response.setTransferId(savedTransfer.getTransferId());
             response.setSenderAccountNo(savedTransfer.getSenderAccountNo());
             response.setRecipientAccountNo(savedTransfer.getRecipientAccountNo());
-            response.setTransferAmount(savedTransfer.getTransferAmount());
+            response.setTransferAmount(savedTransfer.getTransferAmount().doubleValue());
             response.setTransferDate(savedTransfer.getTransferDate());
 
             return response;
@@ -165,7 +165,7 @@ public class BankTransferService {
             Account senderAccount = senderAccountOpt.get();
 
             // Double-check balance as it might have changed since initiation
-            if (senderAccount.getAccountBalance() < transfer.getTransferAmount()) {
+            if (senderAccount.getAccountBalance() < transfer.getTransferAmount().doubleValue()) {
                 BankTransferResponse response = new BankTransferResponse(
                         "Insufficient balance. Balance may have changed since initiation.", "FAILED");
                 return response;
@@ -179,7 +179,8 @@ public class BankTransferService {
             }
 
             // Perform the actual transfer
-            senderAccount.setAccountBalance(senderAccount.getAccountBalance() - transfer.getTransferAmount());
+            senderAccount
+                    .setAccountBalance(senderAccount.getAccountBalance() - transfer.getTransferAmount().doubleValue());
             accountRepository.save(senderAccount);
 
             // Update transfer status to completed
@@ -191,7 +192,7 @@ public class BankTransferService {
             response.setTransferId(updatedTransfer.getTransferId());
             response.setSenderAccountNo(updatedTransfer.getSenderAccountNo());
             response.setRecipientAccountNo(updatedTransfer.getRecipientAccountNo());
-            response.setTransferAmount(updatedTransfer.getTransferAmount());
+            response.setTransferAmount(updatedTransfer.getTransferAmount().doubleValue());
             response.setTransferDate(updatedTransfer.getTransferDate());
             response.setCompletedDate(updatedTransfer.getCompletedDate());
 
@@ -335,7 +336,7 @@ public class BankTransferService {
             response.setRecipientBank(transfer.getRecipientBank());
             response.setRecipientBranch(transfer.getRecipientBranch());
             response.setRecipientName(transfer.getRecipientName());
-            response.setTransferAmount(transfer.getTransferAmount());
+            response.setTransferAmount(transfer.getTransferAmount().doubleValue());
             response.setReference(transfer.getReference());
             response.setTransferStatus(transfer.getTransferStatus());
             response.setTransferDate(transfer.getTransferDate());
@@ -373,7 +374,7 @@ public class BankTransferService {
         response.setRecipientBank(transfer.getRecipientBank());
         response.setRecipientBranch(transfer.getRecipientBranch());
         response.setRecipientName(transfer.getRecipientName());
-        response.setTransferAmount(transfer.getTransferAmount());
+        response.setTransferAmount(transfer.getTransferAmount().doubleValue());
         response.setReference(transfer.getReference());
         response.setTransferStatus(transfer.getTransferStatus());
         response.setTransferDate(transfer.getTransferDate());

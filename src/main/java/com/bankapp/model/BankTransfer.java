@@ -2,6 +2,7 @@ package com.bankapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "BankTransfer")
@@ -30,7 +31,7 @@ public class BankTransfer {
     private String recipientName;
 
     @Column(nullable = false, precision = 15, scale = 2)
-    private Double transferAmount;
+    private BigDecimal transferAmount;
 
     @Column(length = 255)
     private String reference;
@@ -122,11 +123,11 @@ public class BankTransfer {
         this.recipientName = recipientName;
     }
 
-    public Double getTransferAmount() {
+    public BigDecimal getTransferAmount() {
         return transferAmount;
     }
 
-    public void setTransferAmount(Double transferAmount) {
+    public void setTransferAmount(BigDecimal transferAmount) {
         this.transferAmount = transferAmount;
     }
 

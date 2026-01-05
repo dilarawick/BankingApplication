@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.bankapp.model.Customer;
-import com.bankapp.model.Account;
 import com.bankapp.repository.AccountRepository;
 
 @RestController

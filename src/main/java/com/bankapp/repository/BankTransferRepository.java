@@ -9,7 +9,7 @@ import java.util.List;
 public interface BankTransferRepository extends JpaRepository<BankTransfer, Integer> {
     List<BankTransfer> findBySenderCustomerId(Integer customerId);
 
-    List<BankTransfer> findBySenderAccountNo(String accountNo);
+    List<BankTransfer> findBySenderAccountAccountNo(String accountNo);
 
     List<BankTransfer> findByTransferStatus(String transferStatus);
 
