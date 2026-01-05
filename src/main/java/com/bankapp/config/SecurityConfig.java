@@ -17,62 +17,63 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
-    private final SignupJwtFilter signupJwtFilter;
+        private final JwtFilter jwtFilter;
+        private final SignupJwtFilter signupJwtFilter;
 
-    @Autowired
-    public SecurityConfig(
-            JwtFilter jwtFilter,
-            SignupJwtFilter signupJwtFilter) {
-        this.jwtFilter = jwtFilter;
-        this.signupJwtFilter = signupJwtFilter;
-    }
+        @Autowired
+        public SecurityConfig(
+                        JwtFilter jwtFilter,
+                        SignupJwtFilter signupJwtFilter) {
+                this.jwtFilter = jwtFilter;
+                this.signupJwtFilter = signupJwtFilter;
+        }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
+                                .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(
-                                "/",
-                                "/index.html",
-                                "/*.html",
-                                "/css/**",
-                                "/js/**",
-                                "/img/**",
-                                "/favicon.ico"
-                        ).permitAll()
+                                                .requestMatchers(
+                                                                "/",
+                                                                "/index.html",
+                                                                "/*.html",
+                                                                "/css/**",
+                                                                "/js/**",
+                                                                "/img/**",
+                                                                "/favicon.ico")
+                                                .permitAll()
 
-                        .requestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/send-otp",
-                                "/api/auth/setup-password"
-                        ).permitAll()
+                                                .requestMatchers(
+                                                                "/api/auth/login",
+                                                                "/api/auth/send-otp",
+                                                                "/api/auth/setup-password")
+                                                .permitAll()
 
-                        .requestMatchers(
-                                "/api/signup/verify",
-                                "/api/reset-password/verify"
-                        ).permitAll()
+                                                .requestMatchers(
+                                                                "/api/signup/verify",
+                                                                "/api/reset-password/verify")
+                                                .permitAll()
 
-                        .requestMatchers(
-                                "/api/signup/create-credentials",
-                                "/api/reset-password/create-credentials"
-                        ).authenticated()
+                                                .requestMatchers(
+                                                                "/api/signup/create-credentials",
+                                                                "/api/reset-password/create-credentials")
+                                                .authenticated()
 
-                        .anyRequest().authenticated()
-                )
+                                                .requestMatchers(
+                                                                "/api/accounts/**")
+                                                .authenticated()
 
-                .addFilterBefore(signupJwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                                                .anyRequest().authenticated())
 
-                .httpBasic(basic -> basic.disable())
-                .formLogin(login -> login.disable());
+                                .addFilterBefore(signupJwtFilter, UsernamePasswordAuthenticationFilter.class)
+                                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-        return http.build();
-    }
+                                .httpBasic(basic -> basic.disable())
+                                .formLogin(login -> login.disable());
+
+                return http.build();
+        }
 }

@@ -4,36 +4,82 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="CustomerAccount")
+@Table(name = "CustomerAccount")
 public class CustomerAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer customerAccountID;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Integer customerID;
 
-    @Column(length=6, nullable=false)
+    @Column(length = 6, nullable = false)
     private String accountNo;
+
+    @Column(length = 20)
+    private String accountType;
+
+    @Column(length = 50)
+    private String accountNickname;
 
     private Boolean isPrimary = false;
 
     private LocalDateTime addedDate;
 
     @PrePersist
-    public void prePersist() { addedDate = LocalDateTime.now(); }
+    public void prePersist() {
+        addedDate = LocalDateTime.now();
+    }
 
-    public Integer getCustomerAccountID() { return customerAccountID; }
-    public void setCustomerAccountID(Integer customerAccountID) { this.customerAccountID = customerAccountID; }
+    public Integer getCustomerAccountID() {
+        return customerAccountID;
+    }
 
-    public Integer getCustomerID() { return customerID; }
-    public void setCustomerID(Integer customerID) { this.customerID = customerID; }
+    public void setCustomerAccountID(Integer customerAccountID) {
+        this.customerAccountID = customerAccountID;
+    }
 
-    public String getAccountNo() { return accountNo; }
-    public void setAccountNo(String accountNo) { this.accountNo = accountNo; }
+    public Integer getCustomerID() {
+        return customerID;
+    }
 
-    public Boolean getIsPrimary() { return isPrimary; }
-    public void setIsPrimary(Boolean isPrimary) { this.isPrimary = isPrimary; }
+    public void setCustomerID(Integer customerID) {
+        this.customerID = customerID;
+    }
 
-    public LocalDateTime getAddedDate() { return addedDate; }
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getAccountNickname() {
+        return accountNickname;
+    }
+
+    public void setAccountNickname(String accountNickname) {
+        this.accountNickname = accountNickname;
+    }
+
+    public Boolean getIsPrimary() {
+        return isPrimary;
+    }
+
+    public void setIsPrimary(Boolean isPrimary) {
+        this.isPrimary = isPrimary;
+    }
+
+    public LocalDateTime getAddedDate() {
+        return addedDate;
+    }
 }

@@ -21,3 +21,6 @@ function showToast(message, type) {
     toast.className = `toast ${type} active`;
     setTimeout(() => toast.classList.remove('active'), 3000);
 }
+
+// Expose under a private name to allow other scripts to detect and reuse it
+window._showToast = showToast;

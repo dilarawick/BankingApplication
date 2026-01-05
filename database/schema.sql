@@ -36,6 +36,8 @@ CREATE TABLE CustomerAccount (
     CustomerAccountID INT AUTO_INCREMENT PRIMARY KEY,
     CustomerID INT NOT NULL,
     AccountNo CHAR(6) NOT NULL,
+    AccountType VARCHAR(20),
+    AccountNickname VARCHAR(50),
     IsPrimary BOOLEAN DEFAULT FALSE,
     AddedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),

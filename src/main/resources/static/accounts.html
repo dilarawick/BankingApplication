@@ -71,32 +71,15 @@
                 </div>
             </header>
             
-            <div class="accounts-container">
-                <div class="account-card">
-                    <div class="account-header">
-                        <button class="edit-icon">
-                            <img src="img/edit_icon.png" alt="Edit">
-                        </button>
-                        <h3 class="account-nickname">Savings Account</h3>
-                    </div>
-                    
-                    <div class="account-center">
-                        <div class="bank-info">
-                            <div class="bank-logo">N</div>
-                            <div class="bank-details">
-                                <p class="bank-name">NOVA BANK</p>
-                                <p class="branch-name">Colombo Branch</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="account-footer">
-                        <button class="delete-icon">
-                            <img src="img/delete_icon.png" alt="Delete">
-                        </button>
-                    </div>
+            <!-- Notification Banner -->
+            <div id="notificationBanner" class="notification-banner" style="display: none;">
+                <div class="notification-content">
+                    <span id="notificationText"></span>
+                    <span id="closeNotification" class="notification-close">&times;</span>
                 </div>
-                
+            </div>
+            
+            <div class="accounts-container">
                 <div class="add-account-card">
                     <div class="add-account-content">
                         <img src="img/add_icon.png" alt="Plus" class="plus-icon">
@@ -114,8 +97,113 @@
         </main>
     </div>
 
-    <script src="js/accounts.js"  ></script>
-    <script src="js/util.js"  ></script>
-    <script src="js/security.js"  ></script>
+    
+    <!-- Add Account Modal -->
+    <div id="addAccountModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Bank Account</h2>
+                <span class="close-btn" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="formError" class="form-error" style="display:none;color:#bf1650;margin-bottom:12px;"></div>
+                <form id="addAccountForm">
+                    <div class="form-group">
+                        <label for="branch">Branch *</label>
+                        <select id="branch" name="branch" required>
+                            <option value="" disabled selected>Select a branch</option>
+                            <option value="colombo">Colombo Branch</option>
+                            <option value="kandy">Kandy Branch</option>
+                            <option value="galle">Galle Branch</option>
+                            <option value="jaffna">Jaffna Branch</option>
+                            <option value="gampaha">Gampaha Branch</option>
+                            <option value="kurunegala">Kurunegala Branch</option>
+                            <option value="matara">Matara Branch</option>
+                            <option value="anuradhapura">Anuradhapura Branch</option>
+                            <option value="badulla">Badulla Branch</option>
+                            <option value="ratnapura">Ratnapura Branch</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accountNumber">Account Number *</label>
+                        <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter account number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accountType">Account Type *</label>
+                        <select id="accountType" name="accountType" required>
+                            <option value="" disabled selected>Select account type</option>
+                            <option value="savings">Savings Account</option>
+                            <option value="current">Current Account</option>
+                            <option value="fixed_deposit">Fixed Deposit</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="accountNickname">Account Nickname *</label>
+                        <input type="text" id="accountNickname" name="accountNickname" placeholder="e.g. My Savings, Salary Account" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" id="verifyAccountBtn" class="btn-primary">Verify Account</button>
+                    </div>
+                    
+                    <!-- Verification Section - Initially Hidden -->
+                    <div id="verificationSection" style="display: none;">
+                        <div class="form-group">
+                            <label for="verificationCode">Verification Code</label>
+                            <input type="text" id="verificationCode" name="verificationCode" placeholder="Enter verification code" maxlength="6">
+                            <button type="button" id="resendOtpBtn" class="btn-resend">Resend OTP</button>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" id="confirmAccountBtn" class="btn-primary">Confirm Account</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" id="addAccountBtn" class="btn-primary" style="display: none;">Add Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Switch Account Confirmation Modal -->
+    <div id="switchConfirmModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Switch Account</h2>
+                <span class="close-btn" id="closeSwitchModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="switchModalText">Do you want to switch to this account?</p>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button id="confirmSwitchBtn" class="btn-primary">Confirm</button>
+                    <button id="cancelSwitchBtn" class="btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Removal</h2>
+                <span class="close-btn" id="closeDeleteModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="deleteModalText">Are you sure you want to remove this account?</p>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button id="confirmDeleteBtn" class="btn-primary" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">Remove Account</button>
+                    <button id="cancelDeleteBtn" class="btn-secondary">Keep Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
-</html>
+    <script src="js/util.js"></script>
+    <script src="js/accounts.js"></script>
+    <script src="js/security.js"></script>
+    </html>
