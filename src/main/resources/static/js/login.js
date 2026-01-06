@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            localStorage.setItem('token', data.token);
+            // Store token in sessionStorage so closing the tab requires re-login
+            sessionStorage.setItem('token', data.token);
             localStorage.setItem('customerId', data.customerId);
             localStorage.setItem('name', data.name);
             localStorage.setItem('email', data.email);

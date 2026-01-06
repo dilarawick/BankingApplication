@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,8 @@ import java.util.Optional;
 
 @Service
 public class BankTransferService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BankTransferService.class);
 
     @Autowired
     private BankTransferRepository bankTransferRepository;
@@ -60,17 +65,23 @@ public class BankTransferService {
 
             Account senderAccount = senderAccountOpt.get();
 
-            // Check if sender has sufficient balance
-            if (senderAccount.getAccountBalance() < request.getTransferAmount().doubleValue()) {
+            // Log incoming amount and sender balance for debugging
+            logger.info("Initiate transfer request: senderAccount={}, requestedAmount={}, senderBalance={}",
+                    request.getSenderAccountNo(), request.getTransferAmount(), senderAccount.getAccountBalance());
+
+            // Check if sender has sufficient balance using BigDecimal
+            BigDecimal senderBalanceBd = BigDecimal.valueOf(senderAccount.getAccountBalance());
+            if (senderBalanceBd.compareTo(request.getTransferAmount()) < 0) {
                 BankTransferResponse response = new BankTransferResponse(
                         "Insufficient balance in sender account", "FAILED");
                 return response;
             }
 
-            // Create a new bank transfer record
+            // Create a new bank transfer record and attach managed sender account
             BankTransfer bankTransfer = new BankTransfer();
             bankTransfer.setSenderCustomerId(customerId);
-            bankTransfer.setSenderAccountNo(request.getSenderAccountNo());
+            // Attach the managed Account entity to avoid persisting a transient Account
+            bankTransfer.setSenderAccount(senderAccount);
             bankTransfer.setRecipientAccountNo(request.getRecipientAccountNo());
             bankTransfer.setRecipientBank(request.getRecipientBank());
             bankTransfer.setRecipientBranch(request.getRecipientBranch());
@@ -164,8 +175,10 @@ public class BankTransferService {
 
             Account senderAccount = senderAccountOpt.get();
 
-            // Double-check balance as it might have changed since initiation
-            if (senderAccount.getAccountBalance() < transfer.getTransferAmount().doubleValue()) {
+            // Double-check balance as it might have changed since initiation (use
+            // BigDecimal)
+            BigDecimal currentBalance = BigDecimal.valueOf(senderAccount.getAccountBalance());
+            if (currentBalance.compareTo(transfer.getTransferAmount()) < 0) {
                 BankTransferResponse response = new BankTransferResponse(
                         "Insufficient balance. Balance may have changed since initiation.", "FAILED");
                 return response;
@@ -178,10 +191,37 @@ public class BankTransferService {
                 return response;
             }
 
-            // Perform the actual transfer
-            senderAccount
-                    .setAccountBalance(senderAccount.getAccountBalance() - transfer.getTransferAmount().doubleValue());
+            // Perform the actual transfer using BigDecimal arithmetic
+            BigDecimal beforeBd = BigDecimal.valueOf(senderAccount.getAccountBalance());
+            BigDecimal deductBd = transfer.getTransferAmount();
+            logger.info("Confirming transfer {}: beforeBalance={}, deduct={}", transfer.getTransferId(), beforeBd,
+                    deductBd);
+
+            BigDecimal afterBd = beforeBd.subtract(deductBd);
+            senderAccount.setAccountBalance(afterBd.doubleValue());
             accountRepository.save(senderAccount);
+            logger.info("After transfer {}: newBalance={}", transfer.getTransferId(), afterBd);
+
+            // Credit recipient account if it exists in our system
+            String recipientAccNo = transfer.getRecipientAccountNo();
+            try {
+                Optional<Account> recipientOpt = accountRepository.findByAccountNo(recipientAccNo);
+                if (recipientOpt.isPresent()) {
+                    Account recipient = recipientOpt.get();
+                    BigDecimal recipientBefore = BigDecimal.valueOf(recipient.getAccountBalance());
+                    BigDecimal recipientAfter = recipientBefore.add(deductBd);
+                    recipient.setAccountBalance(recipientAfter.doubleValue());
+                    accountRepository.save(recipient);
+                    logger.info("Credited recipient {}: before={}, after={}", recipientAccNo, recipientBefore,
+                            recipientAfter);
+                } else {
+                    // Recipient account not present locally (external bank) — log and continue
+                    logger.info("Recipient account {} not found locally; assuming external credit handled offsite",
+                            recipientAccNo);
+                }
+            } catch (Exception ex) {
+                logger.error("Failed to credit recipient account {}: {}", recipientAccNo, ex.getMessage());
+            }
 
             // Update transfer status to completed
             transfer.setTransferStatus("COMPLETED");
@@ -238,17 +278,17 @@ public class BankTransferService {
                 return response;
             }
 
-            // Check for sufficient balance
-            if (senderAccount.getAccountBalance() < request.getTransferAmount().doubleValue()) {
+            // Check for sufficient balance using BigDecimal
+            if (BigDecimal.valueOf(senderAccount.getAccountBalance()).compareTo(request.getTransferAmount()) < 0) {
                 BankTransferResponse response = new BankTransferResponse(
                         "Insufficient balance in sender account", "FAILED");
                 return response;
             }
 
             // Validate recipient account format (alphanumeric, 6-50 chars)
-            if (request.getRecipientAccountNo().length() < 6 || request.getRecipientAccountNo().length() > 50) {
+            if (request.getRecipientAccountNo().length() != 6) {
                 BankTransferResponse response = new BankTransferResponse(
-                        "Recipient account number must be between 6 and 50 characters", "FAILED");
+                        "Recipient account number must be exactly 6 characters", "FAILED");
                 return response;
             }
 

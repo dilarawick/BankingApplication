@@ -137,7 +137,7 @@ async function verifyAccount() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             },
             body: JSON.stringify({
                 accountNumber: accountNumber,
@@ -194,7 +194,7 @@ async function confirmAccount() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             },
             body: JSON.stringify({
                 accountNumber: accountNumber,
@@ -337,7 +337,7 @@ async function handleAddAccount(event) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             },
             body: JSON.stringify({
                 branch: branch,
@@ -611,7 +611,7 @@ async function updateAccountNickname(accountNumber, newNickname) {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             },
             body: JSON.stringify({
                 accountNickname: newNickname
@@ -635,7 +635,7 @@ async function loadAccounts() {
     try {
         const response = await fetch('/api/accounts/my-accounts', {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             }
         });
 
@@ -746,7 +746,7 @@ async function deleteAccountFromBackend(accountNo) {
         const response = await fetch(`/api/accounts/${encodeURIComponent(accountNo)}/unlink`, {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             }
         });
         
@@ -820,7 +820,7 @@ async function confirmSwitchAccount() {
     const switchModal = document.getElementById('switchConfirmModal');
     try {
         const res = await fetch(`/api/accounts/${encodeURIComponent(_switchTarget.accountNo)}/balance`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
         });
         if (!res.ok) {
             const err = await res.json().catch(()=>({message:'Failed to fetch balance'}));
@@ -956,7 +956,7 @@ async function loadSelectedAccountBalance() {
         if (!obj || !obj.accountNo) return;
 
         const res = await fetch(`/api/accounts/${encodeURIComponent(obj.accountNo)}/balance`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
         });
         
         const balEl = document.querySelector('.balance-amount');

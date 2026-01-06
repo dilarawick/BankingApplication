@@ -111,8 +111,8 @@ async function loadSelectedAccountBalance() {
                     localStorage.setItem('selectedAccount', JSON.stringify(accountData));
                     
                     // Now load the balance for this account
-                    const res = await fetch(`/api/accounts/${encodeURIComponent(firstAccount.accountNo)}/balance`, {
-                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                        const res = await fetch(`/api/accounts/${encodeURIComponent(firstAccount.accountNo)}/balance`, {
+                            headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
                     });
                     
                     if (!res.ok) {
@@ -134,8 +134,8 @@ async function loadSelectedAccountBalance() {
             return;
         }
 
-        const res = await fetch(`/api/accounts/${encodeURIComponent(obj.accountNo)}/balance`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            const res = await fetch(`/api/accounts/${encodeURIComponent(obj.accountNo)}/balance`, {
+                headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
         });
         
         const balEl = document.querySelector('.balance-amount');
@@ -181,7 +181,7 @@ async function loadAllAccounts() {
     try {
         const response = await fetch('/api/accounts/my-accounts', {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
             }
         });
         

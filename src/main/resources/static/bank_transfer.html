@@ -7,6 +7,45 @@
     <link rel="stylesheet" href="css/styles-post-login.css">
     <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicon.png">
+    <style>
+        /* Floating success overlay */
+        .success-section {
+            position: fixed !important;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.35);
+            z-index: 9999;
+            padding: 24px;
+        }
+
+        .success-card {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 720px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 48px 56px;
+            text-align: center;
+        }
+
+        .success-icon { margin-bottom: 16px; }
+        .success-card h2 { margin: 8px 0 12px; font-size: 28px; }
+        .success-card .muted { color: #9aa0a6; margin-bottom: 30px; }
+        .success-actions { margin-top: 20px; }
+        .success-actions .btn-primary { padding: 14px 28px; font-size: 16px; }
+        /* Failed overlay (reuses layout of success) */
+        .failed-section { position: fixed !important; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.35); z-index: 9999; padding: 24px; }
+        .failed-card { background: #fff; border-radius: 12px; max-width: 720px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 48px 56px; text-align: center; }
+        .failed-icon { margin-bottom: 16px; }
+        .failed-card h2 { margin: 8px 0 12px; font-size: 28px; color: #222; }
+        .failed-card .muted { color: #9aa0a6; margin-bottom: 8px; }
+        /* Currency input styling */
+        .currency-input { display:flex; align-items:center; gap:8px; max-width: 320px; }
+        .currency-prefix, .currency-suffix { color:#333; font-weight:600; }
+        .currency-input input[type="number"] { flex:1; padding:10px 8px; border-radius:6px; border:1px solid #ddd; }
+    </style>
 </head>
 <body>
     <div class="toast" id="toast"></div>
@@ -18,8 +57,53 @@
                         <img src="img/j_logo.png" alt="Logo">
                     </div>
                 </div>
+
+                <!-- Success screen shown after a successful transfer -->
+                <div class="success-section" id="successSection" style="display: none;">
+                    <div class="success-card">
+                        <div class="success-icon">
+                            <!-- simple green check SVG -->
+                            <svg width="160" height="160" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="32" r="30" fill="#dff7e6" />
+                                <circle cx="32" cy="32" r="22" fill="#bff1ce" />
+                                <circle cx="32" cy="32" r="16" fill="#0ca85f" />
+                                <path d="M20 33 L28 40 L44 24" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                            </svg>
+                        </div>
+                        <h2>Transfer Successful!</h2>
+                        <p class="muted">Confirmation number : <span id="successConfirmationNumber"></span></p>
+                        <p class="muted">Amount : <strong id="successAmount"></strong></p>
+                        <p class="muted">Date : <strong id="successDate"></strong></p>
+
+                        <div class="success-actions">
+                            <button class="btn-primary" id="downloadReceiptBtn">⬇&nbsp;&nbsp;Download Receipt (PDF)</button>
+                            <button class="btn-primary" id="backToHomeBtn">←&nbsp;&nbsp;BACK TO HOME</button>
+                        </div>
+                    </div>
+                </div>
                 <h1 class="bank-name">NOVA BANK</h1>
             </div>
+
+                <!-- Failure screen shown after a failed transfer -->
+                <div class="failed-section" id="failedSection" style="display: none;">
+                    <div class="failed-card">
+                        <div class="failed-icon">
+                            <svg width="160" height="160" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="32" r="30" fill="#ffdede" />
+                                <circle cx="32" cy="32" r="22" fill="#ffc8c8" />
+                                <path d="M32 18 L20 46 L44 46 Z" fill="#e53935" stroke="#fff" stroke-width="2" />
+                                <rect x="30" y="24" width="4" height="14" fill="#fff" />
+                                <rect x="30" y="42" width="4" height="4" fill="#fff" />
+                            </svg>
+                        </div>
+                        <h2>Transaction Failed!</h2>
+                        <p class="muted" id="failedMessage">Insufficient Balance</p>
+                        <p class="muted" id="failedBalance"></p>
+                        <div class="success-actions">
+                            <button class="btn-primary" id="failedBackBtn">←&nbsp;&nbsp;BACK TO HOME</button>
+                        </div>
+                    </div>
+                </div>
 
             <nav class="nav-menu">
                 <a href="dashboard.html" class="nav-item">
@@ -79,7 +163,11 @@
                     
                     <div class="form-group">
                         <label for="transferAmount">Amount to be transferred</label>
-                        <input type="number" id="transferAmount" name="transferAmount" placeholder="Enter amount" min="0" step="0.01" required>
+                        <div class="currency-input">
+                            <span class="currency-prefix">Rs.</span>
+                            <input type="number" id="transferAmount" name="transferAmount" placeholder="Enter amount" min="0" step="0.01" required>
+                            <span class="currency-suffix">.00</span>
+                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -89,7 +177,7 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="recipientBank">Recipient's Bank</label>
+                            <label for="recipientBank">Bank</label>
                             <select id="recipientBank" name="recipientBank" required>
                                 <option value="" disabled selected>Select bank</option>
                                 <option value="Commercial Bank of Ceylon">Commercial Bank of Ceylon</option>
@@ -103,7 +191,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="recipientBranch">Recipient's Branch</label>
+                            <label for="recipientBranch">Branch</label>
                             <select id="recipientBranch" name="recipientBranch" required>
                                 <option value="" disabled selected>Select branch</option>
                                 <!-- Branches will be populated based on selected bank -->
@@ -112,7 +200,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="recipientAccount">Recipient's Account Number</label>
+                        <label for="recipientAccount">Account Number</label>
                         <input type="text" id="recipientAccount" name="recipientAccount" placeholder="Enter account number" required>
                     </div>
                     
@@ -169,131 +257,12 @@
     </div>
 
     <script src="js/dashboard.js"></script>
-    <script src="js/util.js"  ></script>
-    <script src="js/security.js"  ></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sample branch data for each bank
-            const bankBranches = {
-                'Commercial Bank of Ceylon': ['Colombo Branch', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Matara Branch'],
-                'Sampath Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Negombo Branch', 'Batticaloa Branch'],
-                'Nations Trust Bank': ['Colombo Branch', 'Kandy Branch', 'Galle Branch', 'Trincomalee Branch', 'Ratmalana Branch'],
-                'Hatton National Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Nuwara Eliya Branch', 'Ella Branch'],
-                'Bank of Ceylon': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Anuradhapura Branch'],
-                'People\'s Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Trincomalee Branch', 'Batticaloa Branch'],
-                'NSB': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Matara Branch']
-            };
-            
-            const transferForm = document.getElementById('transferForm');
-            const summarySection = document.getElementById('summarySection');
-            const nextBtn = document.getElementById('nextBtn');
-            const backBtn = document.getElementById('backBtn');
-            const confirmBtn = document.getElementById('confirmBtn');
-            const recipientBank = document.getElementById('recipientBank');
-            const recipientBranch = document.getElementById('recipientBranch');
-            
-            // Populate branches based on selected bank
-            recipientBank.addEventListener('change', function() {
-                const selectedBank = this.value;
-                recipientBranch.innerHTML = '<option value="" disabled selected>Select branch</option>';
-                
-                if (selectedBank && bankBranches[selectedBank]) {
-                    bankBranches[selectedBank].forEach(function(branch) {
-                        const option = document.createElement('option');
-                        option.value = branch;
-                        option.textContent = branch;
-                        recipientBranch.appendChild(option);
-                    });
-                }
-            });
-            
-            // Show summary section and populate with form data
-            nextBtn.addEventListener('click', function() {
-                // Validate form
-                let isValid = true;
-                const transferAmount = document.getElementById('transferAmount');
-                const recipientName = document.getElementById('recipientName');
-                const recipientAccount = document.getElementById('recipientAccount');
-                
-                // Validate amount
-                if (!transferAmount.value || parseFloat(transferAmount.value) <= 0) {
-                    showToast('Please enter a valid amount', 'error');
-                    isValid = false;
-                }
-                
-                // Validate recipient name
-                if (!recipientName.value.trim()) {
-                    showToast('Please enter recipient name', 'error');
-                    isValid = false;
-                }
-                
-                // Validate account number
-                if (!recipientAccount.value.trim()) {
-                    showToast('Please enter recipient account number', 'error');
-                    isValid = false;
-                }
-                
-                if (!isValid) {
-                    return;
-                }
-                
-                // Get form values
-                const amount = parseFloat(transferAmount.value).toFixed(2);
-                const name = recipientName.value;
-                const bank = recipientBank.value;
-                const branch = recipientBranch.value;
-                const account = recipientAccount.value;
-                const reference = document.getElementById('reference').value;
-                
-                // Mask account number (show only last 4 digits)
-                let maskedAccount = account;
-                if (account.length > 4) {
-                    maskedAccount = '*'.repeat(account.length - 4) + account.slice(-4);
-                }
-                
-                // Populate summary
-                document.getElementById('summaryAmount').textContent = 'Rs. ' + amount;
-                document.getElementById('summaryName').textContent = name;
-                document.getElementById('summaryBank').textContent = bank;
-                document.getElementById('summaryBranch').textContent = branch;
-                document.getElementById('summaryAccount').textContent = maskedAccount;
-                document.getElementById('summaryReference').textContent = reference || 'N/A';
-                
-                // Show summary section and hide form
-                transferForm.style.display = 'none';
-                summarySection.style.display = 'block';
-            });
-            
-            // Go back to form
-            backBtn.addEventListener('click', function() {
-                summarySection.style.display = 'none';
-                transferForm.style.display = 'block';
-            });
-            
-            // Confirm transfer
-            confirmBtn.addEventListener('click', function() {
-                showToast('Transfer initiated successfully!', 'success');
-                
-                // Reset form and return to form view
-                document.getElementById('transferForm').reset();
-                summarySection.style.display = 'none';
-                transferForm.style.display = 'block';
-                
-                // Reset branch dropdown
-                recipientBranch.innerHTML = '<option value="" disabled selected>Select branch</option>';
-            });
-            
-            // Function to show toast notifications
-            function showToast(message, type) {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = 'toast show ' + type;
-                
-                setTimeout(function() {
-                    toast.className = 'toast';
-                }, 3000);
-            }
-        });
-    </script>
+    <script src="js/util.js"></script>
+    <script src="js/security.js"></script>
+    <!-- Hidden logo used for embedding in PDF receipts -->
+    <img id="novaLogoImg" src="img/j_logo.png" alt="Nova Logo" style="display:none;" />
+    <!-- jsPDF for client-side PDF generation -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="js/bank_transfer.js"></script>
 </body>
 </html>

@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 
 public class BankTransferRequest {
     @NotNull(message = "Sender account number is required")
-    @Pattern(regexp = "^[a-zA-Z0-9]{6,50}$", message = "Invalid sender account number format")
+    @Pattern(regexp = "^[a-zA-Z0-9]{6}$", message = "Invalid sender account number format")
     private String senderAccountNo;
 
     @NotNull(message = "Recipient account number is required")
-    @Pattern(regexp = "^[a-zA-Z0-9]{6,50}$", message = "Invalid recipient account number format")
+    @Pattern(regexp = "^[a-zA-Z0-9]{6}$", message = "Invalid recipient account number format")
     private String recipientAccountNo;
 
     @NotNull(message = "Recipient bank is required")
