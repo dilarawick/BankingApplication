@@ -60,3 +60,20 @@ CREATE TABLE BankTransfer (
     FOREIGN KEY (SenderCustomerId) REFERENCES Customer(CustomerID),
     FOREIGN KEY (SenderAccountNo) REFERENCES Account(AccountNo)
 );
+
+CREATE TABLE Bill (
+    BillId INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT NOT NULL,
+    BillerName VARCHAR(100) NOT NULL,
+    Category VARCHAR(50) NOT NULL,
+    Reference VARCHAR(100) NOT NULL,
+    InvoiceNumber VARCHAR(100),
+    Amount DECIMAL(15,2) NOT NULL,
+    DueDate DATE,
+    BillStatus ENUM('PENDING', 'PAID', 'OVERDUE', 'CANCELLED') DEFAULT 'PENDING',
+    CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PaidDate DATETIME NULL,
+    AccountNo CHAR(6),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
+);

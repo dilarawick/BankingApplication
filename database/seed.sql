@@ -36,3 +36,12 @@ VALUES
     ('AC0005', 3, 'Current', 4, 1500.75, 'Active'),
     ('AC0006', 4, 'Savings', 5, 2200.00, 'Active'),
     ('AC0007', 5, 'Fixed Deposit', 3, 50000.00, 'Active');
+    -- Insert sample bills
+INSERT INTO Bill (CustomerID, BillerName, Category, Reference, InvoiceNumber, Amount, DueDate, BillStatus) VALUES
+    (1, 'CEB', 'utilities', 'REF001', 'INV001', 15000.00, '2024-12-15', 'PENDING'),
+    (1, 'Water Board', 'utilities', 'REF002', 'INV002', 8500.00, '2024-12-20', 'PENDING'),
+    (1, 'SLT', 'telephone', 'REF003', 'INV003', 6500.00, '2024-12-25', 'PENDING'),
+    (2, 'Mobitel', 'mobile', 'REF004', 'INV004', 4500.00, '2024-12-30', 'PENDING'),
+    (3, 'Dialog', 'mobile', 'REF005', 'INV005', 7200.00, '2024-12-10', 'PENDING'),
+    (4, 'CEB', 'utilities', 'REF006', 'INV006', 12000.00, '2024-12-05', 'OVERDUE'),
+    (5, 'Airtel', 'mobile', 'REF007', 'INV007', 3200.00, '2024-12-12', 'PENDING');
