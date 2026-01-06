@@ -1,13 +1,8 @@
 console.log('bank_transfer.js loaded');
 document.addEventListener('DOMContentLoaded', () => {
+    // Only Nova Bank branches are needed since inter-bank transfers are not allowed
     const bankBranches = {
-        'Commercial Bank of Ceylon': ['Colombo Branch', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Matara Branch'],
-        'Sampath Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Negombo Branch', 'Batticaloa Branch'],
-        'Nations Trust Bank': ['Colombo Branch', 'Kandy Branch', 'Galle Branch', 'Trincomalee Branch', 'Ratmalana Branch'],
-        'Hatton National Bank': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Nuwara Eliya Branch', 'Ella Branch'],
-        'Bank of Ceylon': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Anuradhapura Branch'],
-        "People's Bank": ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Trincomalee Branch', 'Batticaloa Branch'],
-        'NSB': ['Head Office Colombo', 'Kandy Branch', 'Galle Branch', 'Jaffna Branch', 'Matara Branch']
+        'Nova Bank': ['Colombo', 'Colombo Central', 'Colombo Fort', 'Kandy', 'Galle', 'Jaffna', 'Matara']
     };
 
     const transferForm = document.getElementById('transferForm');

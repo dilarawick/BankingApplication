@@ -6,6 +6,10 @@ import com.bankapp.model.Account;
 import com.bankapp.model.BankTransfer;
 import com.bankapp.repository.AccountRepository;
 import com.bankapp.repository.BankTransferRepository;
+import com.bankapp.repository.BranchRepository;
+import com.bankapp.repository.CustomerRepository;
+import com.bankapp.model.Branch;
+import com.bankapp.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +32,12 @@ public class BankTransferService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private BranchRepository branchRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     private AuthService authService; // Using existing AuthService for customer verification
@@ -136,6 +146,46 @@ public class BankTransferService {
     }
 
     /**
+     * Validates that a recipient account exists in our bank and that the
+     * account number, branch (city) and account holder name match the DB.
+     * Throws IllegalArgumentException with a clear message on mismatch.
+     */
+    private void validateLocalRecipient(String accountNo, String branchName, String recipientName) {
+        if (accountNo == null || accountNo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Recipient account number is required");
+        }
+
+        Optional<Account> recipientOpt = accountRepository.findByAccountNo(accountNo);
+        if (recipientOpt.isEmpty()) {
+            throw new IllegalArgumentException("Recipient account not found in Nova Bank");
+        }
+
+        Account recipient = recipientOpt.get();
+
+        // Validate branch by looking up branch record using branchID on account
+        Optional<Branch> branchOpt = branchRepository.findById(recipient.getBranchID());
+        if (branchOpt.isEmpty()) {
+            throw new IllegalArgumentException("Recipient branch information not found");
+        }
+
+        Branch branch = branchOpt.get();
+        if (branchName == null || !branch.getCity().equalsIgnoreCase(branchName.trim())) {
+            throw new IllegalArgumentException("Recipient branch does not match our records");
+        }
+
+        // Validate recipient name by checking customer tied to account
+        Optional<Customer> custOpt = customerRepository.findById(recipient.getCustomerID());
+        if (custOpt.isEmpty()) {
+            throw new IllegalArgumentException("Recipient customer information not found");
+        }
+
+        Customer cust = custOpt.get();
+        if (recipientName == null || !cust.getName().equalsIgnoreCase(recipientName.trim())) {
+            throw new IllegalArgumentException("Recipient name does not match account records");
+        }
+    }
+
+    /**
      * Confirms a bank transfer by processing the actual fund transfer
      */
     @Transactional
@@ -188,6 +238,23 @@ public class BankTransferService {
             if (!"Active".equalsIgnoreCase(senderAccount.getAccountStatus())) {
                 BankTransferResponse response = new BankTransferResponse(
                         "Sender account is not active", "FAILED");
+                return response;
+            }
+
+            // If the recipient bank is our bank, validate recipient account details again
+            if (transfer.getRecipientBank() != null && transfer.getRecipientBank().equalsIgnoreCase("Nova Bank")) {
+                try {
+                    validateLocalRecipient(transfer.getRecipientAccountNo(), transfer.getRecipientBranch(),
+                            transfer.getRecipientName());
+                } catch (IllegalArgumentException iae) {
+                    BankTransferResponse response = new BankTransferResponse(
+                            iae.getMessage(), "FAILED");
+                    return response;
+                }
+            } else {
+                // Inter-bank transfers are not allowed
+                BankTransferResponse response = new BankTransferResponse(
+                        "Inter-bank transfers are not allowed. Recipient bank must be Nova Bank.", "FAILED");
                 return response;
             }
 
@@ -340,6 +407,23 @@ public class BankTransferService {
             if (request.getRecipientBranch().length() < 2 || request.getRecipientBranch().length() > 100) {
                 BankTransferResponse response = new BankTransferResponse(
                         "Recipient branch name must be between 2 and 100 characters", "FAILED");
+                return response;
+            }
+
+            // Only allow transfers within Nova Bank
+            if (!"Nova Bank".equalsIgnoreCase(request.getRecipientBank().trim())) {
+                BankTransferResponse response = new BankTransferResponse(
+                        "Inter-bank transfers are not allowed. Recipient bank must be Nova Bank.", "FAILED");
+                return response;
+            }
+
+            // Validate recipient exists in our bank and that account number, branch and
+            // name match DB
+            try {
+                validateLocalRecipient(request.getRecipientAccountNo(), request.getRecipientBranch(),
+                        request.getRecipientName());
+            } catch (IllegalArgumentException iae) {
+                BankTransferResponse response = new BankTransferResponse(iae.getMessage(), "FAILED");
                 return response;
             }
 
