@@ -55,7 +55,8 @@ public class AccountController {
             }
 
             // Validate branch against allowed list
-            List<String> allowedBranches = List.of("colombo", "kandy", "galle", "jaffna", "gampaha", "kurunegala",
+            List<String> allowedBranches = List.of("colombo", "colombo central", "colombo fort", "kandy", "galle",
+                    "jaffna", "gampaha", "kurunegala",
                     "matara", "anuradhapura", "badulla", "ratnapura");
             if (!allowedBranches.contains(branch.toLowerCase())) {
                 return ResponseEntity.badRequest().body(Map.of("message", "Invalid branch selected"));

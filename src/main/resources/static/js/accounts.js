@@ -493,7 +493,8 @@ function addAccountCard(accountNickname, accountNumber, branch) {
     
     // Map branch value to branch name for display
     const branchNames = {
-        'colombo': 'Colombo Branch',
+        'colombo central': 'Colombo Central Branch',
+        'colombo fort': 'Colombo Fort Branch',
         'kandy': 'Kandy Branch',
         'galle': 'Galle Branch',
         'jaffna': 'Jaffna Branch',

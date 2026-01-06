@@ -10,11 +10,17 @@ VALUES
 -- Insert Branches
 INSERT INTO Branch (BranchName, City, PostalCode)
 VALUES
-    ('Central Branch', 'Colombo', '00100'),
-    ('Fort Branch', 'Colombo', '00200'),
+    ('Central Branch', 'Colombo Central', '00100'),
+    ('Fort Branch', 'Colombo Fort', '00200'),
     ('Kandy Branch', 'Kandy', '20000'),
     ('Galle Branch', 'Galle', '80000'),
-    ('Jaffna Branch', 'Jaffna', '40000');
+    ('Jaffna Branch', 'Jaffna', '40000'),
+    ('Gampaha Branch', 'Gampaha', '11000'),
+    ('Kurunegala Branch', 'Kurunegala', '60000'),
+    ('Matara Branch', 'Matara', '81000'),
+    ('Anuradhapura Branch', 'Anuradhapura', '50000'),
+    ('Badulla Branch', 'Badulla', '92000'),
+    ('Ratnapura Branch', 'Ratnapura', '74000');
 
 -- Insert Accounts
 INSERT INTO Account (AccountNo, CustomerID, AccountType, BranchID, AccountBalance, AccountStatus)
