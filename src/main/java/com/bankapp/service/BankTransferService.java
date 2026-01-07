@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.bankapp.service.SmartSpendService;
+
 @Service
 public class BankTransferService {
 
@@ -41,6 +43,9 @@ public class BankTransferService {
 
     @Autowired
     private AuthService authService; // Using existing AuthService for customer verification
+
+    @Autowired
+    private SmartSpendService smartSpendService; // For integrating with smart spend feature
 
     // Rate limiting - track transfers per customer
     private final java.util.Map<Integer, java.util.List<java.time.LocalDateTime>> customerTransferLog = new java.util.concurrent.ConcurrentHashMap<>();
@@ -268,6 +273,16 @@ public class BankTransferService {
             senderAccount.setAccountBalance(afterBd.doubleValue());
             accountRepository.save(senderAccount);
             logger.info("After transfer {}: newBalance={}", transfer.getTransferId(), afterBd);
+
+            // Record the debit against the budget if the sender has an active budget
+            try {
+                smartSpendService.recordDebitAgainstBudget(transfer.getSenderAccountNo(), deductBd,
+                        "Bank Transfer to " + transfer.getRecipientName());
+            } catch (Exception e) {
+                logger.error("Failed to record transfer against budget for account {}: {}",
+                        transfer.getSenderAccountNo(), e.getMessage());
+                // Continue processing even if budget recording fails
+            }
 
             // Credit recipient account if it exists in our system
             String recipientAccNo = transfer.getRecipientAccountNo();

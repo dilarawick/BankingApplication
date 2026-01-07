@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.bankapp.service.SmartSpendService;
+
 @Service
 public class BillService {
 
@@ -21,6 +23,9 @@ public class BillService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private SmartSpendService smartSpendService; // For integrating with smart spend feature
 
     // Get unpaid bills for a customer
     public List<Bill> getUnpaidBillsForCustomer(Integer customerId) {
@@ -64,6 +69,17 @@ public class BillService {
         // Update account balance
         account.setAccountBalance(account.getAccountBalance() - amount);
         accountRepository.save(account);
+
+        // Record the debit against the budget if the account has an active budget
+        try {
+            java.math.BigDecimal amountDecimal = java.math.BigDecimal.valueOf(amount);
+            smartSpendService.recordDebitAgainstBudget(accountNumber, amountDecimal,
+                    "Bill Payment - " + bill.getBillerName() + ": " + bill.getInvoiceNumber());
+        } catch (Exception e) {
+            // Log the error but continue with the bill payment
+            System.err.println("Failed to record bill payment against budget for account " + accountNumber + ": "
+                    + e.getMessage());
+        }
 
         // Update bill status
         bill.setBillStatus(BillStatus.PAID);

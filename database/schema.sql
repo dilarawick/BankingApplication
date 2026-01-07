@@ -77,3 +77,29 @@ CREATE TABLE Bill (
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
     FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
 );
+
+CREATE TABLE Budget (
+    BudgetId INT AUTO_INCREMENT PRIMARY KEY,
+    CustomerID INT NOT NULL,
+    AccountNo CHAR(6) NOT NULL,
+    BudgetLimit DECIMAL(15,2) NOT NULL,
+    StartDate DATE NOT NULL,
+    EndDate DATE NOT NULL,
+    CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UpdatedDate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    IsActive BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
+);
+
+CREATE TABLE BudgetTransaction (
+    TransactionId INT AUTO_INCREMENT PRIMARY KEY,
+    BudgetId INT NOT NULL,
+    TransactionAmount DECIMAL(15,2) NOT NULL,
+    TransactionDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Description VARCHAR(255),
+    Category VARCHAR(50),
+    PaymentType VARCHAR(20),
+    TransactionType ENUM('AUTOMATIC', 'MANUAL') DEFAULT 'AUTOMATIC',
+    FOREIGN KEY (BudgetId) REFERENCES Budget(BudgetId)
+);
