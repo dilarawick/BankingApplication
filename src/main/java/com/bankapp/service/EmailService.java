@@ -19,25 +19,21 @@ public class EmailService {
     public void sendOtp(
             String email,
             String name,
-            String otp
-    ) {
+            String otp) {
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
             helper.setTo(email);
             helper.setSubject("OTP for Nova Banking");
             helper.setFrom("novabanking.noreply@gmail.com");
 
-            ClassPathResource htmlFile =
-                    new ClassPathResource("static/common/password-reset.html");
+            ClassPathResource htmlFile = new ClassPathResource("static/common/password-reset.html");
 
             String html = new String(
                     htmlFile.getInputStream().readAllBytes(),
-                    StandardCharsets.UTF_8
-            );
+                    StandardCharsets.UTF_8);
 
             html = html.replace("{{NAME}}", name);
             html = html.replace("{{OTP}}", otp);
@@ -48,6 +44,23 @@ public class EmailService {
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to send otp", e);
+        }
+    }
+
+    public void sendEmail(String email, String subject, String htmlContent) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setFrom("novabanking.noreply@gmail.com");
+
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email", e);
         }
     }
 }

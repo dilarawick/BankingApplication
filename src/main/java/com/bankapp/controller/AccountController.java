@@ -121,9 +121,13 @@ public class AccountController {
 
     // Get all accounts for a customer
     @GetMapping("/my-accounts")
-    public ResponseEntity<List<Map<String, Object>>> getMyAccounts(Authentication authentication) {
+    public ResponseEntity<?> getMyAccounts(Authentication authentication) {
         try {
             Integer customerId = (Integer) authentication.getPrincipal();
+            if (customerId == null) {
+                return ResponseEntity.status(401).body(Map.of("message", "Authentication failed"));
+            }
+
             List<CustomerAccount> customerAccounts = authService.getCustomerAccounts(customerId);
 
             List<Map<String, Object>> result = new ArrayList<>();
@@ -157,7 +161,9 @@ public class AccountController {
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
+            System.err.println("Error getting my accounts: " + e.getMessage());
+            e.printStackTrace(); // Log the full stack trace for debugging
+            return ResponseEntity.status(500).body(Map.of("message", "Failed to retrieve accounts: " + e.getMessage()));
         }
     }
 

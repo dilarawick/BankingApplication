@@ -103,3 +103,16 @@ CREATE TABLE BudgetTransaction (
     TransactionType ENUM('AUTOMATIC', 'MANUAL') DEFAULT 'AUTOMATIC',
     FOREIGN KEY (BudgetId) REFERENCES Budget(BudgetId)
 );
+
+CREATE TABLE `Transaction` (
+    TransactionId INT AUTO_INCREMENT PRIMARY KEY,
+    AccountNo CHAR(6) NOT NULL,
+    TransactionType ENUM('DEBIT', 'CREDIT') NOT NULL,
+    Amount DECIMAL(15,2) NOT NULL,
+    Description VARCHAR(255),
+    ReferenceId INT,
+    ReferenceType VARCHAR(50),
+    TransactionDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (AccountNo) REFERENCES Account(AccountNo)
+);

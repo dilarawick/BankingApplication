@@ -4,10 +4,12 @@ import com.bankapp.dto.BankTransferRequest;
 import com.bankapp.dto.BankTransferResponse;
 import com.bankapp.model.Account;
 import com.bankapp.model.BankTransfer;
+import com.bankapp.model.Transaction;
 import com.bankapp.repository.AccountRepository;
 import com.bankapp.repository.BankTransferRepository;
 import com.bankapp.repository.BranchRepository;
 import com.bankapp.repository.CustomerRepository;
+import com.bankapp.repository.TransactionRepository;
 import com.bankapp.model.Branch;
 import com.bankapp.model.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +49,9 @@ public class BankTransferService {
 
     @Autowired
     private SmartSpendService smartSpendService; // For integrating with smart spend feature
+
+    @Autowired
+    private TransactionRepository transactionRepository; // For recording debit/credit entries
 
     // Rate limiting - track transfers per customer
     private final java.util.Map<Integer, java.util.List<java.time.LocalDateTime>> customerTransferLog = new java.util.concurrent.ConcurrentHashMap<>();
@@ -296,6 +302,9 @@ public class BankTransferService {
                     accountRepository.save(recipient);
                     logger.info("Credited recipient {}: before={}, after={}", recipientAccNo, recipientBefore,
                             recipientAfter);
+
+                    // Record the debit and credit accounting entries for double-entry bookkeeping
+                    recordTransferAccountingEntries(transfer, senderAccount, recipientAccNo, deductBd);
                 } else {
                     // Recipient account not present locally (external bank) — log and continue
                     logger.info("Recipient account {} not found locally; assuming external credit handled offsite",
@@ -456,6 +465,47 @@ public class BankTransferService {
             BankTransferResponse response = new BankTransferResponse(
                     "Error validating transfer: " + e.getMessage(), "FAILED");
             return response;
+        }
+    }
+
+    /**
+     * Helper method to record debit and credit entries for a bank transfer
+     */
+    private void recordTransferAccountingEntries(BankTransfer transfer, Account senderAccount,
+            String recipientAccountNo, BigDecimal amount) {
+        // Record the debit transaction entry for the sender account
+        try {
+            Transaction debitEntry = new Transaction();
+            debitEntry.setAccountNo(transfer.getSenderAccountNo());
+            debitEntry.setTransactionType("DEBIT");
+            debitEntry.setAmount(amount);
+            debitEntry.setDescription(
+                    "Bank Transfer to " + transfer.getRecipientName() + " (" + transfer.getRecipientAccountNo() + ")");
+            debitEntry.setReferenceId(transfer.getTransferId());
+            debitEntry.setReferenceType("BANK_TRANSFER");
+            debitEntry.setTransactionDate(LocalDateTime.now());
+            transactionRepository.save(debitEntry);
+            logger.info("Recorded debit transaction for sender account {}: {}", transfer.getSenderAccountNo(), amount);
+        } catch (Exception e) {
+            logger.error("Failed to record debit transaction for account {}: {}", transfer.getSenderAccountNo(),
+                    e.getMessage());
+        }
+
+        // Record the credit transaction entry for the recipient account
+        try {
+            Transaction creditEntry = new Transaction();
+            creditEntry.setAccountNo(recipientAccountNo);
+            creditEntry.setTransactionType("CREDIT");
+            creditEntry.setAmount(amount);
+            creditEntry.setDescription("Bank Transfer received from " + senderAccount.getCustomerID() + " ("
+                    + transfer.getSenderAccountNo() + ")");
+            creditEntry.setReferenceId(transfer.getTransferId());
+            creditEntry.setReferenceType("BANK_TRANSFER");
+            creditEntry.setTransactionDate(LocalDateTime.now());
+            transactionRepository.save(creditEntry);
+            logger.info("Recorded credit transaction for recipient account {}: {}", recipientAccountNo, amount);
+        } catch (Exception e) {
+            logger.error("Failed to record credit transaction for account {}: {}", recipientAccountNo, e.getMessage());
         }
     }
 

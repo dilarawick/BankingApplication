@@ -2,13 +2,16 @@ package com.bankapp.service;
 
 import com.bankapp.model.Bill;
 import com.bankapp.model.Account;
+import com.bankapp.model.Transaction;
 import com.bankapp.repository.BillRepository;
 import com.bankapp.repository.AccountRepository;
+import com.bankapp.repository.TransactionRepository;
 import com.bankapp.model.Bill.BillStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,9 @@ public class BillService {
 
     @Autowired
     private SmartSpendService smartSpendService; // For integrating with smart spend feature
+
+    @Autowired
+    private TransactionRepository transactionRepository; // For recording bill payment transactions
 
     // Get unpaid bills for a customer
     public List<Bill> getUnpaidBillsForCustomer(Integer customerId) {
@@ -78,6 +84,23 @@ public class BillService {
         } catch (Exception e) {
             // Log the error but continue with the bill payment
             System.err.println("Failed to record bill payment against budget for account " + accountNumber + ": "
+                    + e.getMessage());
+        }
+
+        // Record the transaction entry for accounting purposes
+        try {
+            Transaction transaction = new Transaction();
+            transaction.setAccountNo(accountNumber);
+            transaction.setTransactionType("DEBIT");
+            transaction.setAmount(new BigDecimal(String.valueOf(amount)));
+            transaction.setDescription("Bill Payment - " + bill.getBillerName() + ": " + bill.getInvoiceNumber());
+            transaction.setReferenceId(bill.getBillId());
+            transaction.setReferenceType("BILL_PAYMENT");
+            transaction.setTransactionDate(LocalDateTime.now());
+            transactionRepository.save(transaction);
+        } catch (Exception e) {
+            // Log the error but continue with the bill payment
+            System.err.println("Failed to record bill payment transaction for account " + accountNumber + ": "
                     + e.getMessage());
         }
 

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeSearch();
     initDashboard();
     loadSelectedAccountBalance();
+    loadRecentTransactions();
     setupAccountSwitching();
 });
 
@@ -167,6 +168,7 @@ window.addEventListener('storage', function(e) {
     if (e.key === 'selectedAccount') {
         // Selected account was changed in another tab, update the display
         loadSelectedAccountBalance();
+        loadRecentTransactions(); // Also update the transactions list
         
         // Also update the account card selection if on the accounts page
         if (window.location.pathname.includes('accounts.html')) {
@@ -208,7 +210,7 @@ function setupAccountSwitching() {
             return;
         }
         
-        // Create a simple modal or dropdown to select an account
+        // a simple modal or dropdown to select an account
         const selectedAccount = localStorage.getItem('selectedAccount');
         let currentAccount = null;
         if (selectedAccount) {
@@ -236,8 +238,151 @@ function setupAccountSwitching() {
         // Update the balance display
         await loadSelectedAccountBalance();
         
+        // Update the transaction list
+        await loadRecentTransactions();
+        
         showToast(`Switched to ${nextAccount.accountNickname || nextAccount.accountNo}`, 'success');
     });
+}
+
+// Function to load recent transactions for the selected account
+async function loadRecentTransactions() {
+    try {
+        const selectedAccount = localStorage.getItem('selectedAccount');
+        
+        // If no selected account, clear the transaction list
+        if (!selectedAccount) {
+            clearTransactionsList();
+            return;
+        }
+        
+        const accountData = JSON.parse(selectedAccount);
+        if (!accountData || !accountData.accountNo) {
+            clearTransactionsList();
+            return;
+        }
+        
+        // Fetch recent transactions for the selected account
+        const response = await fetch(`/api/dashboard/transactions/${encodeURIComponent(accountData.accountNo)}`, {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            }
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Failed to load transactions:', errorData);
+            showToast(errorData.message || 'Failed to load transactions', 'error');
+            clearTransactionsList();
+            return;
+        }
+        
+        const transactions = await response.json();
+        displayTransactions(transactions);
+        
+    } catch (error) {
+        console.error('Error loading transactions:', error);
+        showToast('Failed to load transactions', 'error');
+        clearTransactionsList();
+    }
+}
+
+// Function to display transactions in the dashboard
+function displayTransactions(transactions) {
+    const transactionsList = document.querySelector('.transactions-list');
+    if (!transactionsList) return;
+    
+    // Clear existing transactions
+    transactionsList.innerHTML = '';
+    
+    if (!transactions || transactions.length === 0) {
+        // Show a message when no transactions exist
+        const noTransactionsItem = document.createElement('div');
+        noTransactionsItem.className = 'transaction-item';
+        noTransactionsItem.innerHTML = `
+            <div class="transaction-avatar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2340b4e5'/%3E%3Cpath d='M50 55c-8 0-15-7-15-15s7-15 15-15 15 7 15 15-7 15-15 15zm0-25c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zM70 85H30c-2.8 0-5-2.2-5-5 0-11 9-20 20-20h10c11 0 20 9 20 20 0 2.8-2.2 5-5 5z' fill='%23fff'/%3E%3C/svg%3E" alt="No Transactions">
+            </div>
+            <div class="transaction-date"></div>
+            <div class="transaction-id"></div>
+            <div class="transaction-amount">No transactions</div>
+            <div class="transaction-status"></div>
+        `;
+        transactionsList.appendChild(noTransactionsItem);
+        return;
+    }
+    
+    // Add each transaction to the list
+    transactions.forEach(transaction => {
+        const transactionItem = createTransactionElement(transaction);
+        transactionsList.appendChild(transactionItem);
+    });
+}
+
+// Function to create a transaction element
+function createTransactionElement(transaction) {
+    const transactionItem = document.createElement('div');
+    transactionItem.className = 'transaction-item';
+    
+    // Format the date as "Month, DD YYYY" (e.g., "Oct, 16 2025")
+    const date = new Date(transaction.transactionDate);
+    const options = { month: 'short', day: '2-digit', year: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options).replace(/(\w+) (\d+), (\d+)/, '$1, $2 $3');
+    
+    // Format the amount with currency symbol and sign based on transaction type
+    let formattedAmount;
+    if (transaction.transactionType === 'DEBIT') {
+        formattedAmount = `-Rs. ${Number(transaction.amount).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else {
+        formattedAmount = `Rs. ${Number(transaction.amount).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    
+    // Mask the account number (show last 4 digits only)
+    const maskedAccountNo = '........' + transaction.accountNo.slice(-4);
+    
+    transactionItem.innerHTML = `
+        <div class="transaction-avatar">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2340b4e5'/%3E%3Cpath d='M50 55c-8 0-15-7-15-15s7-15 15-15 15 7 15 15-7 15-15 15zm0-25c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zM70 85H30c-2.8 0-5-2.2-5-5 0-11 9-20 20-20h10c11 0 20 9 20 20 0 2.8-2.2 5-5 5z' fill='%23fff'/%3E%3C/svg%3E" alt="Transaction">
+        </div>
+        <div class="transaction-date">${formattedDate}</div>
+        <div class="transaction-id">${maskedAccountNo}</div>
+        <div class="transaction-amount">${formattedAmount}</div>
+        <div class="transaction-status success">Success</div>
+    `;
+    
+    // Add animation
+    transactionItem.style.opacity = '0';
+    transactionItem.style.transform = 'translateY(20px)';
+    
+    setTimeout(() => {
+        transactionItem.style.transition = 'all 0.5s ease';
+        transactionItem.style.opacity = '1';
+        transactionItem.style.transform = 'translateY(0)';
+    }, 50);
+    
+    return transactionItem;
+}
+
+// Function to clear the transactions list
+function clearTransactionsList() {
+    const transactionsList = document.querySelector('.transactions-list');
+    if (transactionsList) {
+        transactionsList.innerHTML = '';
+        
+        // Show a message when no transactions exist
+        const noTransactionsItem = document.createElement('div');
+        noTransactionsItem.className = 'transaction-item';
+        noTransactionsItem.innerHTML = `
+            <div class="transaction-avatar">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%2340b4e5'/%3E%3Cpath d='M50 55c-8 0-15-7-15-15s7-15 15-15 15 7 15 15-7 15-15 15zm0-25c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zM70 85H30c-2.8 0-5-2.2-5-5 0-11 9-20 20-20h10c11 0 20 9 20 20 0 2.8-2.2 5-5 5z' fill='%23fff'/%3E%3C/svg%3E" alt="No Transactions">
+            </div>
+            <div class="transaction-date"></div>
+            <div class="transaction-id"></div>
+            <div class="transaction-amount">No transactions</div>
+            <div class="transaction-status"></div>
+        `;
+        transactionsList.appendChild(noTransactionsItem);
+    }
 }
 
 function addTransaction(date, id, amount, status) {

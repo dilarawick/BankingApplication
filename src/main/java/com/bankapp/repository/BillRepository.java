@@ -25,4 +25,10 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
 
     // Find bills by customer ID
     List<Bill> findByCustomerID(Integer customerID);
+
+    // Find bills by account number and paid date range
+    @Query("SELECT b FROM Bill b WHERE b.accountNo = :accountNo AND b.paidDate BETWEEN :startDate AND :endDate")
+    List<Bill> findByAccountNoAndPaidDateBetween(@Param("accountNo") String accountNo,
+            @Param("startDate") java.time.LocalDateTime startDate,
+            @Param("endDate") java.time.LocalDateTime endDate);
 }

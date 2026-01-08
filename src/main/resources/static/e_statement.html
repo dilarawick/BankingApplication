@@ -70,11 +70,105 @@
                     </div>
                 </div>
             </header>
+            
+            <div class="statement-controls">
+                <div class="control-group">
+                    <label for="accountSelector" class="control-label">Select Account:</label>
+                    <select id="accountSelector" onchange="loadEStatement()" class="account-selector">
+                        <option value="">Select Account</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <button id="generateEmailBtn" class="btn btn-primary" onclick="generateAndEmailStatement()">
+                        <span class="btn-icon">📧</span>
+                        Generate & Email Statement
+                    </button>
+                </div>
+            </div>
+            
+            <div class="statement-container">
+                <section class="statement-header">
+                    <div class="statement-info">
+                        <h3 id="accountHolder"></h3>
+                        <div class="account-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Account Number:</span>
+                                <span id="accountNumber" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Account Type:</span>
+                                <span id="accountType" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Branch:</span>
+                                <span id="branch" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Statement Period:</span>
+                                <span id="statementPeriod" class="detail-value"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="account-summary">
+                    <div class="section-header">
+                        <h4>Account Summary</h4>
+                    </div>
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-label">Opening Balance</div>
+                            <div class="summary-amount" id="openingBalance"></div>
+                        </div>
+                        <div class="summary-card summary-credit">
+                            <div class="summary-label">Total Credits</div>
+                            <div class="summary-amount" id="totalCredits"></div>
+                        </div>
+                        <div class="summary-card summary-debit">
+                            <div class="summary-label">Total Debits</div>
+                            <div class="summary-amount" id="totalDebits"></div>
+                        </div>
+                        <div class="summary-card summary-closing">
+                            <div class="summary-label">Closing Balance</div>
+                            <div class="summary-amount" id="closingBalance"></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="transaction-details">
+                    <div class="section-header">
+                        <h4>Transaction Details</h4>
+                    </div>
+                    <div class="table-container">
+                        <table class="transactions-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Transaction ID</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Amount (LKR)</th>
+                                    <th>Balance (LKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-body">
+                                <!-- Transaction data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <div class="disclaimer">
+                    <p>For any discrepancies, please contact Nova Bank at +94 11 2345678 or support@novabank.lk</p>
+                    <p class="note">This e-statement is electronically generated and does not require a signature.</p>
+                </div>
+            </div>
         </main>
     </div>
 
     <script src="js/dashboard.js"></script>
     <script src="js/util.js"  ></script>
     <script src="js/security.js"  ></script>
+    <script src="js/e_statement.js"></script>
 </body>
 </html>
