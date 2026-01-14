@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Spend - Budget Management</title>
+    <link rel="stylesheet" href="css/styles-post-login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <div class="logo-container">
+                        <img src="img/j_logo.png" alt="Logo">
+                    </div>
+                </div>
+                <h1 class="bank-name">NOVA BANK</h1>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span>DASHBOARD</span>
+                </a>
+                <a href="accounts.html" class="nav-item">
+                    <span>ACCOUNTS</span>
+                </a>
+                <a href="bank_transfer.html" class="nav-item">
+                    <span>BANK TRANSFER</span>
+                </a>
+                <a href="pay_bills.html" class="nav-item">
+                    <span>PAY BILLS</span>
+                </a>
+                <a href="smart_spend.html" class="nav-item active">
+                    <div class="nav-icon-container">
+                        <img class="nav-icon" src="img/smart_spend_icon.png" alt="Logo">
+                    </div>
+                    <span>SMART SPEND</span>
+                </a>
+                <a href="e_statement.html" class="nav-item">
+                    <span>E-STATEMENT</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="icon-btn" onclick="handleSettings()">
+                    <img src="img/settings_icon.png" alt="Settings">
+                </button>
+                <button class="icon-btn" id="logoutBtn" onclick="handleLogout()">
+                    <img src="img/logout_icon.png" alt="Logout">
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 class="page-title">Smart Spend</h2>
+                <div class="header-actions">
+                    <button class="icon-btn">
+                        <img src="img/search_icon.png" alt="Profile">
+                    </button>
+                    <button class="icon-btn">
+                        <img src="img/bell_icon.png" alt="Profile">
+                    </button>
+                    <div class="profile-avatar">
+                        <img src="img/pfp_img.png" alt="Profile">
+                    </div>
+                </div>
+            </header>
+            
+            <section class="content-area">
+                <div class="budget-setup">
+                    <h2>Set Your Monthly Budget</h2>
+                    <form id="budgetForm">
+                        <div class="form-group">
+                            <label for="accountNo">Account Number:</label>
+                            <select id="accountNo" required>
+                                <option value="">Select an account</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="budgetLimit">Budget Limit (LKR):</label>
+                            <input type="number" id="budgetLimit" min="0" step="0.01" placeholder="Enter your monthly budget" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date:</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Set Budget</button>
+                    </form>
+                </div>
+                
+                <div class="manual-expenses-section">
+                    <a href="manual_expenses.html" class="manual-expenses-btn">
+                        <span>Manual Expenses</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="budget-display">
+                    <h2>Budget Overview</h2>
+                    <div class="progress-container">
+                        <div class="progress-circle">
+                            <svg viewBox="0 0 100 100" class="circular-chart">
+                                <path class="circle-bg" d="M50,50 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0" />
+                                <path class="circle" stroke-dasharray="0, 283" d="M50,50 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0" />
+                                <text x="50" y="50" class="percentage" style="font-size: 10px; font-weight: bold;">0%</text>
+                            </svg>
+                            <div class="percentage-display">0%</div>
+                            <div class="percentage-label">USED</div>
+                        </div>
+                        <div class="progress-info">
+                            <div class="budget-stats">
+                                <div class="stat">
+                                    <span class="stat-value" id="budgetLimitDisplay">0.00</span>
+                                    <span class="stat-label">Budget Limit</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="totalSpentDisplay">0.00</span>
+                                    <span class="stat-label">Total Spent</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="remainingDisplay">0.00</span>
+                                    <span class="stat-label">Remaining</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-transactions">
+                    <h2>Recent Transactions</h2>
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <tr>
+                                <td colspan="3">No transactions yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Notification Banner -->
+    <div id="notificationBanner" class="notification-banner">
+        <span id="notificationText"></span>
+        <button id="closeNotification" class="close-btn">×</button>
+    </div>
+    
+    <script src="js/post-login-navigation.js"></script>
+    <script src="js/smart_spend.js"></script>
+</body>
+</html>

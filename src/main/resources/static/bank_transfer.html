@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Bank - Transfer</title>
+    <link rel="stylesheet" href="css/styles-post-login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <style>
+        /* Floating success overlay */
+        .success-section {
+            position: fixed !important;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.35);
+            z-index: 9999;
+            padding: 24px;
+        }
+
+        .success-card {
+            background: #fff;
+            border-radius: 12px;
+            max-width: 720px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 48px 56px;
+            text-align: center;
+        }
+
+        .success-icon { margin-bottom: 16px; }
+        .success-card h2 { margin: 8px 0 12px; font-size: 28px; }
+        .success-card .muted { color: #9aa0a6; margin-bottom: 30px; }
+        .success-actions { margin-top: 20px; }
+        .success-actions .btn-primary { padding: 14px 28px; font-size: 16px; }
+        /* Failed overlay (reuses layout of success) */
+        .failed-section { position: fixed !important; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.35); z-index: 9999; padding: 24px; }
+        .failed-card { background: #fff; border-radius: 12px; max-width: 720px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 48px 56px; text-align: center; }
+        .failed-icon { margin-bottom: 16px; }
+        .failed-card h2 { margin: 8px 0 12px; font-size: 28px; color: #222; }
+        .failed-card .muted { color: #9aa0a6; margin-bottom: 8px; }
+        /* Currency input styling */
+        .currency-input { display:flex; align-items:center; gap:8px; max-width: 320px; }
+        .currency-prefix, .currency-suffix { color:#333; font-weight:600; }
+        .currency-input input[type="number"] { flex:1; padding:10px 8px; border-radius:6px; border:1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <div class="logo-container">
+                        <img src="img/j_logo.png" alt="Logo">
+                    </div>
+                </div>
+
+                <!-- Success screen shown after a successful transfer -->
+                <div class="success-section" id="successSection" style="display: none;">
+                    <div class="success-card">
+                        <div class="success-icon">
+                            <!-- simple green check SVG -->
+                            <svg width="160" height="160" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="32" r="30" fill="#dff7e6" />
+                                <circle cx="32" cy="32" r="22" fill="#bff1ce" />
+                                <circle cx="32" cy="32" r="16" fill="#0ca85f" />
+                                <path d="M20 33 L28 40 L44 24" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                            </svg>
+                        </div>
+                        <h2>Transfer Successful!</h2>
+                        <p class="muted">Confirmation number : <span id="successConfirmationNumber"></span></p>
+                        <p class="muted">Amount : <strong id="successAmount"></strong></p>
+                        <p class="muted">Date : <strong id="successDate"></strong></p>
+
+                        <div class="success-actions">
+                            <button class="btn-primary" id="downloadReceiptBtn">⬇&nbsp;&nbsp;Download Receipt (PDF)</button>
+                            <button class="btn-primary" id="backToHomeBtn">←&nbsp;&nbsp;BACK TO HOME</button>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="bank-name">NOVA BANK</h1>
+            </div>
+
+                <!-- Failure screen shown after a failed transfer -->
+                <div class="failed-section" id="failedSection" style="display: none;">
+                    <div class="failed-card">
+                        <div class="failed-icon">
+                            <svg width="160" height="160" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="32" r="30" fill="#ffdede" />
+                                <circle cx="32" cy="32" r="22" fill="#ffc8c8" />
+                                <path d="M32 18 L20 46 L44 46 Z" fill="#e53935" stroke="#fff" stroke-width="2" />
+                                <rect x="30" y="24" width="4" height="14" fill="#fff" />
+                                <rect x="30" y="42" width="4" height="4" fill="#fff" />
+                            </svg>
+                        </div>
+                        <h2>Transaction Failed!</h2>
+                        <p class="muted" id="failedMessage">Insufficient Balance</p>
+                        <p class="muted" id="failedBalance"></p>
+                        <div class="success-actions">
+                            <button class="btn-primary" id="failedBackBtn">←&nbsp;&nbsp;BACK TO HOME</button>
+                        </div>
+                    </div>
+                </div>
+
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span>DASHBOARD</span>
+                </a>
+                <a href="accounts.html" class="nav-item">
+                    <span>ACCOUNTS</span>
+                </a>
+                <a href="bank_transfer.html" class="nav-item active">
+                    <div class="nav-icon-container">
+                        <img class="nav-icon" src="img/bank_transfer_icon.png" alt="Logo">
+                    </div>
+                    <span>BANK TRANSFER</span>
+                </a>
+                <a href="pay_bills.html" class="nav-item">
+                    <span>PAY BILLS</span>
+                </a>
+                <a href="smart_spend.html" class="nav-item">
+                    <span>SMART SPEND</span>
+                </a>
+                <a href="e_statement.html" class="nav-item">
+                    <span>E-STATEMENT</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="icon-btn" onclick="handleSettings()">
+                    <img src="img/settings_icon.png" alt="Settings">
+                </button>
+                <button class="icon-btn" id="logoutBtn" onclick="handleLogout()">
+                    <img src="img/logout_icon.png" alt="Logout">
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 class="page-title">Bank Transfer</h2>
+                <div class="header-actions">
+                    <button class="icon-btn">
+                        <img src="img/search_icon.png" alt="Profile">
+                    </button>
+                    <button class="icon-btn">
+                        <img src="img/bell_icon.png" alt="Profile">
+                    </button>
+                    <div class="profile-avatar">
+                        <img src="img/pfp_img.png" alt="Profile">
+                    </div>
+                </div>
+            </header>
+            
+            <div class="transfer-form-container">
+                <div class="form-section" id="transferForm">
+                    <div class="form-header">
+                        <h3>Transfer Details</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transferAmount">Amount to be transferred</label>
+                        <div class="currency-input">
+                            <span class="currency-prefix">Rs.</span>
+                            <input type="number" id="transferAmount" name="transferAmount" placeholder="Enter amount" min="0" step="0.01" required>
+                            <span class="currency-suffix">.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipientName">Recipient's full name (as per bank records)</label>
+                        <input type="text" id="recipientName" name="recipientName" placeholder="Enter full name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                                <label for="recipientBank">Bank (Nova Bank only)</label>
+                                <select id="recipientBank" name="recipientBank" required>
+                                    <option value="" disabled selected>Select bank</option>
+                                    <option value="Nova Bank">Nova Bank</option>
+                                </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="recipientBranch">Branch</label>
+                            <select id="recipientBranch" name="recipientBranch" required>
+                                <option value="" disabled selected>Select branch</option>
+                                <!-- Branches will be populated based on selected bank -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recipientAccount">Account Number</label>
+                        <input type="text" id="recipientAccount" name="recipientAccount" placeholder="Enter account number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reference">Reference/Description</label>
+                        <textarea id="reference" name="reference" placeholder="Enter reference or description (optional)"></textarea>
+                    </div>
+                    
+                    <button type="button" class="btn-primary" id="nextBtn">Next</button>
+                </div>
+                
+                <div class="summary-section" id="summarySection" style="display: none;">
+                    <div class="form-header">
+                        <h3>Confirm Transfer Details</h3>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Amount:</span>
+                        <span class="summary-value" id="summaryAmount"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Name:</span>
+                        <span class="summary-value" id="summaryName"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Bank:</span>
+                        <span class="summary-value" id="summaryBank"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Branch:</span>
+                        <span class="summary-value" id="summaryBranch"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Recipient Account:</span>
+                        <span class="summary-value" id="summaryAccount"></span>
+                    </div>
+                    
+                    <div class="summary-item">
+                        <span class="summary-label">Reference:</span>
+                        <span class="summary-value" id="summaryReference"></span>
+                    </div>
+                    
+                    <div class="summary-actions">
+                        <button type="button" class="btn-secondary" id="backBtn">Back</button>
+                        <button type="button" class="btn-primary" id="confirmBtn">Confirm Transfer</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/security.js"></script>
+    <!-- Hidden logo used for embedding in PDF receipts -->
+    <img id="novaLogoImg" src="img/j_logo.png" alt="Nova Logo" style="display:none;" />
+    <!-- jsPDF for client-side PDF generation -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="js/bank_transfer.js"></script>
+</body>
+</html>

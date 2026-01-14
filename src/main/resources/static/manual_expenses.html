@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Expenses - Budget Management</title>
+    <link rel="stylesheet" href="css/styles-post-login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+</head>
+<body>
+    <div class="toast" id="toast"></div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-circle">
+                    <div class="logo-container">
+                        <img src="img/j_logo.png" alt="Logo">
+                    </div>
+                </div>
+                <h1 class="bank-name">NOVA BANK</h1>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span>DASHBOARD</span>
+                </a>
+                <a href="accounts.html" class="nav-item">
+                    <span>ACCOUNTS</span>
+                </a>
+                <a href="bank_transfer.html" class="nav-item">
+                    <span>BANK TRANSFER</span>
+                </a>
+                <a href="pay_bills.html" class="nav-item">
+                    <span>PAY BILLS</span>
+                </a>
+                <a href="smart_spend.html" class="nav-item">
+                    <div class="nav-icon-container">
+                        <img class="nav-icon" src="img/smart_spend_icon.png" alt="Logo">
+                    </div>
+                    <span>SMART SPEND</span>
+                </a>
+                <a href="e_statement.html" class="nav-item">
+                    <span>E-STATEMENT</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="icon-btn" onclick="handleSettings()">
+                    <img src="img/settings_icon.png" alt="Settings">
+                </button>
+                <button class="icon-btn" id="logoutBtn" onclick="handleLogout()">
+                    <img src="img/logout_icon.png" alt="Logout">
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 class="page-title">Manual Expenses</h2>
+                <div class="header-actions">
+                    <button class="icon-btn">
+                        <img src="img/search_icon.png" alt="Profile">
+                    </button>
+                    <button class="icon-btn">
+                        <img src="img/bell_icon.png" alt="Profile">
+                    </button>
+                    <div class="profile-avatar">
+                        <img src="img/pfp_img.png" alt="Profile">
+                    </div>
+                </div>
+            </header>
+            
+            <section class="content-area">
+                <!-- Monthly Budget Setup Section -->
+                <div class="budget-setup glass-effect">
+                    <h2>Monthly Budget Setup</h2>
+                    <form id="monthlyBudgetForm">
+                        <div class="form-group">
+                            <label for="monthlyBudgetLimit">Total Monthly Budget Limit (LKR):</label>
+                            <input type="number" id="monthlyBudgetLimit" min="0" step="0.01" placeholder="Enter your total monthly budget" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="budgetStartDate">Start Date:</label>
+                                <input type="date" id="budgetStartDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="budgetEndDate">End Date:</label>
+                                <input type="date" id="budgetEndDate" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary">Set Monthly Budget</button>
+                    </form>
+                </div>
+                
+                <!-- Manual Expense Entry Form -->
+                <div class="manual-expense-form glass-effect">
+                    <h2>Add Manual Expense</h2>
+                    <p class="subtitle">Track cash or external spending</p>
+                    
+                    <form id="manualExpenseForm">
+                        <div class="form-group">
+                            <label for="expenseAmount">Amount:</label>
+                            <div class="input-with-prefix">
+                                <span class="prefix">Rs.</span>
+                                <input type="number" id="expenseAmount" min="0" step="0.01" placeholder="__________" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expenseCategory">Category:</label>
+                            <select id="expenseCategory" required>
+                                <option value="">Select a category</option>
+                                <option value="Food">Food</option>
+                                <option value="Clothes">Clothes</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expenseDate">Date:</label>
+                            <input type="date" id="expenseDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="expenseDescription">Description (Optional):</label>
+                            <input type="text" id="expenseDescription" placeholder="Lunch with friends">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Payment Type:</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="paymentType" value="Cash" checked>
+                                    <span class="radio-text">Cash</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="paymentType" value="Other">
+                                    <span class="radio-text">Other</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Save Expense</button>
+                            <button type="button" class="btn-secondary" id="cancelExpenseBtn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Visual Budget Tracking -->
+                <div class="budget-tracking">
+                    <h2>Budget Tracking</h2>
+                    
+                    <div class="category-charts-container">
+                        <!-- Food Category -->
+                        <div class="category-chart">
+                            <h3>Food</h3>
+                            <div class="chart-container">
+                                <div class="circular-progress" data-category="Food">
+                                    <svg viewBox="0 0 100 100" class="donut-chart">
+                                        <circle class="circle-bg" cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"></circle>
+                                        <circle class="circle" cx="50" cy="50" r="45" fill="none" stroke="#3b82f6" stroke-width="8" 
+                                            stroke-dasharray="283" stroke-dashoffset="283" transform="rotate(-90 50 50)"></circle>
+                                        <text x="50" y="50" class="percentage-text" fill="#1e293b" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle">0%</text>
+                                    </svg>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress-percentage">0%</div>
+                                    <div class="budget-stats">
+                                        <div class="stat">
+                                            <span class="stat-value" id="foodBudgetLimit">0.00</span>
+                                            <span class="stat-label">Budget Limit</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="foodTotalSpent">0.00</span>
+                                            <span class="stat-label">Total Spent</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="foodRemaining">0.00</span>
+                                            <span class="stat-label">Remaining</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Clothes Category -->
+                        <div class="category-chart">
+                            <h3>Clothes</h3>
+                            <div class="chart-container">
+                                <div class="circular-progress" data-category="Clothes">
+                                    <svg viewBox="0 0 100 100" class="donut-chart">
+                                        <circle class="circle-bg" cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"></circle>
+                                        <circle class="circle" cx="50" cy="50" r="45" fill="none" stroke="#10b981" stroke-width="8" 
+                                            stroke-dasharray="283" stroke-dashoffset="283" transform="rotate(-90 50 50)"></circle>
+                                        <text x="50" y="50" class="percentage-text" fill="#1e293b" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle">0%</text>
+                                    </svg>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress-percentage">0%</div>
+                                    <div class="budget-stats">
+                                        <div class="stat">
+                                            <span class="stat-value" id="clothesBudgetLimit">0.00</span>
+                                            <span class="stat-label">Budget Limit</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="clothesTotalSpent">0.00</span>
+                                            <span class="stat-label">Total Spent</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="clothesRemaining">0.00</span>
+                                            <span class="stat-label">Remaining</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Transportation Category -->
+                        <div class="category-chart">
+                            <h3>Transportation</h3>
+                            <div class="chart-container">
+                                <div class="circular-progress" data-category="Transportation">
+                                    <svg viewBox="0 0 100 100" class="donut-chart">
+                                        <circle class="circle-bg" cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"></circle>
+                                        <circle class="circle" cx="50" cy="50" r="45" fill="none" stroke="#f59e0b" stroke-width="8" 
+                                            stroke-dasharray="283" stroke-dashoffset="283" transform="rotate(-90 50 50)"></circle>
+                                        <text x="50" y="50" class="percentage-text" fill="#1e293b" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle">0%</text>
+                                    </svg>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress-percentage">0%</div>
+                                    <div class="budget-stats">
+                                        <div class="stat">
+                                            <span class="stat-value" id="transportBudgetLimit">0.00</span>
+                                            <span class="stat-label">Budget Limit</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="transportTotalSpent">0.00</span>
+                                            <span class="stat-label">Total Spent</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="transportRemaining">0.00</span>
+                                            <span class="stat-label">Remaining</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Other Category -->
+                        <div class="category-chart">
+                            <h3>Other</h3>
+                            <div class="chart-container">
+                                <div class="circular-progress" data-category="Other">
+                                    <svg viewBox="0 0 100 100" class="donut-chart">
+                                        <circle class="circle-bg" cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"></circle>
+                                        <circle class="circle" cx="50" cy="50" r="45" fill="none" stroke="#8b5cf6" stroke-width="8" 
+                                            stroke-dasharray="283" stroke-dashoffset="283" transform="rotate(-90 50 50)"></circle>
+                                        <text x="50" y="50" class="percentage-text" fill="#1e293b" font-size="16" font-weight="bold" text-anchor="middle" dominant-baseline="middle">0%</text>
+                                    </svg>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress-percentage">0%</div>
+                                    <div class="budget-stats">
+                                        <div class="stat">
+                                            <span class="stat-value" id="otherBudgetLimit">0.00</span>
+                                            <span class="stat-label">Budget Limit</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="otherTotalSpent">0.00</span>
+                                            <span class="stat-label">Total Spent</span>
+                                        </div>
+                                        <div class="stat">
+                                            <span class="stat-value" id="otherRemaining">0.00</span>
+                                            <span class="stat-label">Remaining</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Manual Expenses -->
+                <div class="recent-expenses glass-effect">
+                    <h2>Recent Manual Expenses</h2>
+                    <table id="manualExpensesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Payment Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manualExpensesBody">
+                            <tr>
+                                <td colspan="5">No manual expenses yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Notification Banner -->
+    <div id="notificationBanner" class="notification-banner">
+        <span id="notificationText"></span>
+        <button id="closeNotification" class="close-btn">×</button>
+    </div>
+    
+    <script src="js/post-login-navigation.js"></script>
+    <script src="js/manual_expenses.js"></script>
+</body>
+</html>

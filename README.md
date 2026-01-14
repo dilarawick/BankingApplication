@@ -13,6 +13,7 @@ The project consists of two main parts:
 
 The backend handles:
 - User authentication (with password hashing)
+- JWT stateless tokens for security
 - Money transfers & account management
 - Database CRUD operations via REST APIs
 
@@ -48,7 +49,7 @@ Generated from [https://start.spring.io](https://start.spring.io) with the follo
 | Packaging | JAR |
 | Java Version | 21 |
 | Group | `com.bankapp` |
-| Artifact | `bankapp-backend` |
+| Artifact | `BankingApplication` |
 
 ### Dependencies Selected:
 - **Spring Web**
@@ -64,28 +65,25 @@ Generated from [https://start.spring.io](https://start.spring.io) with the follo
 
 ```
 BankingApplication/
-├── bankapp-backend/                        ← Spring Boot backend
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/bankapp/...     ← Java packages (controller, service, etc.)
-│   │   │   └── resources/
-│   │   │       ├── application.properties
-│   │   │       ├── static/
-│   │   │       └── templates/
-│   ├── database/
-│   │   ├── schema.sql                   ← Database schema
-│   │   └── seed.sql                     ← Initial seed data (dummy records)
-│   ├── pom.xml
-│   └── target/                          ← Compiled JAR and build output
+├── src/main/
+│       ├── java/com/bankapp/...     ← Java packages (controller, service, dto, etc.)
+│       └── resources/
+│           ├── application.properties
+│           ├── templates/
+│           └── static/              ← Frontend (static files)
+│               ├── index.html
+│               ├── js/
+│               │   └── main.js
+│               ├── css/
+│               │   └── style.css
+│               └── img/
+│                   └── (logos, icons, etc.)
 │
-├── bankapp-frontend/                    ← Frontend (static files)
-│   ├── index.html
-│   ├── js/
-│   │   └── main.js
-│   ├── css/
-│   │   └── style.css
-│   └── img/
-│       └── (logos, icons, etc.)
+├── database/
+│   ├── schema.sql                   ← Database schema
+│   └── seed.sql                     ← Initial seed data (dummy records)
+├── pom.xml
+├── target/                          ← Compiled JAR and build output
 │
 └── README.md
 ```
@@ -95,9 +93,45 @@ BankingApplication/
 
 Located at:  
 `bankapp-backend/src/main/resources/application.properties`
+```
+# MySQL
+spring.datasource.url=jdbc:mysql://localhost:YOUR_MYSQL_PORT/YOUR_DATABASE_NAME?createDatabaseIfNotExist=true&serverTimezone=UTC
+spring.datasource.username=YOUR_MYSQL_USERNAME
+spring.datasource.password=YOUR_MYSQL_PASSWORD
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# Mail (Gmail SMTP)
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=novabanking.noreply@gmail.com
+spring.mail.password=mrdzqlqrmdqkrlof
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+#JWT
+jwt.secret=SECRET_KEY(32)
+jwt.expiration=36000000
+# 10 hour in ms
+
+# Server port
+server.port=8080
+```
+
+### What Contributors Must Update:
+| Property | Description |
+|----------|--------|
+| spring.datasource.url | Your local MySQL port |
+| spring.datasource.url | Your database name |
+| spring.datasource.username | Your local MySQL username |
+| spring.datasource.password | Your MySQL password |
+| jwt.secret | A 32 bit random key |
 
 ---
-## Running the Backend
 
-The backend will run at:  
+## Running the Application
+
+The application will run at:  
 `http://localhost:8080`
